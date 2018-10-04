@@ -1,6 +1,6 @@
 //      Endpoints Method  Payload(Content type)               Function
 //
-//  These are for the FHIRcast messages:
+//  These are for the FHIRcast messages WebSub endpoints:
 //    Server (hub)
 //      /api/hub  POST    form query string     Receive subscription request from the cleints
 //      /notify   POST    JSON                  Receive events from the clients
