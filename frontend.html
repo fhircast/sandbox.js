@@ -1,0 +1,53 @@
+<head>
+    <title>FHIRcast JavaScript Playground</title>
+    </head>
+    <style>
+    .body {
+        color:blue;
+        }
+    </style>
+    <script>
+    function sendEvent(){
+    
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST','http://localhost:6001/notify',true);
+    xhr.setRequestHeader('Content-Type','application/json');
+    var data = JSON.stringify({"email":"tomb@raider.com","name":"LaraCroft"});
+    xhr.send(data);
+    xhr.onloadend = function() {
+        
+        };
+     console.log('event sent from browser');
+    }
+    </script>
+    <body>
+        <h1>FHIRcast JS Playground</h1>
+        </br>
+        <form action="http://localhost:6001/api/hub/" method="POST">
+            <br>
+            <table>
+                <th>Subscribe to events</th>
+                <tr><td>hub.callback:</td><td><input name="hub.callback" type="url" value="http://localhost:6001/client/"></input></td></tr>
+                <tr><td>hub.mode:</td><td><select name="hub.mode">
+                        <option value="subscribe" selected >subscribe</option>
+                        <option value="unsubscribe" >unsubscribe</option>
+                    </select></td></tr>
+                <tr><td>hub.events:</td><td><select name="hub.events">
+                        <option value="open-patient-chart" selected >open-patient-chart</option>
+                        <option value="switch-patient-chart">switch-patient-chart</option>
+                        <option value="close-patient-chart">close-patient-chart</option>
+                        <option value="open-imaging-study">open-imaging-study</option>
+                        <option value="switch-imaging-study">switch-imaging-study</option>
+                        <option value="close-imaging-study">close-imaging-study</option>
+                        <option value="user-logout">user-logout</option>
+                        <option value="user-hibernate">user-hibernate</option>
+                    </select> </td></tr>
+                <tr><td>hub.secret: </td><td><input name="hub.secret" type="text" value="secret"></input></td></tr>          
+                <tr><td>hub.topic: </td><td><input name="hub.topic" type="text" value="FHIRcast testing"></input></td></tr>
+                <tr><td>hub.lease: </td><td><input name="hub.lease" type="text" value="999"></input></td></tr>
+                <tr><input type="submit"></input></tr>
+            </table>
+        </form>
+                <br>
+                <button onclick="sendEvent()" >Send an event to the hub.</button>
+    </body>
