@@ -10,7 +10,7 @@ Client endpoints
     /client   GET     query string          Receive callback check from the hub 
 
 Client front-end (frontend.html file): 
-    /ui       GET     HTML/JavaScript       Provides the web page to subscribe and post events to the hub
+    /         GET     HTML/JavaScript       Provides the web page to subscribe and post events to the hub
 `
 
 const request=require('request');
@@ -100,7 +100,7 @@ app.post('/client/',function(req,res){
 //
 //  This endpoint is to server the client web page
 //  UI
-app.get('/ui',function(req,res){
+app.get('/',function(req,res){
   console.log('UI:  user interface requested');
   res.sendFile(path.join(__dirname + '/frontend.html'));
 });
