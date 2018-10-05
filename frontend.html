@@ -1,18 +1,35 @@
 <head><title>FHIRcast JavaScript Playground</title></head>
 <script>
-    function sendEvent(contextData){
+    function sendEvent(contextData,destinationURI){
         var xhr=new XMLHttpRequest();
-        xhr.open('POST','http://localhost:6001/notify',true);
+  //      xhr.open('POST','http://localhost:6001/notify',true);
+        xhr.open('POST',destinationURI,true);
         xhr.setRequestHeader('Content-Type','application/json');
         xhr.send(contextData);
         xhr.onloadend = function() {        };
         console.log('event sent from browser'+ JSON.stringify(contextData));
     }
+    
+        var ws = new WebSocket('ws://localhost:6001/log');
+        // event emmited when connected
+        ws.onopen = function () {
+            console.log('websocket is connected ...')
+            // sending a send event to websocket server
+            ws.send('connected')
+        }
+        // event emmited when receiving message 
+        ws.onmessage = function (ev) {
+            document.getElementById('incomingMsgOutput').value=ev.data;
+            console.log(ev.data);
+        }
 </script>
 <body style="background-color:lightgray;">
 <h2>FHIRcast JavaScript Playground</h2>
-<form action="http://localhost:6001/api/hub/" method="POST">
-    <table frame="box">
+<table border="1">
+<tr colspan="2"></trcolspan>hub URI: <input id="hubSubscribeURI" size="30" value="http://localhost:6001/api/hub/"></input></tr>
+<tr><td>
+    <form action="http://localhost:6001/api/hub/" method="POST">
+    <table>
         <th colspan="2">Subscribe to an event</th>  
         <tr><td>hub.callback: </td><td><input name="hub.callback" size="29" type="url" value="http://localhost:6001/client"></input></td></tr>          
         <tr><td>hub.mode:</td><td><select name="hub.mode">
@@ -35,11 +52,11 @@
         <tr><td><input type="submit"></td></tr>
     </table>
 </form>
-
-
-<table frame="box">
+</td>
+<td>
+<table>
     <th>Send an event to the hub</th>  
-        <tr><td>hub.topic:<input name="hubNotifyURI" size="25" value="http://localhost:6001/notify"></input></td></tr>
+        <tr><td>hub.topic:<input id="hubNotifyURI" size="25" value="http://localhost:6001/notify"></input></td></tr>
         <tr><td>context:</td></tr>
         <tr><td><textarea id="context" rows="10" cols="40">{
 "timestamp": "2018-06-13T01:56:11.8281368Z", 
@@ -50,6 +67,14 @@
     "context": "patient123"
     }
 }</textarea></td></tr>
-        <tr><td><button onclick="sendEvent(document.getElementById('context').value)" >Send</button></td></tr>
-    </table>  
+        <tr><td><button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button></td></tr>
+</table>
+</td>
+<tr colspan="2">  
+    <table>
+        <th>Monitor endpoints logs with websocket</th>
+        <tr><td><textarea id="incomingMsgOutput" rows="10" cols="80" disabled="disabled"></textarea></td></tr>
+    </table>
+</tr>
+</table>    
 </body>

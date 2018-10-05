@@ -1,6 +1,7 @@
 const help=`
 Server (hub)
     Endpoints Method  Payload(Content type) Function
+    
     ====================================================================================================
     /api/hub  POST    form query string     Receive subscription request from the clients
     /notify   POST    JSON                  Receive events from the clients
@@ -21,16 +22,24 @@ const express=require('express'),
     app=express();
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:true}));
+var expressWs = require('express-ws')(app);
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
 
 //  Global
 const listeningPort=6001;
 subscriptions=[];
+logWebsocket='';
+
+function console_log(msg){
+ console.log(msg);
+ logWebsocket+=msg+'\n';
+}
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 //
 //    The following two endpoints are for the Hub
@@ -39,16 +48,16 @@ subscriptions=[];
 app.post('/api/hub/',function(req,res){
     if(req.headers['content-type']== 'application/x-www-form-urlencoded') {
       var subscriptionRequest=req.body;
-      console.log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback']);
-      console.log('HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
+      console_log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback']);
+      console_log('HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
       // Check the supplied callback URL
       request({
           url: subscriptionRequest['hub.callback'],
           qs: {"hub.challenge": subscriptionRequest['hub.secret']}    
         }, function (error, response, body) {
         //console.log('HUB: error:', error); // Print the error if one occurred
-        console.log('HUB: Callback check response statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('HUB: Callback check body:', body); 
+        console_log('HUB: Callback check response statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console_log('HUB: Callback check body:', body); 
         var subscription = {
             channel:"websub",
             callback: subscriptionRequest['hub.callback'],
@@ -58,11 +67,10 @@ app.post('/api/hub/',function(req,res){
             lease: subscriptionRequest['hub.lease'],
           };
         subscriptions.push(subscription);
-       
       });
     } 
     else {
-      console.log('HUB: Wrong content type');
+      console_log('HUB: Wrong content type');
 
     }
     res.redirect('/');
@@ -74,11 +82,11 @@ app.post('/notify/',function(req,res){
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.json(200);
-  console.log('HUB: Receiving event with content: '+ JSON.stringify(req.body));
+  console_log('HUB: Receiving event with content: '+ JSON.stringify(req.body));
   //  Broadcast the event to all clients
 
   subscriptions.forEach(function(subscription) {
-    console.log('HUB:  Processing subscription for:' + JSON.stringify(subscription));
+    console_log('HUB:  Processing subscription for:' + JSON.stringify(subscription));
    });
 
 });
@@ -90,14 +98,14 @@ app.post('/notify/',function(req,res){
 //  Client listener for callback check,unsubscribe and receive events  
 //  Callback check from the hub with query string payload
 app.get('/client/',function(req,res){
-  console.log('CLIENT: Callback checked by the hub.');
-  console.log('CLIENT: Sending back challenge: '+req.query['hub.challenge']);
+  console_log('CLIENT: Callback checked by the hub.');
+  console_log('CLIENT: Sending back challenge: '+req.query['hub.challenge']);
   res.send(200,req.query['hub.challenge']);
 });
 
 //  Receive events from the hub with application/json payload
 app.post('/client/',function(req,res){
-  console.log(req.body);
+  console_log(req.body);
   res.json(200,{'context':req.body});
 });
 
@@ -105,13 +113,31 @@ app.post('/client/',function(req,res){
 //  This endpoint is to server the client web page
 //  UI
 app.get('/',function(req,res){
-  console.log('UI:  user interface requested');
+  console_log('UI:  user interface requested');
+  //logWebsocket='UI:  user interface requested';
   res.sendFile(path.join(__dirname + '/frontend.html'));
 });
 
 
+app.ws('/log', function(ws, req) {
+  ws.on('message', function(msg) {
+    //ws.send(logWebsocket);
+  });
+  setInterval(
+    () => { 
+      //ws.send(`${new Date()}`);
+      if (logWebsocket!=''){
+        ws.send(logWebsocket);
+        logWebsocket='';
+      } 
+    },2000
+  )
+
+});
+
+
 app.listen(listeningPort,function(){
-    console.log('Listening on port ' + listeningPort+' on the following endpoints:');
-    console.log(help);
+    console_log('Listening on port ' + listeningPort+' on the following endpoints:');
+    console_log(help);
 });
 
