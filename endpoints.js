@@ -69,8 +69,10 @@ app.post('/api/hub/',function(req,res){
 //  Receive events from clients with application/json payload
 app.use(express.json());
 app.post('/notify/',function(req,res){
-  console.log('HUB: Receiving event with content: '+req.body);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.json(200);
+  console.log('HUB: Receiving event with content: '+ JSON.stringify(req.body));
   //  Broadcast the event to all clients
   for(subscription in subscriptions) {
     console.log('HUB:  Processing subscription for:' + subscription.callback)

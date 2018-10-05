@@ -8,11 +8,18 @@
     </style>
     <script>
     function sendEvent(){
-    
+    var data=JSON.stringify({
+      "timestamp": "2018-06-13T01:56:11.8281368Z", 
+      "id": "0c3b67ab5344428c840c4a745dbdf523", 
+      "event": {
+        "hub.topic": "5000-4", 
+        "hub.event": "open-patient-chart", 
+        "context": "patient123"
+        }
+      });
     var xhr=new XMLHttpRequest();
     xhr.open('POST','http://localhost:6001/notify',true);
     xhr.setRequestHeader('Content-Type','application/json');
-    var data = JSON.stringify({"email":"tomb@raider.com","name":"LaraCroft"});
     xhr.send(data);
     xhr.onloadend = function() {
         
