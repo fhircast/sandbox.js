@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
 
 //  Global
 const listeningPort=6001;
-let subscriptions=[];
+subscriptions=[];
 
 //
 //    The following two endpoints are for the Hub
@@ -58,13 +58,14 @@ app.post('/api/hub/',function(req,res){
             lease: subscriptionRequest['hub.lease'],
           };
         subscriptions.push(subscription);
-        res.sendStatus(200);
+       
       });
     } 
     else {
       console.log('HUB: Wrong content type');
 
     }
+    res.redirect('/');
   });
   
 //  Receive events from clients with application/json payload
@@ -75,9 +76,11 @@ app.post('/notify/',function(req,res){
   res.json(200);
   console.log('HUB: Receiving event with content: '+ JSON.stringify(req.body));
   //  Broadcast the event to all clients
-  for(subscription in subscriptions) {
-    console.log('HUB:  Processing subscription for:' + subscription.callback)
-  }
+
+  subscriptions.forEach(function(subscription) {
+    console.log('HUB:  Processing subscription for:' + JSON.stringify(subscription));
+   });
+
 });
 
 //
@@ -111,3 +114,4 @@ app.listen(listeningPort,function(){
     console.log('Listening on port ' + listeningPort+' on the following endpoints:');
     console.log(help);
 });
+

@@ -1,45 +1,25 @@
-<head>
-    <title>FHIRcast JavaScript Playground</title>
-    </head>
-    <style>
-    .body {
-        color:blue;
-        }
-    </style>
-    <script>
-    function sendEvent(){
-    var data=JSON.stringify({
-      "timestamp": "2018-06-13T01:56:11.8281368Z", 
-      "id": "0c3b67ab5344428c840c4a745dbdf523", 
-      "event": {
-        "hub.topic": "5000-4", 
-        "hub.event": "open-patient-chart", 
-        "context": "patient123"
-        }
-      });
-    var xhr=new XMLHttpRequest();
-    xhr.open('POST','http://localhost:6001/notify',true);
-    xhr.setRequestHeader('Content-Type','application/json');
-    xhr.send(data);
-    xhr.onloadend = function() {
-        
-        };
-     console.log('event sent from browser');
+<head><title>FHIRcast JavaScript Playground</title></head>
+<script>
+    function sendEvent(contextData){
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST','http://localhost:6001/notify',true);
+        xhr.setRequestHeader('Content-Type','application/json');
+        xhr.send(contextData);
+        xhr.onloadend = function() {        };
+        console.log('event sent from browser'+ JSON.stringify(contextData));
     }
-    </script>
-    <body>
-        <h1>FHIRcast JS Playground</h1>
-        </br>
-        <form action="http://localhost:6001/api/hub/" method="POST">
-            <br>
-            <table>
-                <th>Subscribe to events</th>
-                <tr><td>hub.callback:</td><td><input name="hub.callback" type="url" value="http://localhost:6001/client/"></input></td></tr>
-                <tr><td>hub.mode:</td><td><select name="hub.mode">
+</script>
+<body style="background-color:lightgray;">
+<h2>FHIRcast JavaScript Playground</h2>
+<form action="http://localhost:6001/api/hub/" method="POST">
+    <table frame="box">
+        <th colspan="2">Subscribe to an event</th>  
+        <tr><td>hub.callback: </td><td><input name="hub.callback" size="29" type="url" value="http://localhost:6001/client"></input></td></tr>          
+        <tr><td>hub.mode:</td><td><select name="hub.mode">
                         <option value="subscribe" selected >subscribe</option>
                         <option value="unsubscribe" >unsubscribe</option>
                     </select></td></tr>
-                <tr><td>hub.events:</td><td><select name="hub.events">
+        <tr><td>hub.events:</td><td><select name="hub.events">
                         <option value="open-patient-chart" selected >open-patient-chart</option>
                         <option value="switch-patient-chart">switch-patient-chart</option>
                         <option value="close-patient-chart">close-patient-chart</option>
@@ -49,12 +29,27 @@
                         <option value="user-logout">user-logout</option>
                         <option value="user-hibernate">user-hibernate</option>
                     </select> </td></tr>
-                <tr><td>hub.secret: </td><td><input name="hub.secret" type="text" value="secret"></input></td></tr>          
-                <tr><td>hub.topic: </td><td><input name="hub.topic" type="text" value="FHIRcast testing"></input></td></tr>
-                <tr><td>hub.lease: </td><td><input name="hub.lease" type="text" value="999"></input></td></tr>
-                <tr><input type="submit"></input></tr>
-            </table>
-        </form>
-                <br>
-                <button onclick="sendEvent()" >Send an event to the hub.</button>
-    </body>
+        <tr><td>hub.secret: </td><td><input name="hub.secret" type="text" value="secret"></input></td></tr>          
+        <tr><td>hub.topic: </td><td><input name="hub.topic" type="text" value="FHIRcast testing"></input></td></tr>
+        <tr><td>hub.lease: </td><td><input name="hub.lease" type="text" value="999"></input></td></tr>
+        <tr><td><input type="submit"></td></tr>
+    </table>
+</form>
+
+
+<table frame="box">
+    <th>Send an event to the hub</th>  
+        <tr><td>hub.topic:<input name="hubNotifyURI" size="25" value="http://localhost:6001/notify"></input></td></tr>
+        <tr><td>context:</td></tr>
+        <tr><td><textarea id="context" rows="10" cols="40">{
+"timestamp": "2018-06-13T01:56:11.8281368Z", 
+"id": "0c3b67ab5344428c840c4a745dbdf523", 
+"event": {
+    "hub.topic": "5000-4", 
+    "hub.event": "open-patient-chart", 
+    "context": "patient123"
+    }
+}</textarea></td></tr>
+        <tr><td><button onclick="sendEvent(document.getElementById('context').value)" >Send</button></td></tr>
+    </table>  
+</body>
