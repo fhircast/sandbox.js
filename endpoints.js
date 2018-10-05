@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
 
 //  Global
 const listeningPort=6001;
-var subscriptions=[];
+let subscriptions=[];
 
 //
 //    The following two endpoints are for the Hub
@@ -58,6 +58,7 @@ app.post('/api/hub/',function(req,res){
             lease: subscriptionRequest['hub.lease'],
           };
         subscriptions.push(subscription);
+        res.sendStatus(200);
       });
     } 
     else {
