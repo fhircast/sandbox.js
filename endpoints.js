@@ -1,8 +1,5 @@
 const help=`
 Server (hub)
-    Endpoints Method  Payload(Content type) Function
-    
-    ====================================================================================================
     /api/hub  POST    form query string     Receive subscription request from the clients
     /notify   POST    JSON                  Receive events from the clients
 
@@ -73,7 +70,8 @@ app.post('/api/hub/',function(req,res){
       console_log('HUB: Wrong content type');
 
     }
-    res.redirect('/');
+    res.send(200);
+   //res.redirect('/');
   });
   
 //  Receive events from clients with application/json payload
@@ -114,30 +112,39 @@ app.post('/client/',function(req,res){
 //  UI
 app.get('/',function(req,res){
   console_log('UI:  user interface requested');
-  //logWebsocket='UI:  user interface requested';
   res.sendFile(path.join(__dirname + '/frontend.html'));
 });
 
 
 app.ws('/log', function(ws, req) {
-  ws.on('message', function(msg) {
-    //ws.send(logWebsocket);
+  ws.on('connection', req => {
+    console.log(uuid.v4());
   });
-  setInterval(
-    () => { 
-      //ws.send(`${new Date()}`);
-      if (logWebsocket!=''){
-        ws.send(logWebsocket);
-        logWebsocket='';
-      } 
-    },2000
-  )
+  
+//  ws.on('message', function(msg) {
+   // ws.send(logWebsocket);
+  //});
+  
+  ws.on('close', function(msg) {
+    console.log('websocket closed');
+  });
 
+  setInterval(() => { 
+      //ws.send(`${new Date()}`);
+      if (logWebsocket!='') {
+       
+        if (ws.readyState==1) {
+          ws.send(logWebsocket);
+          logWebsocket='';
+        }
+      } 
+    },1000);
 });
 
 
 app.listen(listeningPort,function(){
-    console_log('Listening on port ' + listeningPort+' on the following endpoints:');
-    console_log(help);
+  //console_log(help);
+  console_log('Listening on port ' + listeningPort+': ');
+    
 });
 
