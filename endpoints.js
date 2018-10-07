@@ -45,7 +45,7 @@ app.use(function(req, res, next) {
 app.post('/api/hub/',function(req,res){
     if(req.headers['content-type']== 'application/x-www-form-urlencoded') {
       var subscriptionRequest=req.body;
-      console_log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback']);
+      console_log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + 'for event '+subscriptionRequest['hub.events']);
       console_log('HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
       // Check the supplied callback URL
       request({
@@ -53,8 +53,8 @@ app.post('/api/hub/',function(req,res){
           qs: {"hub.challenge": subscriptionRequest['hub.secret']}    
         }, function (error, response, body) {
         //console.log('HUB: error:', error); // Print the error if one occurred
-        console_log('HUB: Callback check response statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console_log('HUB: Callback check body:', body); 
+        console_log('HUB: Callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
+        console_log('HUB: Callback check challenge response: ' + body); 
         var subscription = {
             channel:"websub",
             callback: subscriptionRequest['hub.callback'],

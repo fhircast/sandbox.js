@@ -30,9 +30,9 @@
             console.log('websocket is closed ...')
     }
 </script>
-<body style="background-color:darkgray;font-family: sans-serif;">
+<body style="background-color:darkgray; font-family: system-ui; font-weight: 500;">
 
-<table border="1">
+<table border="1" frame="void" rules="all" style="border: 1px solid black;">
 <tr><th colspan="2" halign="center" style="background-color:white;">FHIRcast JavaScript Playground</th></tr>
 <tr><th colspan="2" halign="center">1. Select the hub: <input id="hubSubscribeURI" size="40" value="http://localhost:6001/api/hub/"></input></th></tr>
 <tr><td valign="top">
@@ -86,7 +86,7 @@
         <table>
             <tr><th>4. Monitor endpoints logs with a websocket connection to the hub
                 <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear</button></th></tr>
-            <tr><td><textarea id="incomingMsgOutput" rows="20" cols="85" disabled="disabled"></textarea></td></tr>
+            <tr><td><textarea id="incomingMsgOutput" rows="20" cols="92" disabled="disabled"></textarea></td></tr>
         </table>
     </td>
 </tr>
