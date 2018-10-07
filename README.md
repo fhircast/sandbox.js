@@ -1,9 +1,11 @@
 # FHIRcastJS
-JavaScript/Node Playground for FHIRcast
+JavaScript/Node Sandbox for FHIRcast
 
 This is a minimalistic WIP implementation of the FHIRcast proposal put together for short "hands on training" sessions.
 
-There are only two files with code: endpoint.js and frontend.html.
+There are only two files: 
+    endpoint.js and frontend.html.
+
 The endpoint.js file provides all listening endpoint using the express module:
 Server (hub)
    /api/hub : 
@@ -15,7 +17,7 @@ Server (hub)
     / :   
         GET with HTML/JavaScript (frontend.html file)       
         Provides the web page to subscribe and post events to the hub
-    /log  (on ws not http)
+    /log : (on ws not http)
         Websocket to broadcast the server side logs to the client browser.
 
 Client endpoints
