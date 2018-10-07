@@ -13,7 +13,7 @@ There are only two files:  endpoints.js and frontend.html.
 
 The endpoints.js file provides all listening endpoint using the express module:
 
-Server (hub)
+## Server (hub)
 
 "/api/hub": POST with form query string to receive subscription requests from the clients
  
@@ -24,25 +24,23 @@ Server (hub)
 "/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
 
 
-    /log : (on ws not http)
-        Websocket to broadcast the server side logs to the client browser.
+"/log": (on ws not http), Websocket to broadcast the server side logs to the client browser.
 
-Client endpoints
-    /client   
-        POST with JSON payload                  
-        Receive events and subscribtion cancelations from the hub
-    /client   
-        GET with standard query string          
-        Receive callback check from the hub 
+## Client endpoints
+
+"/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
+
+
+"/client": GET with standard query string to receive callback check from the hub 
 
 Installation
 ========================================
-On Windows,MacOS or linux:
-    Install node at nodejs.org
-    Install npm, the node package manager
-    Clone the github and run "npm install" in its directory.  This will install the modules defined in package.json.
-    Run with "node endpoints.js".  This starts the endpoint for the hub and the client.
-    Navigate your browser to "http://localhost:6001/" to access the UI.
+On Windows or MacOS:
+1. Install node at nodejs.org
+2. Install npm, the node package manager
+3. Clone the github and run "npm install" in its directory.  This will install the modules defined in package.json.
+4. Run with "node endpoints.js".  This starts the endpoint for the hub and the client.
+5. Navigate your browser to "http://localhost:6001/" to access the UI.
 
 
 
