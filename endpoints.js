@@ -15,8 +15,7 @@ const request=require('request');
 var morgan = require('morgan');
 var bodyParser=require('body-parser');
 var path = require('path');
-const express=require('express'), 
-    app=express();
+const express=require('express'), app=express();
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:true}));
 var expressWs = require('express-ws')(app);
@@ -50,11 +49,14 @@ app.post('/api/hub/',function(req,res){
       // Check the supplied callback URL
       request({
           url: subscriptionRequest['hub.callback'],
-          qs: {"hub.challenge": subscriptionRequest['hub.secret']}    
+          qs: {
+                "hub.challenge": subscriptionRequest['hub.secret'],
+                "hub.topic": "http://localhost:6001/notify",
+              }    
         }, function (error, response, body) {
         //console.log('HUB: error:', error); // Print the error if one occurred
-        console_log('HUB: Callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
         console_log('HUB: Callback check challenge response: ' + body); 
+        console_log('HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
         var subscription = {
             channel:"websub",
             callback: subscriptionRequest['hub.callback'],
@@ -71,7 +73,6 @@ app.post('/api/hub/',function(req,res){
 
     }
     res.send(200);
-   //res.redirect('/');
   });
   
 //  Receive events from clients with application/json payload
@@ -96,7 +97,8 @@ app.post('/notify/',function(req,res){
 //  Client listener for callback check,unsubscribe and receive events  
 //  Callback check from the hub with query string payload
 app.get('/client/',function(req,res){
-  console_log('CLIENT: Callback checked by the hub.');
+  console_log('CLIENT: Receiving callback check from the hub.');
+  console_log('CLIENT: The hub specified this endpoint to receive events: '+req.query['hub.topic']);
   console_log('CLIENT: Sending back challenge: '+req.query['hub.challenge']);
   res.send(200,req.query['hub.challenge']);
 });
@@ -111,7 +113,7 @@ app.post('/client/',function(req,res){
 //  This endpoint is to server the client web page
 //  UI
 app.get('/',function(req,res){
-  console_log('UI:  user interface requested');
+  console_log('UI:  user interface frontend.html file requested');
   res.sendFile(path.join(__dirname + '/frontend.html'));
 });
 

@@ -3,20 +3,27 @@ JavaScript/Node Sandbox for FHIRcast
 
 This is a minimalistic WIP implementation of the FHIRcast proposal put together for short "hands on training" sessions.
 
-There are only two files: 
-    endpoint.js and frontend.html.
+FHIRcast is a new draft standard to facilitate front-end integration between vendors.  Find out more at fhircast.org. [http://fhircast.org].
 
-The endpoint.js file provides all listening endpoint using the express module:
+There is C#/dotnet sandbox that is more developed at:
+
+# Description
+
+There are only two files:  endpoints.js and frontend.html.
+
+The endpoints.js file provides all listening endpoint using the express module:
+
 Server (hub)
-   /api/hub : 
-        POST with form query string     
-        Receives subscription requests from the clients
-    /notify :   
-        POST with JSON payload                 
-        Receive events from the clients 
-    / :   
-        GET with HTML/JavaScript (frontend.html file)       
-        Provides the web page to subscribe and post events to the hub
+
+"/api/hub": POST with form query string to receive subscription requests from the clients
+ 
+ 
+ "/notify": POST with JSON payload to receive events from the clients 
+
+
+"/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
+
+
     /log : (on ws not http)
         Websocket to broadcast the server side logs to the client browser.
 
