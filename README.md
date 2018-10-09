@@ -36,9 +36,9 @@ Installation
 ========================================
 On Windows or MacOS:
 1. Install node at nodejs.org
-2. Install npm, the node package manager
+2. Install npm, the node package manager at npmjs.org.
 3. Clone the github and run "npm install" in its directory.  This will install the modules defined in package.json.
-4. Run with "node endpoints.js".  This starts the endpoint for the hub and the client.
+4. Run with "node index.js".  This starts the endpoints for the hub and the client.
 5. Navigate your browser to "http://localhost:3000/" to access the UI.
 
 

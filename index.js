@@ -146,7 +146,7 @@ app.ws('/log', function(ws, req) {
 
 app.listen(port,function(){
   //console_log(help);
-  console_log('🔥fhircast hub and client listening on port ' + port+'. ');
+  console_log('🔥FHIRcast hub and client listening on port ' + port+'. ');
     
 });
 
