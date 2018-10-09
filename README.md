@@ -9,9 +9,10 @@ FHIRcast is a new draft standard to facilitate front-end integration between ven
 
 # Description
 
-There are three files:  index.js, frontend.html and packge.json.
+There are three files:  index.js, frontend.html and package.json.
 
 The index.js file provides all listening endpoint using the express module.
+The frontend.html file is the client Ui that performs client subscription requests and client event notifications.
 
 ## Server (hub) endpoints
 
@@ -44,7 +45,7 @@ On Windows or MacOS:
 
 
 
-You can use vscode [https://code.visualstudio.com/] on MacOS and PC for editing and debugging.
+VScode [https://code.visualstudio.com/] can be on MacOS and Windows for editing and debugging.
 
 
 
