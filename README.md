@@ -12,7 +12,8 @@ FHIRcast is a new draft standard to facilitate front-end integration between ven
 There are three files:  index.js, frontend.html and package.json.
 
 The index.js file provides all listening endpoint using the express module.
-The frontend.html file is the client Ui that performs client subscription requests and client event notifications.
+
+The frontend.html file is the client UI that performs client subscription requests and client event notifications.
 
 ## Server (hub) endpoints
 
