@@ -7,7 +7,13 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 ![frontend](frontend.png)
 
-# Description
+# Usage
+1. Select the hub you want to connect to.
+2. Select the client endpoint that will receive the events and a subscription request.
+3. Send an event to the endpoint specified by the hub in the callback check.
+4. You can monitor the hub and client endpoints in this text area. 
+
+# Program Description
 
 There are three files:  index.js, frontend.html and package.json.
 
