@@ -22,7 +22,7 @@ var expressWs = require('express-ws')(app);
 
 
 //  Global
-const listeningPort=3000;
+const port= process.env.PORT || 3000;
 subscriptions=[];
 logWebsocket='';
 
@@ -144,9 +144,9 @@ app.ws('/log', function(ws, req) {
 });
 
 
-app.listen(listeningPort,function(){
+app.listen(port,function(){
   //console_log(help);
-  console_log('Listening on port ' + listeningPort+': ');
+  console_log('🔥fhircast hub and client listening on port ' + port+'. ');
     
 });
 
