@@ -13,12 +13,12 @@
         var data = new FormData(document.getElementById('formSubscription'));
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
-        xmlhttp.open('POST', 'http://localhost:6001/api/hub/');
+        xmlhttp.open('POST', 'http://localhost:3000/api/hub/');
         xmlhttp.send(data);
         xhr.onloadend = function() {        };
     }
 
-    var ws = new WebSocket('ws://localhost:6001/log');
+    var ws = new WebSocket('ws://localhost:3000/log');
     ws.onopen = function () {
             console.log('websocket is connected ...')
     }
@@ -34,13 +34,21 @@
 
 <table border="1" frame="void" rules="all" style="border: 1px solid black;">
 <tr><th colspan="2" halign="center" style="background-color:white;">FHIRcast JavaScript Sandbox</th></tr>
-<tr><th colspan="2" halign="center">1. Select the hub: <input id="hubSubscribeURI" size="40" value="http://localhost:6001/api/hub/"></input></th></tr>
+<tr><th halign="center" colspan="2"> 1. Select the hub:
+    <select id="hubSubscribeURI" name="hubSubscribeURI">
+    <option value="http://localhost:3000/api/hub/">http://localhost:3000/api/hub/</option>
+    <option value="http://fhircastjs.azurewebsites.net/api/hub/">http://fhircastjs.azurewebsites.net/api/hub/</option>
+    <option value="http://localhost:5000/api/hub/">http://localhost:5000/api/hub/</option>
+    </select>
+</th></tr>
 <tr><td valign="top">
-<!--   <form action="http://localhost:6001/api/hub/" target="frame" method="POST"> -->
-     <form id="formSubscription" action="http://localhost:6001/api/hub/" target="frame" method="POST"> 
+<!--   <form action="http://localhost:3000/api/hub/" target="frame" method="POST"> -->
+     <form id="formSubscription" action="http://localhost:3000/api/hub/" target="frame" method="POST"> 
         <table>
         <tr><th colspan="2">2. Subscribe to an event</th></tr>  
-        <tr><td>hub.callback: </td><td><input name="hub.callback" size="29" type="url" value="http://localhost:6001/client"></input></td></tr>          
+        <tr><td>hub.callback: </td>
+            <td><input name="hub.callback"  size="29" type="url" value="http://localhost:3000/client"></input></td>
+        </tr>          
         <tr><td>hub.mode:</td><td><select name="hub.mode">
                         <option value="subscribe" selected >subscribe</option>
                         <option value="unsubscribe" >unsubscribe</option>
@@ -67,7 +75,7 @@
     <td valign="top">
     <table>
         <tr><th>3. Send an event to the hub</th></tr>  
-        <tr><td>hub.topic:<input id="hubNotifyURI" size="25" value="http://localhost:6001/notify"></input></td></tr>
+        <tr><td>hub.topic:<input id="hubNotifyURI" size="25" value="http://localhost:3000/notify"></input></td></tr>
         <tr><td>context:</td></tr>
         <tr><td><textarea id="context" rows="10" cols="40">{
     "timestamp": "2018-06-13T01:56:11.8281368Z", 

@@ -5,7 +5,6 @@ This is a minimalistic WIP implementation of the FHIRcast proposal put together 
 
 FHIRcast is a new draft standard to facilitate front-end integration between vendors.  Find out more at fhircast.org. [http://fhircast.org].
 
-There is C#/dotnet sandbox that is more developed at:
 
 # Description
 
@@ -42,6 +41,9 @@ On Windows or MacOS:
 4. Run with "node endpoints.js".  This starts the endpoint for the hub and the client.
 5. Navigate your browser to "http://localhost:6001/" to access the UI.
 
+
+
+You can use vscode [https://code.visualstudio.com/] on MacOS and PC for editing and debugging.
 
 
 

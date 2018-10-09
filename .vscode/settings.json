@@ -1,4 +1,4 @@
 {
-    "appService.defaultWebAppToDeploy": "/subscriptions/d80944b1-420e-45e6-809a-9bfbcc7d0882/resourceGroups/FHIRcastJS_ResouceGroup/providers/Microsoft.Web/sites/FHIRcastJS",
-    "appService.deploySubpath": ""
+    "appService.deploySubpath": "",
+    "appService.defaultWebAppToDeploy": "/subscriptions/d80944b1-420e-45e6-809a-9bfbcc7d0882/resourceGroups/FHIRcastJS/providers/Microsoft.Web/sites/FHIRcast"
 }
