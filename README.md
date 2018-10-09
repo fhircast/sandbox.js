@@ -1,18 +1,19 @@
 # FHIRcastJS
 JavaScript/Node Sandbox for FHIRcast
 
-This is a minimalistic WIP implementation of the FHIRcast proposal put together for short "hands on training" sessions.
+This is a minimalistic WIP implementation of the FHIRcast proposal put together for hands on training sessions.
 
 FHIRcast is a new draft standard to facilitate front-end integration between vendors.  Find out more at fhircast.org. [http://fhircast.org].
 
+![frontend](frontend.png)
 
 # Description
 
-There are only two files:  index.js and frontend.html.
+There are three files:  index.js, frontend.html and packge.json.
 
-The index.js file provides all listening endpoint using the express module:
+The index.js file provides all listening endpoint using the express module.
 
-## Server (hub)
+## Server (hub) endpoints
 
 "/api/hub": POST with form query string to receive subscription requests from the clients
  
