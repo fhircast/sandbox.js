@@ -11,11 +11,14 @@ FHIRcast is a new draft standard to facilitate front-end integration between ven
 
 There are three files:  index.js, frontend.html and package.json.
 
-The index.js file provides all listening endpoint using the express module.
+The index.js file provides all listening (client and hub) endpoints using node with the express module.  
 
-The frontend.html file is the client UI that performs client subscription requests and client event notifications.
+The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
 
-## Server (hub) endpoints
+You can use the sandbox as a client or a hub or both.
+
+## Endpoints description
+### Server (hub) endpoints
 
 "/api/hub": POST with form query string to receive subscription requests from the clients
  
@@ -28,7 +31,7 @@ The frontend.html file is the client UI that performs client subscription reques
 
 "/log": (on ws not http), Websocket to broadcast the server side logs to the client browser.
 
-## Client endpoints
+### Client endpoints
 
 "/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
 
@@ -39,8 +42,8 @@ Installation
 ========================================
 On Windows or MacOS:
 1. Install node at nodejs.org
-2. Install npm, the node package manager at npmjs.org.
-3. Clone the github and run "npm install" in its directory.  This will install the modules defined in package.json.
+2. Install npm, the node package manager, at npmjs.org.
+3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
 4. Run with "node index.js".  This starts the endpoints for the hub and the client.
 5. Navigate your browser to "http://localhost:3000/" to access the UI.
 
