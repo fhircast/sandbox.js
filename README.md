@@ -9,7 +9,7 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 # Usage
 1. Select the hub that you want to connect to.
-2. Select the client endpoint (hub.callback) that will receive the events and a then send a subscription request with the send button.
+2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic).
 4. You can monitor the hub and client endpoints in this text area. 
 
