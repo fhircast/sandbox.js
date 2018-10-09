@@ -9,9 +9,22 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 # Usage
 1. Select the hub that you want to connect to.
-2. Select the client endpoint (hub.callback) that will receive the events and a send a subscription request.
+2. Select the client endpoint (hub.callback) that will receive the events and a then send a subscription request with the send button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic).
 4. You can monitor the hub and client endpoints in this text area. 
+
+
+Installation
+========================================
+On Windows or MacOS:
+1. Install node at nodejs.org
+2. Install npm, the node package manager, at npmjs.org.
+3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
+4. Run with "node index.js".  This starts the endpoints for the hub and the client.
+5. Navigate your browser to "http://localhost:3000/" to access the UI.
+
+
+VScode [https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
 
 # Program Description
 
@@ -43,19 +56,6 @@ You can use the sandbox as a client or a hub or both.
 
 "/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
 
-
-Installation
-========================================
-On Windows or MacOS:
-1. Install node at nodejs.org
-2. Install npm, the node package manager, at npmjs.org.
-3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
-4. Run with "node index.js".  This starts the endpoints for the hub and the client.
-5. Navigate your browser to "http://localhost:3000/" to access the UI.
-
-
-
-VScode [https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
 
 
 
