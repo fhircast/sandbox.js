@@ -32,9 +32,6 @@ You can use the sandbox as a client or a hub or both.
  "/notify": POST with JSON payload to receive events from the clients 
 
 
-"/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
-
-
 "/log": (on ws not http), Websocket to broadcast the server side logs to the client browser.
 
 ### Client endpoints
@@ -43,6 +40,9 @@ You can use the sandbox as a client or a hub or both.
 
 
 "/client": GET with standard query string to receive callback check from the hub 
+
+"/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
+
 
 Installation
 ========================================
