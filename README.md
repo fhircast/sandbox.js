@@ -49,7 +49,7 @@ On Windows or MacOS:
 
 
 
-VScode [https://code.visualstudio.com/] can be on MacOS and Windows for editing and debugging.
+VScode [https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
 
 
 
