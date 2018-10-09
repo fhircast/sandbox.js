@@ -1,7 +1,7 @@
 # FHIRcastJS
 JavaScript/Node Sandbox for FHIRcast
 
-This is a minimalistic WIP implementation of the FHIRcast proposal put together for hands-on sessions.
+This is a WIP implementation of the FHIRcast proposal put together for hands-on sessions.
 
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at fhircast.org: [http://fhircast.org].
 
