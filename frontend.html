@@ -1,35 +1,39 @@
 <head><title>FHIRcast JavaScript Sandbox</title></head>
 <script>
+    function submitSubscription(destinationURI) {
+        var data = new FormData(document.getElementById('formSubscription'));
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('POST', 'http://localhost:3000/api/hub/');
+        xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
+        xmlhttp.send(data);
+        xmlhttp.onloadend = function() {        };
+    }
+
     function sendEvent(contextData,destinationUR){
         var xhr=new XMLHttpRequest();
         xhr.open('POST',destinationUR,true);
         xhr.setRequestHeader('Content-Type','application/json');
         xhr.send(contextData);
-        xhr.onloadend = function() {        };
+        xhr.onloadend = function() { 
+            document.getElementById('eventResponse').value=this.statusText;
+               };
+
         console.log('event sent from browser'+ JSON.stringify(contextData));
     }
     
-    function submitSubscription(destinationURI) {
-        var data = new FormData(document.getElementById('formSubscription'));
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
-        xmlhttp.open('POST', 'http://localhost:3000/api/hub/');
-        xmlhttp.send(data);
-        xhr.onloadend = function() {        };
-    }
-
     var ws = new WebSocket('ws://localhost:3000/log');
     ws.onopen = function () {
-            console.log('websocket is connected ...')
+        console.log('websocket is connected ...')
     }
     ws.onmessage = function (ev) {
-            document.getElementById('incomingMsgOutput').value=document.getElementById('incomingMsgOutput').value+ev.data;
-            console.log(ev.data);
+        document.getElementById('incomingMsgOutput').value=document.getElementById('incomingMsgOutput').value+ev.data;
+        console.log(ev.data);
     }
     ws.onclose = function () {
-            console.log('websocket is closed ...')
+        console.log('websocket is closed ...')
     }
 </script>
+
 <body style="background-color:darkgray; font-family: system-ui; font-weight: 500;">
 
 <table border="1" frame="void" rules="all" style="border: 1px solid black;">
@@ -47,46 +51,53 @@
         <table>
         <tr><th colspan="2">2. Subscribe to an event</th></tr>  
         <tr><td>hub.callback: </td>
-            <td><input name="hub.callback"  size="29" type="url" value="http://localhost:3000/client"></input></td>
+            <td><select  name="hub.callback">
+                <option  size="29" type="url" value="http://localhost:3000/client">http://localhost:3000/client</option>
+                <option  size="29" type="url" value="http://localhost:5000/client">http://localhost:5000/client</option>
+            </select></td>
         </tr>          
-        <tr><td>hub.mode:</td><td><select name="hub.mode">
-                        <option value="subscribe" selected >subscribe</option>
-                        <option value="unsubscribe" >unsubscribe</option>
-                    </select></td></tr>
-        <tr><td>hub.events:</td><td><select name="hub.events">
-                        <option value="open-patient-chart" selected >open-patient-chart</option>
-                        <option value="switch-patient-chart">switch-patient-chart</option>
-                        <option value="close-patient-chart">close-patient-chart</option>
-                        <option value="open-imaging-study">open-imaging-study</option>
-                        <option value="switch-imaging-study">switch-imaging-study</option>
-                        <option value="close-imaging-study">close-imaging-study</option>
-                        <option value="user-logout">user-logout</option>
-                        <option value="user-hibernate">user-hibernate</option>
-                    </select> </td></tr>
+        <tr><td>hub.mode:</td>
+            <td><select name="hub.mode">
+                <option value="subscribe" selected >subscribe</option>
+                <option value="unsubscribe" >unsubscribe</option>
+            </select></td></tr>
+        <tr><td>hub.events:</td>
+            <td><select name="hub.events">
+                <option value="open-patient-chart" selected >open-patient-chart</option>
+                <option value="switch-patient-chart">switch-patient-chart</option>
+                <option value="close-patient-chart">close-patient-chart</option>
+                <option value="open-imaging-study">open-imaging-study</option>
+                <option value="switch-imaging-study">switch-imaging-study</option>
+                <option value="close-imaging-study">close-imaging-study</option>
+                <option value="user-logout">user-logout</option>
+                <option value="user-hibernate">user-hibernate</option>
+            </select> </td></tr>
         <tr><td>hub.secret: </td><td><input name="hub.secret" type="text" value="secret"></input></td></tr>          
         <tr><td>hub.topic: </td><td><input name="hub.topic" type="text" value="FHIRcast testing"></input></td></tr>
         <tr><td>hub.lease: </td><td><input name="hub.lease" type="text" value="999"></input></td></tr>
-        <tr><td><button onclick="submitSubscription()">Send</button></td><td><iframe name="frame" height="30" width="200" ></iframe></td></tr>
-        <!--           <tr><td><input type="submit"></td></tr> -->
-
+        <tr><td valign="top"><button onclick="submitSubscription()">Send</button></td>
+            <td><iframe name="frame" height="30" width="200" ></iframe></td></tr>
     </table>
     </form> 
     </td>
     <td valign="top">
     <table>
-        <tr><th>3. Send an event to the hub</th></tr>  
-        <tr><td>hub.topic:<input id="hubNotifyURI" size="25" value="http://localhost:3000/notify"></input></td></tr>
-        <tr><td>context:</td></tr>
-        <tr><td><textarea id="context" rows="10" cols="40">{
-    "timestamp": "2018-06-13T01:56:11.8281368Z", 
-    "id": "0c3b67ab5344428c840c4a745dbdf523", 
-    "event": {
-        "hub.topic": "5000-4", 
-        "hub.event": "open-patient-chart", 
-        "context": "patient123"
-        }
-    }</textarea></td></tr>
-    <tr><td><button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button></td></tr>
+        <tr><th colspan="2" >3. Send an event to the hub</th></tr>  
+        <tr><td>hub.topic:</td><td><input id="hubNotifyURI" size="25" value="http://localhost:3000/notify"></input></td></tr>
+        <tr><td valign="top">context:</td>
+            <td><textarea id="context" rows="9" cols="35">{
+"timestamp": "2018-06-13T01:56:11.8281368Z", 
+"id": "0c3b67ab5344428c840c4a745dbdf523", 
+"event": {
+    "hub.topic": "5000-4", 
+    "hub.event": "open-patient-chart", 
+    "context": "patient123"
+    }
+}
+            </textarea></td></tr>
+    <tr><td valign="top"><button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button></td>
+        <td><textarea disabled="disabled" style="background-color:darkgray;" id="eventResponse" name="eventResponse"  height="27" width="255"></textarea></td>
+    </tr>
     </table>
     </td>
 </tr>
@@ -94,7 +105,7 @@
         <table>
             <tr><th>4. Monitor endpoints logs with a websocket connection to the hub
                 <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear</button></th></tr>
-            <tr><td><textarea id="incomingMsgOutput" rows="20" cols="92" disabled="disabled"></textarea></td></tr>
+            <tr><td><textarea id="incomingMsgOutput" rows="20" cols="91" disabled="disabled"></textarea></td></tr>
         </table>
     </td>
 </tr>
