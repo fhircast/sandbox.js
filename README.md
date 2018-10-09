@@ -8,9 +8,9 @@ FHIRcast is a new draft standard to facilitate front-end integration between ven
 
 # Description
 
-There are only two files:  endpoints.js and frontend.html.
+There are only two files:  index.js and frontend.html.
 
-The endpoints.js file provides all listening endpoint using the express module:
+The index.js file provides all listening endpoint using the express module:
 
 ## Server (hub)
 
@@ -39,7 +39,7 @@ On Windows or MacOS:
 2. Install npm, the node package manager
 3. Clone the github and run "npm install" in its directory.  This will install the modules defined in package.json.
 4. Run with "node endpoints.js".  This starts the endpoint for the hub and the client.
-5. Navigate your browser to "http://localhost:6001/" to access the UI.
+5. Navigate your browser to "http://localhost:3000/" to access the UI.
 
 
 
