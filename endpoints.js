@@ -12,15 +12,15 @@ Client front-end (frontend.html file):
 `
 
 const request=require('request');
-var morgan = require('morgan');
-var bodyParser=require('body-parser');
-var path = require('path');
+const morgan = require('morgan');
+const bodyParser=require('body-parser');
+const path = require('path');
 const express=require('express'), app=express();
+const expressWs = require('express-ws')(app);
+const os = require( 'os' );
+
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:true}));
-var expressWs = require('express-ws')(app);
-
-var os = require( 'os' );
 const ifaces = os.networkInterfaces( );
 
 
@@ -151,6 +151,7 @@ app.ws('/log', function(ws, req) {
 app.listen(port,function(){
   //console_log(help);
   console_log('🔥FHIRcast hub and client listening on port ' + port+'. ');
+  console_log('Looking for IP addresses on this server: ');
   Object.keys(ifaces).forEach(function (ifname) {
     var alias = 0;
   
@@ -162,10 +163,10 @@ app.listen(port,function(){
   
       if (alias >= 1) {
         // this single interface has multiple ipv4 addresses
-        console.log(ifname + ':' + alias, iface.address);
+        console_log('   ' + ifname + ':' + alias +' '+ iface.address);
       } else {
         // this interface has only one ipv4 adress
-        console.log(ifname, iface.address);
+        console_log('   ' + ifname +' '+ iface.address);
       }
       ++alias;
     });
