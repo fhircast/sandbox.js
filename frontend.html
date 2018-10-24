@@ -47,6 +47,8 @@
     ws.onclose = function () {
         console.log('websocket is closed ...')
     }
+
+    let hubAddress="";
 </script>
 <style>
     body {background-color: darkgray;font-family: system-ui; font-weight: 500;border: 1px solid black;}
@@ -69,11 +71,32 @@
         </select></h3>
 </nav>
 
+<<<<<<< HEAD
 <div class="subscribe">
     <h3>2. Subscribe to an event</h3>
     <form id="formSubscription" target="frame" method="POST"> 
         <label>hub.callback: </label>
         <select  name="hub.callback">
+=======
+<table border="1" frame="void" rules="all" style="border: 1px solid black;">
+<tr><th colspan="2" halign="center" style="background-color:white;">FHIRcast JavaScript Sandbox</th></tr>
+<tr><th halign="center" colspan="2"> 1. Select the hub:
+    <input list="hubs" id="hubSubscribeURI" name="hubSubscribeURI">
+    <datalist id="hubs">
+        <select>
+        <option value="http://localhost:3000/api/hub/" selected>http://localhost:3000/api/hub/</option>
+        <option value="https://fhircastjs.azurewebsites.net/api/hub/">https://fhircastjs.azurewebsites.net/api/hub/</option>
+        <option value="http://localhost:5000/api/hub/">http://localhost:5000/api/hub/</option>
+        </select></datalist>
+</th></tr>
+<tr><td valign="top">
+<!--   <form action="http://localhost:3000/api/hub/" target="frame" method="POST"> -->
+     <form id="formSubscription" action="http://localhost:3000/api/hub/" target="frame" method="POST"> 
+        <table>
+        <tr><th colspan="2">2. Subscribe to an event</th></tr>  
+        <tr><td>hub.callback: </td>
+            <td><select  name="hub.callback">
+>>>>>>> ccfe78e157aad6786c91ffc221e41c8c0593650c
                 <option  size="29" type="url" value="http://localhost:3000/client">http://localhost:3000/client</option>
                 <option  size="29" type="url" value="http://localhost:5000/client">http://localhost:5000/client</option>
         </select>      
