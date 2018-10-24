@@ -18,10 +18,11 @@
            method : "POST",
            body: data,
            headers:{'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then(
-            document.getElementById('subscriptionResponse').value=response.text()
+        }).then(function(response){
+            document.getElementById('subscriptionResponse').value=response.statusText;
            // response => response.json() // .json(), etc.
             // same as function(response) {return response.text();}
+        }
         ).catch(error => console.error('Error:', error));;
  }
     function sendEvent(contextData,destinationURL){
@@ -52,7 +53,7 @@
 </script>
 <style>
     body {background-color: darkgray;font-family: system-ui; font-weight: 500;border: 1px solid black;}
-    header {background-color:white; text-align:center}
+    header {background-color:white; text-align:center; font-size: 32}
     nav {border-top: 1px solid black;}
     div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
     div.notify {border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
@@ -64,7 +65,7 @@
 </head>
 
 <body>
-<header><h1>FHIRcast JavaScript Sandbox</h1></header>
+<header>FHIRcast JavaScript Sandbox</header>
 <nav><h3>1. Select the hub:
         <select id="hubSubscribeURI" name="hubSubscribeURI">
         <option value="http://localhost:3000/api/hub/">http://localhost:3000/api/hub/</option>
@@ -122,7 +123,7 @@
     }
 }</textarea>
     <label>response:</label>
-    <textarea disabled="disabled"  id="eventResponse" name="eventResponse" ></textarea>
+    <textarea disabled="disabled"  id="eventResponse"></textarea>
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
 </div>
 
