@@ -1,17 +1,32 @@
-<head><title>FHIRcast JavaScript Sandbox</title></head>
+<head>
+<title>FHIRcast JavaScript Sandbox</title>
 <script>
-    function submitSubscription(destinationURI) {
-        var data = new FormData(document.getElementById('formSubscription'));
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('POST', 'http://localhost:3000/api/hub/');
-        xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
-        xmlhttp.send(data);
-        xmlhttp.onloadend = function() {        };
+//    function submitSubscription(destinationURI) {
+//        var data = new FormData(document.getElementById('formSubscription'));
+//        var xmlhttp = new XMLHttpRequest();
+//        xmlhttp.open('POST', 'http://localhost:3000/api/hub/');
+//        xmlhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
+//        xmlhttp.send(data);
+//        xmlhttp.onloadend = function() {        };
+//    }
+ function sendSubscription(url){
+    const data = new URLSearchParams();
+    for (const pair of new FormData(document.getElementById("formSubscription"))) {
+        data.append(pair[0], pair[1]);
     }
-
-    function sendEvent(contextData,destinationUR){
+    fetch(url, {
+           method : "POST",
+           body: data,
+           headers:{'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(
+            document.getElementById('subscriptionResponse').value=response.statusText
+           // response => response.json() // .json(), etc.
+            // same as function(response) {return response.text();}
+        ).catch(error => console.error('Error:', error));;
+ }
+    function sendEvent(contextData,destinationURL){
         var xhr=new XMLHttpRequest();
-        xhr.open('POST',destinationUR,true);
+        xhr.open('POST',destinationURL,true);
         xhr.setRequestHeader('Content-Type','application/json');
         xhr.send(contextData);
         xhr.onloadend = function() { 
@@ -33,36 +48,42 @@
         console.log('websocket is closed ...')
     }
 </script>
+<style>
+    body {background-color: darkgray;font-family: system-ui; font-weight: 500;border: 1px solid black;}
+    header {background-color:white; text-align:center}
+    div.subscribe,div.notify {float: left;width: 50%;border: 1px black;}
+    label,button {display: inline-block;width: 20%}
+    input,textarea,select {width: 75%;border:1px solid}
+    textarea.incomingMsgOutput {width: 100%;border:1px solid}
+    footer {text-align:left}
+</style>
+</head>
 
-<body style="background-color:darkgray; font-family: system-ui; font-weight: 500;">
+<body>
+<header><h1>FHIRcast JavaScript Sandbox</h1></header>
+<nav><h3>1. Select the hub:
+        <select id="hubSubscribeURI" name="hubSubscribeURI">
+        <option value="http://localhost:3000/api/hub/">http://localhost:3000/api/hub/</option>
+        <option value="https://fhircastjs.azurewebsites.net/api/hub/">http://fhircastjs.azurewebsites.net/api/hub/</option>
+        <option value="http://localhost:5000/api/hub/">http://localhost:5000/api/hub/</option>
+        </select></h3>
+</nav>
 
-<table border="1" frame="void" rules="all" style="border: 1px solid black;">
-<tr><th colspan="2" halign="center" style="background-color:white;">FHIRcast JavaScript Sandbox</th></tr>
-<tr><th halign="center" colspan="2"> 1. Select the hub:
-    <select id="hubSubscribeURI" name="hubSubscribeURI">
-    <option value="http://localhost:3000/api/hub/">http://localhost:3000/api/hub/</option>
-    <option value="https://fhircastjs.azurewebsites.net/api/hub/">http://fhircastjs.azurewebsites.net/api/hub/</option>
-    <option value="http://localhost:5000/api/hub/">http://localhost:5000/api/hub/</option>
-    </select>
-</th></tr>
-<tr><td valign="top">
-<!--   <form action="http://localhost:3000/api/hub/" target="frame" method="POST"> -->
-     <form id="formSubscription" action="http://localhost:3000/api/hub/" target="frame" method="POST"> 
-        <table>
-        <tr><th colspan="2">2. Subscribe to an event</th></tr>  
-        <tr><td>hub.callback: </td>
-            <td><select  name="hub.callback">
+<div class="subscribe">
+    <h3>2. Subscribe to an event</h3>
+    <form id="formSubscription" target="frame" method="POST"> 
+        <label>hub.callback: </label>
+        <select  name="hub.callback">
                 <option  size="29" type="url" value="http://localhost:3000/client">http://localhost:3000/client</option>
                 <option  size="29" type="url" value="http://localhost:5000/client">http://localhost:5000/client</option>
-            </select></td>
-        </tr>          
-        <tr><td>hub.mode:</td>
-            <td><select name="hub.mode">
+        </select>      
+        <label>hub.mode:</label>
+        <select name="hub.mode">
                 <option value="subscribe" selected >subscribe</option>
                 <option value="unsubscribe" >unsubscribe</option>
-            </select></td></tr>
-        <tr><td>hub.events:</td>
-            <td><select name="hub.events">
+        </select>
+        <label>hub.events:</label>
+        <select name="hub.events">
                 <option value="open-patient-chart" selected >open-patient-chart</option>
                 <option value="switch-patient-chart">switch-patient-chart</option>
                 <option value="close-patient-chart">close-patient-chart</option>
@@ -71,21 +92,23 @@
                 <option value="close-imaging-study">close-imaging-study</option>
                 <option value="user-logout">user-logout</option>
                 <option value="user-hibernate">user-hibernate</option>
-            </select> </td></tr>
-        <tr><td>hub.secret: </td><td><input name="hub.secret" type="text" value="secret"></input></td></tr>          
-        <tr><td>hub.topic: </td><td><input name="hub.topic" type="text" value="FHIRcast testing"></input></td></tr>
-        <tr><td>hub.lease: </td><td><input name="hub.lease" type="text" value="999"></input></td></tr>
-        <tr><td valign="top"><button onclick="submitSubscription()">Send</button></td>
-            <td><iframe name="frame" height="30" width="200" ></iframe></td></tr>
-    </table>
-    </form> 
-    </td>
-    <td valign="top">
-    <table>
-        <tr><th colspan="2" >3. Send an event to the hub</th></tr>  
-        <tr><td>hub.topic:</td><td><input id="hubNotifyURI" size="25" value="http://localhost:3000/notify"></input></td></tr>
-        <tr><td valign="top">context:</td>
-            <td><textarea id="context" rows="9" cols="35">{
+        </select>
+        <label>hub.secret: </label>
+        <input name="hub.secret" type="text" value="secret"></input>          
+        <label>hub.topic: </label>
+        <input name="hub.topic" type="text" value="FHIRcast testing"></input>
+        <label>hub.lease: </label>
+        <input name="hub.lease" type="text" value="999"></input>
+        <label>response:</label>
+        <textarea disabled="disabled" id="subscriptionResponse"></textarea>
+     </form> 
+    <button onclick="sendSubscription(document.getElementById('hubSubscribeURI').value)">Send</button>
+</div>
+
+<div class="notify">
+    <h3>3. Send an event to the hub</h3> 
+    <label>hub.topic:</label><input id="hubNotifyURI" size="25" value="http://localhost:3000/notify"></input>
+    <label>context:</label><textarea id="context" rows="9" cols="35">{
 "timestamp": "2018-06-13T01:56:11.8281368Z", 
 "id": "0c3b67ab5344428c840c4a745dbdf523", 
 "event": {
@@ -93,22 +116,15 @@
     "hub.event": "open-patient-chart", 
     "context": "patient123"
     }
-}
-            </textarea></td></tr>
-    <tr><td valign="top"><button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button></td>
-        <td><textarea disabled="disabled" style="background-color:darkgray;border:inset 1px darkgrey;"  id="eventResponse" name="eventResponse"  height="35" width="355"></textarea></td>
-    </tr>
-    </table>
-    </td>
-</tr>
-<tr><td colspan="2">  
-        <table>
-            <tr><th>4. Monitor endpoints logs with a websocket connection to the hub
-                <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear</button></th></tr>
-            <tr><td><textarea id="incomingMsgOutput" rows="20" cols="91" disabled="disabled"></textarea></td></tr>
-        </table>
-    </td>
-</tr>
-</table>    
+}</textarea>
+    <label>response:</label>
+    <textarea disabled="disabled"  id="eventResponse" name="eventResponse" ></textarea>
+    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
+</div>
 
+<footer>
+    <h3>4. Monitor endpoints logs with a websocket connection to the hub</h3>
+    <textarea class="incomingMsgOutput" id="incomingMsgOutput"  disabled="disabled" rows="20" ></textarea><br>
+    <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear</button>
+</footer>
 </body>

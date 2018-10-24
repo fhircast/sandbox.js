@@ -27,6 +27,7 @@ const ifaces = os.networkInterfaces( );
 
 //  Global
 port= process.env.PORT || 3000;
+hostname = os.hostname();
 subscriptions=[];
 logWebsocket='';
 
@@ -46,50 +47,62 @@ app.use(function(req, res, next) {
 //
 //  Receive and check subscription requests from clients
 app.post('/api/hub/',function(req,res){
-    if(req.headers['content-type']== 'application/x-www-form-urlencoded') {
-      var subscriptionRequest=req.body;
-      console_log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + 'for event '+subscriptionRequest['hub.events']);
-      console_log('HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
-      // Check the supplied callback URL
-      request({
-          url: subscriptionRequest['hub.callback'],
-          qs: {
-                "hub.challenge": subscriptionRequest['hub.secret'],
-                "hub.topic": "http://localhost:6001/notify",
-              }    
-        }, function (error, response, body) {
-        //console.log('HUB: error:', error); // Print the error if one occurred
-        console_log('HUB: Callback check challenge response: ' + body); 
-        console_log('HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
-        var subscription = {
-            channel:"websub",
-            callback: subscriptionRequest['hub.callback'],
-            events: subscriptionRequest['hub.events'],
-            secret: subscriptionRequest['hub.secret'],
-            topic: subscriptionRequest['hub.topic'],
-            lease: subscriptionRequest['hub.lease'],
-          };
-        subscriptions.push(subscription);
-      });
-    } 
-    else {
-      console_log('HUB: Wrong content type');
+    var subscriptionRequest=req.body;
+    console_log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
+    console_log('HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
+    // Check the supplied callback URL
+    request({
+        url: subscriptionRequest['hub.callback'],
+        qs: {
+              "hub.challenge": subscriptionRequest['hub.secret'],
+              "hub.topic": "http://"+hostname+":"+port+"/notify",
+            }    
+      }, function (error, response, body) {
+      //console.log('HUB: error:', error); // Print the error if one occurred
+      console_log('HUB: Callback check challenge response: ' + body); 
+      console_log('HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
+      var subscription = {
+          channel:"websub",
+          callback: subscriptionRequest['hub.callback'],
+          events: subscriptionRequest['hub.events'],
+          secret: subscriptionRequest['hub.secret'],
+          topic: subscriptionRequest['hub.topic'],
+          lease: subscriptionRequest['hub.lease'],
+        };
+      subscriptions.push(subscription);
 
-    }
-    res.send(200);
+    });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.send(202);
   });
   
 //  Receive events from clients with application/json payload
 app.use(express.json());
-app.post('/notify/',function(req,res){
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.json(200);
-  console_log('HUB: Receiving event with content: '+ JSON.stringify(req.body));
+app.post('/notify/',function(reqNotify,resNotify){
+  resNotify.header("Access-Control-Allow-Origin", "*");
+  resNotify.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  resNotify.send(200);
+  console_log('HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
   //  Broadcast the event to all clients
-
+  notification=reqNotify.body.event;
   subscriptions.forEach(function(subscription) {
     console_log('HUB:  Processing subscription for:' + JSON.stringify(subscription));
+    if(subscription.events==notification['hub.event']){
+      console_log('HUB: Found subscription for: '+ notification['hub.event']);
+      // Send the notification to the client
+      request.post({
+        url: subscription['callback'] ,
+        method: 'POST',
+        json: true,
+        body: notification    
+      }, function (error, response, body) {
+           console_log('HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received
+           console.log(body);
+           console.log(response);
+           console.log(error);
+      });
+    }
    });
 
 });
@@ -109,7 +122,8 @@ app.get('/client/',function(req,res){
 
 //  Receive events from the hub with application/json payload
 app.post('/client/',function(req,res){
-  console_log(req.body);
+  console_log('CLIENT: Receiving notification from the hub.');
+  console_log(JSON.stringify(req.body));
   res.json(200,{'context':req.body});
 });
 
@@ -150,11 +164,9 @@ app.ws('/log', function(ws, req) {
 
 app.listen(port,function(){
   //console_log(help);
-  console_log('🔥FHIRcast hub and client listening on port ' + port+'. ');
-  console_log('Looking for IP addresses on this server: ');
+  console_log('🔥FHIRcast hub and client listening on '+hostname +':' + port+' and IP addresses: ');
   Object.keys(ifaces).forEach(function (ifname) {
     var alias = 0;
-  
     ifaces[ifname].forEach(function (iface) {
       if ('IPv4' !== iface.family || iface.internal !== false) {
         // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
@@ -172,7 +184,5 @@ app.listen(port,function(){
     });
   });
   
-//  console_log( 'IP address: '+networkInterfaces['en0'][1].address ); 
-  //console_log( networkInterfaces ); 
 });
 
