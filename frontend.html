@@ -9,35 +9,42 @@
 //        xmlhttp.send(data);
 //        xmlhttp.onloadend = function() {        };
 //    }
- function sendSubscription(url){
-    const data = new URLSearchParams();
-    for (const pair of new FormData(document.getElementById("formSubscription"))) {
-        data.append(pair[0], pair[1]);
-    }
-    fetch(url, {
+    function sendSubscription(url){
+        const data = new URLSearchParams();
+        for (const pair of new FormData(document.getElementById("formSubscription"))) {
+            data.append(pair[0], pair[1]);
+        }
+        fetch(url, {
            method : "POST",
            body: data,
            headers:{'Content-Type': 'application/x-www-form-urlencoded'}
         }).then(function(response){
-            document.getElementById('subscriptionResponse').value=response.statusText;
-           // response => response.json() // .json(), etc.
-            // same as function(response) {return response.text();}
-        }
+            document.getElementById('subscriptionResponse').value=response.status;
+            }
         ).catch(error => console.error('Error:', error));;
- }
+    }
+
     function sendEvent(contextData,destinationURL){
         var xhr=new XMLHttpRequest();
         xhr.open('POST',destinationURL,true);
         xhr.setRequestHeader('Content-Type','application/json');
         xhr.send(contextData);
         xhr.onloadend = function() { 
-            document.getElementById('eventResponse').value=this.statusText;
+            document.getElementById('eventResponse').value=this.status;
                };
 
         console.log('event sent from browser'+ JSON.stringify(contextData));
     }
-    
-    var ws = new WebSocket('ws://localhost:3000/log');
+    var parser=document.createElement('a'); // use link tag as a url parser
+    parser.href=window.location;
+    protocol='ws:';
+    if (parser.protocol=='https:'){
+        protocol='wss:';
+  //      document.getElementById('hubSubscribeURI').value='https://fhircast.azurewebsites.net/api/hub/';
+  //      document.getElementById('clientEndpoint').value='https://fhircast.azurewebsites.net/client/';
+  //      document.getElementById('hubNotifyURI').value='https://fhircast.azurewebsites.net/notify/';       
+    }
+    var ws = new WebSocket(protocol+'//' + parser.host + '/log');
     ws.onopen = function () {
         console.log('websocket is connected ...')
     }
@@ -59,7 +66,8 @@
     div.notify {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
     label,button {display: inline-block;width: 30%}
     input,textarea,select {width: 65%;border:1px solid}
-    textarea.incomingMsgOutput {width: 100%;border:1px solid}
+    textarea {vertical-align: top;}
+    textarea.incomingMsgOutput {width: 100%;border:1px solid;}
     footer {border-top: 1px solid black;text-align:left}
 </style>
 </head>
@@ -69,17 +77,18 @@
 <nav><h3>1. Select the hub:
         <select id="hubSubscribeURI" name="hubSubscribeURI">
         <option value="http://localhost:3000/api/hub/">http://localhost:3000/api/hub/</option>
-        <option value="https://fhircastjs.azurewebsites.net/api/hub/">http://fhircastjs.azurewebsites.net/api/hub/</option>
+        <option value="https://fhircast.azurewebsites.net/api/hub/" selected>https://fhircast.azurewebsites.net/api/hub/</option>
         <option value="http://localhost:5000/api/hub/">http://localhost:5000/api/hub/</option>
         </select></h3>
 </nav>
 
 <div class="subscribe">
     <h3>2. Subscribe to an event</h3>
-    <form id="formSubscription" target="frame" method="POST"> 
+    <form id="formSubscription"  target="frame" method="POST"> 
         <label>hub.callback: </label>
-        <select  name="hub.callback">
+        <select  name="hub.callback" id="clientEndpoint">
                 <option  size="29" type="url" value="http://localhost:3000/client">http://localhost:3000/client</option>
+                <option  size="29" type="url" value="https://fhircast.azurewebsites.net/client" selected>https://fhircast.azurewebsites.net/client</option>
                 <option  size="29" type="url" value="http://localhost:5000/client">http://localhost:5000/client</option>
         </select>      
         <label>hub.mode:</label>
@@ -112,7 +121,13 @@
 
 <div class="notify">
     <h3>3. Send an event to the hub</h3> 
-    <label>hub.topic:</label><input id="hubNotifyURI" size="25" value="http://localhost:3000/notify"></input>
+    <label>hub.topic:</label>
+    <select id="hubNotifyURI" name="hubNotifyURI">
+        <option size="25" type="url" value="http://localhost:3000/notify">http://localhost:3000/notify</option>
+        <option size="25" type="url" value="https://fhircast.azurewebsites.net/notify" selected>https://fhircast.azurewebsites.net/notify</option>
+        <option size="25" type="url" value="http://localhost:5000/notify">http://localhost:5000/notify</option>
+    </select>
+    
     <label>context:</label><textarea id="context" rows="9" cols="35">{
 "timestamp": "2018-06-13T01:56:11.8281368Z", 
 "id": "0c3b67ab5344428c840c4a745dbdf523", 
@@ -122,8 +137,7 @@
     "context": "patient123"
     }
 }</textarea>
-    <label>response:</label>
-    <textarea disabled="disabled"  id="eventResponse"></textarea>
+    <label>response:</label><textarea disabled="disabled"  id="eventResponse"></textarea>
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
 </div>
 
