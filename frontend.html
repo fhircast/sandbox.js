@@ -39,7 +39,7 @@
     function setURLs(){
         var parser=document.createElement('a'); // use link tag as a url parser
         parser.href=window.location;
-        if (parser.protocol=='https:'){
+        if (parser.protocol=='https:' || parser.host.includes('azure')){
             document.getElementById('hubSubscribeURI').selectedIndex = "1";
             document.getElementById('clientEndpoint').selectedIndex = "1";
             document.getElementById('hubNotifyURI').selectedIndex = "1"; 
@@ -69,7 +69,7 @@
 </script>
 <style>
     body {padding: 2px;  background-color: darkgray;font-family: system-ui; font-weight: 500;border: 1px solid black; font-size: 16}
-    header {background-color:white; text-align:center; font-size: 32}
+    header {background-color:white; text-align:center; font-size: 24}
     nav {border-top: 1px solid black;}
     div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
     div.notify {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}

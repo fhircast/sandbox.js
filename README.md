@@ -1,5 +1,5 @@
 # FHIRcastJS
-JavaScript/Node Sandbox for FHIRcast
+JavaScript stack Sandbox for FHIRcast
 
 This is a WIP implementation of the FHIRcast proposal put together for hands-on sessions.
 
