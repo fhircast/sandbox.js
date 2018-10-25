@@ -28,9 +28,9 @@ VScode [https://code.visualstudio.com/] can be used on MacOS and Windows for edi
 
 # Program Description
 
-There are three files:  index.js, frontend.html and package.json.
+There are three files:  endpoints.js, frontend.html and package.json.
 
-The index.js file provides all listening (client and hub) endpoints using node with the express module.  
+The indexendpoints.js file provides all listening (client and hub) endpoints using node with the express module.  
 
 The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
 

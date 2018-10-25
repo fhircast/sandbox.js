@@ -35,15 +35,26 @@
 
         console.log('event sent from browser'+ JSON.stringify(contextData));
     }
+
+    function setURLs(){
+        var parser=document.createElement('a'); // use link tag as a url parser
+        parser.href=window.location;
+        if (parser.protocol=='https:'){
+            document.getElementById('hubSubscribeURI').selectedIndex = "1";
+            document.getElementById('clientEndpoint').selectedIndex = "1";
+            document.getElementById('hubNotifyURI').selectedIndex = "1"; 
+        }
+        else {
+            document.getElementById('hubSubscribeURI').selectedIndex = "0";
+            document.getElementById("clientEndpoint").selectedIndex = "0";
+            document.getElementById('hubNotifyURI').selectedIndex = "0";      
+        }
+    }
+
     var parser=document.createElement('a'); // use link tag as a url parser
     parser.href=window.location;
-    protocol='ws:';
-    if (parser.protocol=='https:'){
-        protocol='wss:';
-  //      document.getElementById('hubSubscribeURI').value='https://fhircast.azurewebsites.net/api/hub/';
-  //      document.getElementById('clientEndpoint').value='https://fhircast.azurewebsites.net/client/';
-  //      document.getElementById('hubNotifyURI').value='https://fhircast.azurewebsites.net/notify/';       
-    }
+    var protocol='ws:';
+    if (parser.protocol=='https:'){ protocol='wss:';}
     var ws = new WebSocket(protocol+'//' + parser.host + '/log');
     ws.onopen = function () {
         console.log('websocket is connected ...')
@@ -55,8 +66,6 @@
     ws.onclose = function () {
         console.log('websocket is closed ...')
     }
-
-    let hubAddress="";
 </script>
 <style>
     body {padding: 2px;  background-color: darkgray;font-family: system-ui; font-weight: 500;border: 1px solid black; font-size: 16}
@@ -72,7 +81,7 @@
 </style>
 </head>
 
-<body>
+<body onload="setURLs()">
 <header>FHIRcast JavaScript Sandbox</header>
 <nav><h3>1. Select the hub:
         <select id="hubSubscribeURI" name="hubSubscribeURI">
@@ -86,10 +95,10 @@
     <h3>2. Subscribe to an event</h3>
     <form id="formSubscription"  target="frame" method="POST"> 
         <label>hub.callback: </label>
-        <select  name="hub.callback" id="clientEndpoint">
-                <option  size="29" type="url" value="http://localhost:3000/client">http://localhost:3000/client</option>
-                <option  size="29" type="url" value="https://fhircast.azurewebsites.net/client" selected>https://fhircast.azurewebsites.net/client</option>
-                <option  size="29" type="url" value="http://localhost:5000/client">http://localhost:5000/client</option>
+        <select id="clientEndpoint" name="hub.callback" >
+                <option  size="29" value="http://localhost:3000/client">http://localhost:3000/client</option>
+                <option  size="29" value="https://fhircast.azurewebsites.net/client" selected>https://fhircast.azurewebsites.net/client</option>
+                <option  size="29" value="http://localhost:5000/client">http://localhost:5000/client</option>
         </select>      
         <label>hub.mode:</label>
         <select name="hub.mode">
@@ -123,9 +132,9 @@
     <h3>3. Send an event to the hub</h3> 
     <label>hub.topic:</label>
     <select id="hubNotifyURI" name="hubNotifyURI">
-        <option size="25" type="url" value="http://localhost:3000/notify">http://localhost:3000/notify</option>
-        <option size="25" type="url" value="https://fhircast.azurewebsites.net/notify" selected>https://fhircast.azurewebsites.net/notify</option>
-        <option size="25" type="url" value="http://localhost:5000/notify">http://localhost:5000/notify</option>
+        <option value="http://localhost:3000/notify">http://localhost:3000/notify</option>
+        <option value="https://fhircast.azurewebsites.net/notify" selected>https://fhircast.azurewebsites.net/notify</option>
+        <option value="http://localhost:5000/notify">http://localhost:5000/notify</option>
     </select>
     
     <label>context:</label><textarea id="context" rows="9" cols="35">{
