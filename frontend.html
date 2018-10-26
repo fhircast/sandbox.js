@@ -11,9 +11,15 @@
 //    }
     function sendSubscription(url){
         const data = new URLSearchParams();
-        for (const pair of new FormData(document.getElementById("formSubscription"))) {
-            data.append(pair[0], pair[1]);
-        }
+      //  for (const pair of new FormData(document.getElementById("formSubscription"))) {
+      //      data.append(pair[0], pair[1]);
+      //  }
+        data.append('hub.callback', document.getElementById('clientEndpoint').value);
+        data.append('hub.mode',     document.getElementById('hub.mode').value);
+        data.append('hub.events',   document.getElementById('hub.events').value);
+        data.append('hub.secret',   document.getElementById('hub.secret').value);
+        data.append('hub.topic',    document.getElementById('hub.topic').value);
+        data.append('hub.lease',    document.getElementById('hub.lease').value);
         fetch(url, {
            method : "POST",
            body: data,
@@ -21,7 +27,8 @@
         }).then(function(response){
             document.getElementById('subscriptionResponse').value=response.status;
             }
-        ).catch(error => console.error('Error:', error));;
+        )
+        //.catch(error => console.error('Error:', error));;
     }
 
     function sendEvent(contextData,destinationURL){
@@ -101,12 +108,12 @@
                 <option  size="29" value="http://localhost:5000/client">http://localhost:5000/client</option>
         </select>      
         <label>hub.mode:</label>
-        <select name="hub.mode">
+        <select id="hub.mode" name="hub.mode">
                 <option value="subscribe" selected >subscribe</option>
                 <option value="unsubscribe" >unsubscribe</option>
         </select>
         <label>hub.events:</label>
-        <select name="hub.events">
+        <select id="hub.events" name="hub.events">
                 <option value="open-patient-chart" selected >open-patient-chart</option>
                 <option value="switch-patient-chart">switch-patient-chart</option>
                 <option value="close-patient-chart">close-patient-chart</option>
@@ -117,11 +124,11 @@
                 <option value="user-hibernate">user-hibernate</option>
         </select>
         <label>hub.secret: </label>
-        <input name="hub.secret" type="text" value="secret"></input>          
+        <input id="hub.secret" name="hub.secret" type="text" value="secret"></input>          
         <label>hub.topic: </label>
-        <input name="hub.topic" type="text" value="FHIRcast testing"></input>
+        <input id="hub.topic" name="hub.topic" type="text" value="FHIRcast testing"></input>
         <label>hub.lease: </label>
-        <input name="hub.lease" type="text" value="999"></input>
+        <input id="hub.lease" name="hub.lease" type="text" value="999"></input>
         <label>response:</label>
         <textarea disabled="disabled" id="subscriptionResponse"></textarea>
      </form> 
