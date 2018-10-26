@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <head>
 <title>FHIRcast JavaScript Sandbox</title>
 <script>
@@ -46,7 +47,7 @@
     function setURLs(){
         var parser=document.createElement('a'); // use link tag as a url parser
         parser.href=window.location;
-        if (parser.protocol=='https:' || parser.host.includes('azure')){
+        if (parser.protocol=='https:' || parser.host.indexOf('azure')>0){
             document.getElementById('hubSubscribeURI').selectedIndex = "1";
             document.getElementById('clientEndpoint').selectedIndex = "1";
             document.getElementById('hubNotifyURI').selectedIndex = "1"; 
@@ -124,11 +125,11 @@
                 <option value="user-hibernate">user-hibernate</option>
         </select>
         <label>hub.secret: </label>
-        <input id="hub.secret" name="hub.secret" type="text" value="secret"></input>          
+        <input id="hub.secret" name="hub.secret" type="text" value="secret">        
         <label>hub.topic: </label>
-        <input id="hub.topic" name="hub.topic" type="text" value="FHIRcast testing"></input>
+        <input id="hub.topic" name="hub.topic" type="text" value="FHIRcast testing">
         <label>hub.lease: </label>
-        <input id="hub.lease" name="hub.lease" type="text" value="999"></input>
+        <input id="hub.lease" name="hub.lease" type="text" value="999">
         <label>response:</label>
         <textarea disabled="disabled" id="subscriptionResponse"></textarea>
      </form> 
