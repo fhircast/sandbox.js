@@ -1,12 +1,13 @@
-
 const request=require('request');
 const morgan = require('morgan');
 const bodyParser=require('body-parser');
 const path = require('path');
 const express=require('express'), app=express();
 const expressWs = require('express-ws')(app);
+
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.json());  
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -15,10 +16,11 @@ app.use(function(req, res, next) {
 const os = require( 'os' );
 const ifaces = os.networkInterfaces( );
 
-port= process.env.PORT || 3000;
+port= process.env.PORT || 3000;  // this is needed for cloud deployment along with the launch.json file
 hostname = os.hostname();
 subscriptions=[];
 logWebsocket='';
+socketCount=0;
 
 function console_log(msg){
  console.log(msg);
@@ -51,16 +53,11 @@ app.post('/api/hub/',function(req,res){
       };
     subscriptions.push(subscription);
   });
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send(202);
 });
 
 // HUB: Receive events from clients with application/json payload  
-app.use(express.json());  
 app.post('/notify/',function(reqNotify,resNotify){
-  resNotify.header("Access-Control-Allow-Origin", "*");
-  resNotify.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   resNotify.send(200);
   console_log('HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
   //  Broadcast the event to all clients
@@ -103,9 +100,9 @@ app.post('/client/',function(req,res){
 
 //  This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-  console_log('UI:  user interface frontend.html file requested');
+  console_log('UI:  user interface frontend.html file requested.');
   res.sendFile(path.join(__dirname + '/frontend.html'));
-
+  
   var message='🔥FHIRcast hub and client listening on '+hostname +':' + port+'. IP addresses';
   Object.keys(ifaces).forEach(function (ifname) {
     var alias = 0;
@@ -124,26 +121,34 @@ app.get('/',function(req,res){
       ++alias;
     });
   });
+
   console_log(message);
 });
 
-
+// Websocket to provide the logs to the client 
 app.ws('/log', function(ws, req) {
-  ws.on('connection', req => {
-    console_log('WEBSOCKET:  Accepting connection from: '+uuid.v4());
-  });  
+  socketCount++;
+  console_log('WEBSOCKET:  Accepting connection number '+socketCount+'.');
+
+  ws.on('connection', req => {  });  
+
+  var logWss = expressWs.getWss('/log');
 
   ws.on('close', function(msg) {
-    console.log('websocket closed. ');
-   // console.log('');
+    console_log('websocket closed. ');
+    socketCount--;
   });
 
   setInterval(() => { 
       if (logWebsocket!='') {       
         if (ws.readyState==1) {
-          ws.send(logWebsocket);
+          logWss.clients.forEach(function (client) {
+          //ws.send(logWebsocket);
+            client.send(logWebsocket);
+            console.log('Websocket broadcasting to ' );
+         });
           logWebsocket='';
-        }
+        } 
       } 
     },1000);
 });

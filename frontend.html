@@ -71,20 +71,20 @@
     label,button {padding: 2px; display: inline-block;width: 30%}
     input,textarea,select {width: 65%;border:1px solid}
     textarea {vertical-align: top}
-    textarea.incomingMsgOutput {width: 100%}
+    textarea.incomingMsgOutput {width: 99%}
     footer {border-top: 1px solid black;text-align:left}
 </style>
 </head>
 
 <body onload="setURLs()">
 <header><h2>FHIRcast JavaScript Sandbox</h2></header>
-<div class="selectHub"></h3>
+<div class="selectHub">
     <h3>1. Select the hub:
     <select id="hubSubscribeURI" name="hubSubscribeURI">
         <option value="http://localhost:3000/api/hub/">http://localhost:3000/api/hub/</option>
         <option value="https://fhircast.azurewebsites.net/api/hub/" selected>https://fhircast.azurewebsites.net/api/hub/</option>
         <option value="http://localhost:5000/api/hub/">http://localhost:5000/api/hub/</option>
-    </select>
+    </select></h3>
 </div>
 
 <div class="subscribe">
