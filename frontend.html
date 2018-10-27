@@ -55,6 +55,7 @@
     }
     ws.onmessage = function (ev) {
         document.getElementById('incomingMsgOutput').value=document.getElementById('incomingMsgOutput').value+ev.data;
+        document.getElementById('incomingMsgOutput').scrollTop = document.getElementById('incomingMsgOutput').scrollHeight;
         console.log(ev.data);
     }
     ws.onclose = function () {
@@ -71,7 +72,7 @@
     label,button {padding: 2px; display: inline-block;width: 30%}
     input,textarea,select {width: 65%;border:1px solid}
     textarea {vertical-align: top}
-    textarea.incomingMsgOutput {width: 99%}
+    textarea.incomingMsgOutput {width: 99%;font-family: "Segoe UI Emoji"}
     footer {border-top: 1px solid black;text-align:left}
 </style>
 </head>
@@ -145,6 +146,8 @@
 <footer>
     <h3>4. Monitor endpoints logs with a websocket connection</h3>
     <textarea class="incomingMsgOutput" id="incomingMsgOutput" disabled="disabled"  rows="20" ></textarea><br>
-    <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear</button>
+    <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
+    <button onclick="document.getElementById('incomingMsgOutput').value=''">Get hub status</button>
+    <button onclick="document.getElementById('incomingMsgOutput').value=''">Delete all subscriptions</button>
 </footer>
 </body>

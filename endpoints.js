@@ -30,8 +30,8 @@ function console_log(msg){
 // HUB:  Receive and check subscription requests from clients
 app.post('/api/hub/',function(req,res){  
   var subscriptionRequest=req.body;
-  console_log('HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
-  console_log('HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
+  console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
+  console_log('📡HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
   // Check the supplied callback URL
   request({
       url: subscriptionRequest['hub.callback'],
@@ -41,8 +41,8 @@ app.post('/api/hub/',function(req,res){
           }    
     }, function (error, response, body) {
     //console.log('HUB: error:', error); // Print the error if one occurred
-    console_log('HUB: Callback check challenge response: ' + body); 
-    console_log('HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
+    console_log('📡HUB: Callback check challenge response: ' + body); 
+    console_log('📡HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
     var subscription = {
         channel:"websub",
         callback: subscriptionRequest['hub.callback'],
@@ -59,13 +59,13 @@ app.post('/api/hub/',function(req,res){
 // HUB: Receive events from clients with application/json payload  
 app.post('/notify/',function(reqNotify,resNotify){
   resNotify.send(200);
-  console_log('HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
+  console_log('📡HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
   //  Broadcast the event to all clients
   notification=reqNotify.body.event;
   subscriptions.forEach(function(subscription) {
-    console_log('HUB:  Processing subscription for:' + JSON.stringify(subscription));
+    console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
     if(subscription.events==notification['hub.event']){
-      console_log('HUB: Found subscription for: '+ notification['hub.event']);
+      console_log('📡HUB: Found subscription for: '+ notification['hub.event']);
       // Send the notification to the client
       request.post({
         url: subscription['callback'] ,
@@ -73,7 +73,7 @@ app.post('/notify/',function(reqNotify,resNotify){
         json: true,
         body: notification    
       }, function (error, response, body) {
-           console_log('HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received
+           console_log('📡HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received
            console.log(body);
            console.log(response);
            console.log(error);
@@ -85,25 +85,22 @@ app.post('/notify/',function(reqNotify,resNotify){
 
 // CLIENT: listener for callback check,unsubscribe and receive events with query string payload 
 app.get('/client/',function(req,res){
-  console_log('CLIENT: Receiving callback check from the hub.');
-  console_log('CLIENT: The hub specified this endpoint to receive events: '+req.query['hub.topic']);
-  console_log('CLIENT: Sending back challenge: '+req.query['hub.challenge']);
+  console_log('🖥️CLIENT: Receiving callback check from the hub.');
+  console_log('🖥️CLIENT: The hub specified this endpoint to receive events: '+req.query['hub.topic']);
+  console_log('🖥️CLIENT: Sending back challenge: '+req.query['hub.challenge']);
   res.send(200,req.query['hub.challenge']);
 });
 
 // CLIENT: Receive events from the hub with application/json payload
 app.post('/client/',function(req,res){
-  console_log('CLIENT: Receiving notification from the hub.');
-  console_log(JSON.stringify(req.body));
+  console_log('🖥️CLIENT: Receiving notification from the hub: '+JSON.stringify(req.body));
   res.json(200,{'context':req.body});
 });
 
 //  This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-  console_log('UI:  user interface frontend.html file requested.');
-  res.sendFile(path.join(__dirname + '/frontend.html'));
-  
-  var message='🔥FHIRcast hub and client listening on '+hostname +':' + port+'. IP addresses';
+  res.sendFile(path.join(__dirname + '/frontend.html'));  
+  var message='🔥UI: FHIRcast hub and client listening on '+hostname +':' + port+'. IP addresses';
   Object.keys(ifaces).forEach(function (ifname) {
     var alias = 0;
     ifaces[ifname].forEach(function (iface) {
@@ -121,39 +118,34 @@ app.get('/',function(req,res){
       ++alias;
     });
   });
-
   console_log(message);
 });
 
 // Websocket to provide the logs to the client 
 app.ws('/log', function(ws, req) {
   socketCount++;
-  console_log('WEBSOCKET:  Accepting connection number '+socketCount+'.');
-
-  ws.on('connection', req => {  });  
-
-  var logWss = expressWs.getWss('/log');
+  console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
 
   ws.on('close', function(msg) {
-    console_log('websocket closed. ');
     socketCount--;
+    console_log('🚀WEBSOCKET:  One websocket closed. '+socketCount+' remaining.');
   });
 
+  var logWss = expressWs.getWss('/log');
   setInterval(() => { 
       if (logWebsocket!='') {       
         if (ws.readyState==1) {
           logWss.clients.forEach(function (client) {
-          //ws.send(logWebsocket);
             client.send(logWebsocket);
             console.log('Websocket broadcasting to ' );
          });
-          logWebsocket='';
+        logWebsocket='';
         } 
       } 
     },1000);
 });
 
 app.listen(port,function(){
-  console_log('Service restarted on '+ Date());
+  console_log('🔥 Service restarted on '+ Date());
 });
 
