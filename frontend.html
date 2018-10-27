@@ -66,14 +66,16 @@
     body {padding: 2px;  background-color: darkgray;font-family: Arial, Helvetica, sans-serif; font-weight: 500;border: 1px solid black; font-size: 16}
     header {background-color:white; text-align:center;}
     h2 {display: inline; background-color:white; text-align:center;}
+    span.help {float: right; align-self: auto;}
     div.selectHub {border-top: 1px solid black;}
     div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
     div.notify {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
-    label,button {padding: 2px; display: inline-block;width: 30%}
+    label,button {padding: 2px; display: inline-block;width: 24.5%}
     input,textarea,select {width: 65%;border:1px solid}
-    textarea {vertical-align: top}
-    textarea.incomingMsgOutput {width: 99%;font-family: "Segoe UI Emoji"}
-    footer {border-top: 1px solid black;text-align:left}
+    textarea {vertical-align: top;}
+    textarea.incomingMsgOutput {width: 99%;font-family: "Segoe UI Emoji";}
+    textarea.incomingMsgOutput,textarea.subscriptionResponse,textarea.eventResponse {background-color:whitesmoke}
+    div.monitor {border-top: 1px solid black;text-align:left}
 </style>
 </head>
 
@@ -119,7 +121,7 @@
     <label>hub.lease: </label> 
     <input id="hub.lease" name="hub.lease" type="text" value="999">
     <button onclick="sendSubscription(document.getElementById('hubSubscribeURI').value)">Send</button>
-    <textarea disabled="disabled" id="subscriptionResponse"></textarea>
+    <textarea class="subscriptionResponse" id="subscriptionResponse"></textarea>
 </div>
 
 <div class="notify">
@@ -131,7 +133,7 @@
         <option value="http://localhost:5000/notify">http://localhost:5000/notify</option>
     </select>
     <label>context:</label>
-    <textarea id="context" rows="9" cols="35">{
+    <textarea  id="context" rows="9" cols="35">{
 "timestamp": "2018-06-13T01:56:11.8281368Z", 
 "id": "0c3b67ab5344428c840c4a745dbdf523", 
 "event": {
@@ -141,13 +143,15 @@
     }
 }</textarea>
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
-    <textarea disabled="disabled"  id="eventResponse"></textarea>
+    <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
-<footer>
+<div class="monitor">
     <h3>4. Monitor endpoints logs with a websocket connection</h3>
-    <textarea class="incomingMsgOutput" id="incomingMsgOutput" disabled="disabled"  rows="20" ></textarea><br>
     <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
     <button onclick="document.getElementById('incomingMsgOutput').value=''">Get hub status</button>
     <button onclick="document.getElementById('incomingMsgOutput').value=''">Delete all subscriptions</button>
-</footer>
+    <button onclick="document.getElementById('incomingMsgOutput').value=''">Help</button> 
+    <textarea class="incomingMsgOutput" id="incomingMsgOutput" rows="20" ></textarea><br>
+    <!-- //title="Visit https://github.com/fhircast and https://fhircast.org for information."-->
+</div>
 </body>
