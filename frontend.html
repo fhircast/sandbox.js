@@ -46,6 +46,20 @@
         }
     }
 
+    function getHubStatus(){
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',parser.protocol+'//' + parser.host + '/status');
+        xhr.send();
+        return;
+    }
+ 
+    function deleteSubscriptions(){
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',parser.protocol+'//' + parser.host + '/delete');
+        xhr.send();
+        return;
+    }
+
     var protocol='ws:';
     if (parser.protocol=='https:'){ protocol='wss:';}
     var ws = new WebSocket(protocol+'//' + parser.host + '/log');
@@ -59,18 +73,6 @@
     }
     ws.onclose = function () {
         console.log('websocket is closed ...')
-    }
-
-   function getHubStatus(){
-        var xhr=new XMLHttpRequest();
-        xhr.open('GET',parser.protocol+'//' + parser.host + '/status');
-        xhr.send();
-    }
- 
-    function deleteSubscriptions(){
-        var xhr=new XMLHttpRequest();
-        xhr.open('GET',parser.protocol+'//' + parser.host + '/delete');
-        xhr.send();
     }
 
 </script>
@@ -91,7 +93,7 @@
 </style>
 </head>
 
-<body onload="setURLs()">
+<body onload="setURLs();">
 <header><h2>FHIRcast JavaScript Sandbox</h2></header>
 <div class="selectHub">
     <h3>1. Select the hub:

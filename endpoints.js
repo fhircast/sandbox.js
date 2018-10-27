@@ -20,11 +20,12 @@ app.use(favicon(path.join(__dirname + '/fhir.ico')))
 const os = require( 'os' );
 const ifaces = os.networkInterfaces( );
 
-port= process.env.PORT || 3000;  // this is needed for cloud deployment along with the launch.json file
-hostname = os.hostname();
-subscriptions=[];
-logWebsocket='';
-socketCount=0;
+var port= process.env.PORT || 3000;  // this is needed for cloud deployment along with the launch.json file
+var hostname = os.hostname();
+var subscriptions=[];
+var logWebsocket='';
+var socketCount=0;
+var startDTTM= new Date();
 
 function console_log(msg){
  console.log(msg);
@@ -125,19 +126,6 @@ app.get('/',function(req,res){
   console_log(message);
 });
 
-// UI: Return hub status in the log
-app.get('/status',function(req,res){
-  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions.');
-  res.send(200);
-});
-
-// UI: Clear all subscriptions
-app.get('/delete',function(req,res){
-  subscriptions=[];
-  console_log('🔥UI: All subscriptions cleared.');
-  res.send(200);
-});
-
 // Websocket to provide the logs to the client 
 app.ws('/log', function(ws, req) {
   socketCount++;
@@ -162,7 +150,23 @@ app.ws('/log', function(ws, req) {
     },1000);
 });
 
+// UI: Return hub status in the log
+app.post('/status',function(req,res){
+  var diffMs=new Date()-startDTTM;
+  var runningTime= Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes  
+  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' clients connected.  Web service running for ' + runningTime+' minutes.');
+  res.send(200);
+});
+
+// UI: Clear all subscriptions
+app.post('/delete',function(req,res){
+  subscriptions=[];
+  console_log('🔥UI: All subscriptions cleared.');
+  res.send(200);
+});
+
 app.listen(port,function(){
+
   console_log('🔥 Service restarted on '+ Date());
 });
 
