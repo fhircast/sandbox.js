@@ -154,7 +154,7 @@ app.post('/status',function(req,res){
       ++alias;
     });
   });
-  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' clients connected.  Web service running for ' + runningTime+' minutes. '+message);
+  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' browsers connected to the UI.  Web service running for ' + runningTime+' minutes. '+message);
   res.send(200);
 });
 
