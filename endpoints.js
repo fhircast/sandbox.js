@@ -135,25 +135,28 @@ app.ws('/log', function(ws, req) {
 // UI: Return hub status in the log
 app.post('/status',function(req,res){
   var diffMs=new Date()-startDTTM;
-  var runningTime= Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes  
-  var message='Listening on '+os.hostname +':' + port+'. IP addresses';
-  Object.keys(ifaces).forEach(function (ifname) {
-    var alias = 0;
-    ifaces[ifname].forEach(function (iface) {
-     if ('IPv4' !== iface.family || iface.internal !== false) {
-        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-        return;
-      }
-      if (alias >= 1) {
-        // this single interface has multiple ipv4 addresses
-        message+=': ' + ifname + ':' + alias +' '+ iface.address;
-      } else {
-        // this interface has only one ipv4 adress
-        message+=': ' + ifname +' '+ iface.address;
-      }
-      ++alias;
+  var runningTime= Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes 
+  var message=''; 
+  if(req.get('host').indexOf('azure')<1){ // do not show host or ip for azure-not useful
+    message+='Listening on '+os.hostname +':' + port+'. IP addresses';
+    Object.keys(ifaces).forEach(function (ifname) {
+      var alias = 0;
+      ifaces[ifname].forEach(function (iface) {
+      if ('IPv4' !== iface.family || iface.internal !== false) {
+          // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+          return;
+        }
+        if (alias >= 1) {
+          // this single interface has multiple ipv4 addresses
+          message+=': ' + ifname + ':' + alias +' '+ iface.address;
+        } else {
+          // this interface has only one ipv4 adress
+          message+=': ' + ifname +' '+ iface.address;
+        }
+        ++alias;
+      });
     });
-  });
+  }
   console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' browsers connected to the UI.  Web service running for ' + runningTime+' minutes. '+message);
   res.send(200);
 });
