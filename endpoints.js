@@ -2,6 +2,7 @@ const request=require('request');
 const morgan = require('morgan');
 const bodyParser=require('body-parser');
 const path = require('path');
+const favicon = require('serve-favicon');
 const express=require('express'), app=express();
 const expressWs = require('express-ws')(app);
 
@@ -13,6 +14,9 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+app.use(favicon(path.join(__dirname + '/fhir.ico')))
+//app.use('/favicon.ico', express.static('/fhir.ico'));
+
 const os = require( 'os' );
 const ifaces = os.networkInterfaces( );
 
@@ -97,10 +101,10 @@ app.post('/client/',function(req,res){
   res.json(200,{'context':req.body});
 });
 
-//  This endpoint is to serve the client web page
+//  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
   res.sendFile(path.join(__dirname + '/frontend.html'));  
-  var message='🔥UI: FHIRcast hub and client listening on '+hostname +':' + port+'. IP addresses';
+  var message='🔥UI: Home page requested: FHIRcast hub and client listening on '+hostname +':' + port+'. IP addresses';
   Object.keys(ifaces).forEach(function (ifname) {
     var alias = 0;
     ifaces[ifname].forEach(function (iface) {
@@ -119,6 +123,19 @@ app.get('/',function(req,res){
     });
   });
   console_log(message);
+});
+
+// UI: Return hub status in the log
+app.get('/status',function(req,res){
+  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions.');
+  res.send(200);
+});
+
+// UI: Clear all subscriptions
+app.get('/delete',function(req,res){
+  subscriptions=[];
+  console_log('🔥UI: All subscriptions cleared.');
+  res.send(200);
 });
 
 // Websocket to provide the logs to the client 

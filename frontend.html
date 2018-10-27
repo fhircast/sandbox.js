@@ -17,7 +17,7 @@
             document.getElementById('subscriptionResponse').value='Response code: '+this.status;
                };
         console.log('Subscribtion sent from browser: '+ data);  
-  }
+    }
 
     function sendEvent(contextData,destinationURL){
         var xhr=new XMLHttpRequest();
@@ -29,10 +29,11 @@
                };
         console.log('Event sent from browser: '+ JSON.stringify(contextData));
     }
-
+ 
+    var parser=document.createElement('a'); // use link tag as a url parser
+    parser.href=window.location;
+ 
     function setURLs(){
-        var parser=document.createElement('a'); // use link tag as a url parser
-        parser.href=window.location;
         if (parser.protocol=='https:' || parser.host.indexOf('azure')>0){
             document.getElementById('hubSubscribeURI').selectedIndex = "1";
             document.getElementById('clientEndpoint').selectedIndex = "1";
@@ -45,8 +46,6 @@
         }
     }
 
-    var parser=document.createElement('a'); // use link tag as a url parser
-    parser.href=window.location;
     var protocol='ws:';
     if (parser.protocol=='https:'){ protocol='wss:';}
     var ws = new WebSocket(protocol+'//' + parser.host + '/log');
@@ -61,6 +60,19 @@
     ws.onclose = function () {
         console.log('websocket is closed ...')
     }
+
+   function getHubStatus(){
+        var xhr=new XMLHttpRequest();
+        xhr.open('GET',parser.protocol+'//' + parser.host + '/status');
+        xhr.send();
+    }
+ 
+    function deleteSubscriptions(){
+        var xhr=new XMLHttpRequest();
+        xhr.open('GET',parser.protocol+'//' + parser.host + '/delete');
+        xhr.send();
+    }
+
 </script>
 <style>
     body {padding: 2px;  background-color: darkgray;font-family: Arial, Helvetica, sans-serif; font-weight: 500;border: 1px solid black; font-size: 16}
@@ -132,7 +144,7 @@
         <option value="https://fhircast.azurewebsites.net/notify" selected>https://fhircast.azurewebsites.net/notify</option>
         <option value="http://localhost:5000/notify">http://localhost:5000/notify</option>
     </select>
-    <label>context:</label>
+    <label>event:</label>
     <textarea  id="context" rows="9" cols="35">{
 "timestamp": "2018-06-13T01:56:11.8281368Z", 
 "id": "0c3b67ab5344428c840c4a745dbdf523", 
@@ -148,9 +160,9 @@
 <div class="monitor">
     <h3>4. Monitor endpoints logs with a websocket connection</h3>
     <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
-    <button onclick="document.getElementById('incomingMsgOutput').value=''">Get hub status</button>
-    <button onclick="document.getElementById('incomingMsgOutput').value=''">Delete all subscriptions</button>
-    <button onclick="document.getElementById('incomingMsgOutput').value=''">Help</button> 
+    <button onclick="getHubStatus();">Get hub status</button>
+    <button onclick="deleteSubscriptions();">Delete all subscriptions</button>
+    <button onclick="window.open('https://github.com/mbellehumeur/FHIRcastJS');">Online help</button> 
     <textarea class="incomingMsgOutput" id="incomingMsgOutput" rows="20" ></textarea><br>
     <!-- //title="Visit https://github.com/fhircast and https://fhircast.org for information."-->
 </div>
