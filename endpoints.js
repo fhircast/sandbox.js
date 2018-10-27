@@ -105,25 +105,7 @@ app.post('/client/',function(req,res){
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
   res.sendFile(path.join(__dirname + '/frontend.html'));  
-  var message='🔥UI: Home page requested: FHIRcast hub and client listening on '+hostname +':' + port+'. IP addresses';
-  Object.keys(ifaces).forEach(function (ifname) {
-    var alias = 0;
-    ifaces[ifname].forEach(function (iface) {
-      if ('IPv4' !== iface.family || iface.internal !== false) {
-        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-        return;
-      }
-      if (alias >= 1) {
-        // this single interface has multiple ipv4 addresses
-        message+=': ' + ifname + ':' + alias +' '+ iface.address;
-      } else {
-        // this interface has only one ipv4 adress
-        message+=': ' + ifname +' '+ iface.address;
-      }
-      ++alias;
-    });
-  });
-  console_log(message);
+  console_log('🔥UI: Home page requested.');
 });
 
 // Websocket to provide the logs to the client 
@@ -154,7 +136,25 @@ app.ws('/log', function(ws, req) {
 app.post('/status',function(req,res){
   var diffMs=new Date()-startDTTM;
   var runningTime= Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes  
-  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' clients connected.  Web service running for ' + runningTime+' minutes.');
+  var message='Listening on '+os.hostname +':' + port+'. IP addresses';
+  Object.keys(ifaces).forEach(function (ifname) {
+    var alias = 0;
+    ifaces[ifname].forEach(function (iface) {
+     if ('IPv4' !== iface.family || iface.internal !== false) {
+        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+        return;
+      }
+      if (alias >= 1) {
+        // this single interface has multiple ipv4 addresses
+        message+=': ' + ifname + ':' + alias +' '+ iface.address;
+      } else {
+        // this interface has only one ipv4 adress
+        message+=': ' + ifname +' '+ iface.address;
+      }
+      ++alias;
+    });
+  });
+  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' clients connected.  Web service running for ' + runningTime+' minutes. '+message);
   res.send(200);
 });
 
@@ -166,7 +166,6 @@ app.post('/delete',function(req,res){
 });
 
 app.listen(port,function(){
-
-  console_log('🔥 Service restarted on '+ Date());
+  console_log('🔥 Web service restarted on '+ Date());
 });
 
