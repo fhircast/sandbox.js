@@ -80,7 +80,6 @@
     body {padding: 2px;  background-color: darkgray;font-family: Arial, Helvetica, sans-serif; font-weight: 500;border: 1px solid black; font-size: 16}
     header {background-color:white; text-align:center;}
     h2 {display: inline; background-color:white; text-align:center;}
-    span.help {float: right; align-self: auto;}
     div.selectHub {border-top: 1px solid black;}
     div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
     div.notify {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
@@ -159,6 +158,7 @@
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
+
 <div class="monitor">
     <h3>4. Monitor endpoints logs with a websocket connection</h3>
     <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
@@ -166,6 +166,5 @@
     <button onclick="deleteSubscriptions();">Delete all subscriptions</button>
     <button onclick="window.open('https://github.com/mbellehumeur/FHIRcastJS');">Online help</button> 
     <textarea class="incomingMsgOutput" id="incomingMsgOutput" rows="20" ></textarea><br>
-    <!-- //title="Visit https://github.com/fhircast and https://fhircast.org for information."-->
-</div>
+ </div>
 </body>

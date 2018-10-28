@@ -1,3 +1,5 @@
+const os = require( 'os' );
+const ifaces = os.networkInterfaces( );
 const request=require('request');
 const morgan = require('morgan');
 const bodyParser=require('body-parser');
@@ -15,18 +17,13 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(favicon(path.join(__dirname + '/fhir.ico')))
-//app.use('/favicon.ico', express.static('/fhir.ico'));
-
-const os = require( 'os' );
-const ifaces = os.networkInterfaces( );
 
 var port= process.env.PORT || 3000;  // this is needed for cloud deployment along with the launch.json file
-var hostname = os.hostname();
+//var hostname = os.hostname();
 var subscriptions=[];
 var logWebsocket='';
 var socketCount=0;
 var hitCounter=0;
-var startDTTM= new Date();
 
 function console_log(msg){
  console.log(msg);
@@ -43,7 +40,7 @@ app.post('/api/hub/',function(req,res){
       url: subscriptionRequest['hub.callback'],
       qs: {
             "hub.challenge": subscriptionRequest['hub.secret'],
-            "hub.topic": "http://"+hostname+":"+port+"/notify",
+            "hub.topic": "http://"+os.hostname+":"+port+"/notify",
           }    
     }, function (error, response, body) {
     //console.log('HUB: error:', error); // Print the error if one occurred
@@ -60,6 +57,7 @@ app.post('/api/hub/',function(req,res){
     subscriptions.push(subscription);
   });
   res.send(202);
+  console_log('📡HUB: Sending subscription response statusCode: 202'); // Print the response status code if a response was received
 });
 
 // HUB: Receive events from clients with application/json payload  
@@ -107,7 +105,18 @@ app.post('/client/',function(req,res){
 app.get('/',function(req,res){  
   res.sendFile(path.join(__dirname + '/frontend.html')); 
   hitCounter++; 
-  console_log('🔥UI: Home page requested. There are '+socketCount+' browsers connected to the UI. Hit count:'+hitCounter+'.');
+  function format(seconds){
+    function pad(s){
+      return (s < 10 ? '0' : '') + s;
+    }
+    var hours = Math.floor(seconds / (60*60));
+    var minutes = Math.floor(seconds % (60*60) / 60);
+    var seconds = Math.floor(seconds % 60);
+  
+    return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+  }
+  var uptime = process.uptime();
+  console_log('🔧UI: Home page requested. '+hitCounter+' hits in '+format(uptime)+' uptime.');
 });
 
 // Websocket to provide the logs to the client 
@@ -136,8 +145,6 @@ app.ws('/log', function(ws, req) {
 
 // UI: Return hub status in the log
 app.post('/status',function(req,res){
-  var diffMs=new Date()-startDTTM;
-  var runningTime= Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes 
   var message=''; 
   if(req.get('host').indexOf('azure')<1){ // do not show host or ip for azure-not useful
     message+='Listening on '+os.hostname +':' + port+'. IP addresses';
@@ -160,18 +167,18 @@ app.post('/status',function(req,res){
     });
   }
   else {message='Running in azure cloud.'}
-  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions.  Web service running for ' + runningTime+' minutes. '+message);
+  console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' browsers connected to the UI. '+message);
   res.send(200);
 });
 
 // UI: Clear all subscriptions
 app.post('/delete',function(req,res){
   subscriptions=[];
-  console_log('🔥UI: All subscriptions cleared.');
+  console_log('🔧UI: All subscriptions cleared.');
   res.send(200);
 });
 
 app.listen(port,function(){
-  console_log('🔥 Web service restarted on '+ Date());
+  console_log('🔧 Web service restarted on '+ Date());
 });
 
