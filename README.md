@@ -1,17 +1,19 @@
-# FHIRcastJS
+# FHIRcast Playground
 JavaScript stack (Node.js) sandbox for FHIRcast.
 
-This is a WIP implementation of the FHIRcast proposal.  Missing features required to comply to the proposal are described in the issues list.   
+This is a WIP implementation of the FHIRcast proposal.     
 
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](https://fhircast.org).
 
-The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a 'safety check' by asking the client about a common secret. In the same message, the hub also sends the location where the client can send new events to be broadcasted (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
+The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 If you are a C#/.net developer, you may prefer to use the [original FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 ![frontend](frontend.png)
 
+
 # Usage
+You can try it in the cloud [here](https://fhircast.azurewebsites.net/).
 1. Select the hub that you want to connect to.  You can leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the gray box.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
@@ -34,11 +36,11 @@ You can use the sandbox as a client or a hub or both.
 5. Navigate your browser to "http://localhost:3000/" to access the UI.
 
 
-[VScode](https://code.visualstudio.com/) can be used on MacOS and Windows for editing and debugging.
+[VScode](https://code.visualstudio.com/) can be used on all platforms for editing and debugging.
 
 ## In the Azure cloud
 
-The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells azure which program to run. They should not need any modifications.  
+The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
 Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
 
 # Program Description

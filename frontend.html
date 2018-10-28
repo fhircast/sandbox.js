@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-<title>FHIRcast JavaScript Sandbox</title>
+<title>FHIRcast JavaScript Hub and Client</title>
 <script>
     function sendSubscription(url){
         data =  'hub.callback=' +document.getElementById('clientEndpoint').value;
@@ -164,7 +164,7 @@
     <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
     <button onclick="getHubStatus();">Get hub status</button>
     <button onclick="deleteSubscriptions();">Delete all subscriptions</button>
-    <button onclick="window.open('https://github.com/mbellehumeur/FHIRcastJS');">Online help</button> 
+    <button onclick="window.open('https://github.com/mbellehumeur/FHIRcastJS/blob/master/README.md');">Online help</button> 
     <textarea class="incomingMsgOutput" id="incomingMsgOutput" rows="20" ></textarea><br>
  </div>
 </body>
