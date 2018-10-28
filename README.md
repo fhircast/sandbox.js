@@ -18,14 +18,13 @@ If you are a C#/.net developer, you may prefer to use the [original FHIRcast san
 4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about the sandbox internal operations.  
    
 # Troubleshooting
-* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets then your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
+* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http message are not going out.  If you are testing the sandbox with another software, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
 * **The log emojis are black and white:**  Windows 7 does not support color emojis 😞.
 
 
-Installation
-========================================
-On Windows or MacOS:
+#Installation
+##On Windows, MacOS or Linux
 1. Install node at http://nodejs.org.
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
@@ -35,7 +34,7 @@ On Windows or MacOS:
 
 [VScode](https://code.visualstudio.com/) can be used on MacOS and Windows for editing and debugging.
 
-In the Azure cloud:
+##In the Azure cloud
 
 The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells azure which program to run.  Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
 
@@ -43,33 +42,35 @@ The Azure vscode extension can be used to deploy the app as a web service.  Two 
 
 There are three files:  endpoints.js, frontend.html and package.json.
 
-The endpoints.js file provides all listening (client and hub) endpoints using Node.js with the express module.  
+* The endpoints.js file provides all listening (client and hub) endpoints using Node.js with the express module.  
 
-The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
+* The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
 
+* The package.json file specifies the node modules used in the app.
+  
 You can use the sandbox as a client or a hub or both.
 
 ## Endpoints description
 ### Server (hub) endpoints
-"/api/hub": POST with form query string to receive subscription requests from the clients
+* "/api/hub": POST with form query string to receive subscription requests from the clients
  
- "/notify": POST with JSON payload to receive events from the clients 
+* "/notify": POST with JSON payload to receive events from the clients 
 
 ### Client endpoints
 
-"/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
+* "/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
 
-"/client": GET with standard query string to receive callback check from the hub. 
+* "/client": GET with standard query string to receive callback check from the hub. 
 
 ### Sandbox endpoints (not in the standard)
 
-"/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
+* "/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
 
-"/log": (on ws not http), Websocket to broadcast the server side logs to the browser.
+* "/log": (on ws not http), Websocket to broadcast the server side logs to the browser.
 
-"/status":  POST without content will trigger a hub status message to be broadcasted to the connected websockets.
+* "/status":  POST without content will trigger a hub status message to be broadcasted to the connected websockets.
 
-"/delete":  POST without content will delete all subscriptions.
+* "/delete":  POST without content will delete all subscriptions.
 
 
 ## Front-end description
