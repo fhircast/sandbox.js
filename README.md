@@ -19,8 +19,8 @@ If you are a C#/.net developer, you may prefer to use the [original FHIRcast san
    
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets then your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
-* **The buttons do not work:** Using the browser developer tool, check in the console why the http message are not going out.  If you are testing with the sandbox with another software, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have 'Access-Control-Allow-Origin' header. 
-* **The emojis are black and white:**  Windows 7 does not support color emojis.
+* **The buttons do not work:** Using the browser developer tool, check in the console why the http message are not going out.  If you are testing the sandbox with another software, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
+* **The log emojis are black and white:**  Windows 7 does not support color emojis 😞.
 
 
 Installation
@@ -75,15 +75,15 @@ You can use the sandbox as a client or a hub or both.
 ## Front-end description
 
 ### HTML
-
+The four sections of the web page are each contained in their own division or 'div': selectHub,subscribe,notify and monitor. Simple styling is embedded to avoid an extra file to maintain.
 
 ### JavaScript
-The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLhttpRequest' instead of the newer 'fetch' function to support IE11.
-* sendSubscription:  This function builds a query string using the data from the input fields of section 2 and POSTs it to the hub with 'Content-type' header set to 'application/x-www-form-urlencoded'.
-* sendSubscription:  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
+The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function to order to support Internet Explorer.
+* sendSubscription():  This function builds a query string using the data from the input fields of section 2 and POSTs it to the hub with 'Content-type' header set to 'application/x-www-form-urlencoded'.
+* sendEvent():  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
 
 
 Other functions are specific to the sandbox:
-* setURLs():  On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
-* getHubStatus(): Makes a POST to the sandbox backend to trigger the display of active subscriptions.
- 
+* setURLs(): On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
+* getHubStatus(): Makes a POST to the sandbox backend to trigger the display of active subscriptions when the button is clicked.
+* deleteSubscriptions(): Makes a POST to the sandbox backend to clear the subscriptions list when the button is clicked.
