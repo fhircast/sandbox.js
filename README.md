@@ -1,7 +1,7 @@
 # FHIRcastJS
 JavaScript stack (Node.js) sandbox for FHIRcast
 
-This is a WIP implementation of the FHIRcast proposal. 
+This is a WIP implementation of the FHIRcast proposal.  Missing features required to comply to the proposal are described in the issues list.   
 
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at fhircast.org: [http://fhircast.org].
 
@@ -13,10 +13,11 @@ The first communication channel defined by FHIRcast is the W3C WebSub RFC [https
 1. Select the hub that you want to connect to.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the gray box.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
-4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔥UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about the sandbox internal operations.
+4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔥UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about the sandbox internal operations.  
    
 # Troubleshooting
-1. The log text area does not display any messages.  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' header.  
+1. The log text area does not display any messages:  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' header.  Another possibility is that you are using more websockets then your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.
+2. The emojis are black and white:  Windows 7 does not support color emojis.
 
 
 Installation
@@ -31,11 +32,13 @@ On Windows or MacOS:
 
 VScode [https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
 
+
+
 # Program Description
 
 There are three files:  endpoints.js, frontend.html and package.json.
 
-The indexendpoints.js file provides all listening (client and hub) endpoints using node with the express module.  
+The endpoints.js file provides all listening (client and hub) endpoints using Node.js with the express module.  
 
 The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
 
@@ -43,24 +46,21 @@ You can use the sandbox as a client or a hub or both.
 
 ## Endpoints description
 ### Server (hub) endpoints
-
 "/api/hub": POST with form query string to receive subscription requests from the clients
  
- 
  "/notify": POST with JSON payload to receive events from the clients 
-
-
-"/log": (on ws not http), Websocket to broadcast the server side logs to the client browser.
 
 ### Client endpoints
 
 "/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
 
+"/client": GET with standard query string to receive callback check from the hub. 
 
-"/client": GET with standard query string to receive callback check from the hub 
+### Sandbox endpoints (not in the standard)
 
 "/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
 
+"/log": (on ws not http), Websocket to broadcast the server side logs to the client browser.
 
 
 
