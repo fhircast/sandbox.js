@@ -16,7 +16,9 @@ If you are a C#/.net developer, you may prefer to use the [original FHIRcast san
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the gray box.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
 4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about the sandbox internal operations.  
-   
+  
+You can use the sandbox as a client or a hub or both.
+
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http message are not going out.  If you are testing the sandbox with another software, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
@@ -36,7 +38,8 @@ If you are a C#/.net developer, you may prefer to use the [original FHIRcast san
 
 ## In the Azure cloud
 
-The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells azure which program to run.  Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
+The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells azure which program to run. They should not need any modifications.  
+Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
 
 # Program Description
 
@@ -48,7 +51,6 @@ There are three files:  endpoints.js, frontend.html and package.json.
 
 * The package.json file specifies the node modules used in the app.
   
-You can use the sandbox as a client or a hub or both.
 
 ## Endpoints description
 ### Server (hub) endpoints
