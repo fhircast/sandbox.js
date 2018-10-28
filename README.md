@@ -1,5 +1,5 @@
-# FHIRcast Playground
-JavaScript stack (Node.js) sandbox for FHIRcast.
+# FHIRcast JavaScript Playground
+JavaScript utilities for FHIRcast.
 
 This is a WIP implementation of the FHIRcast proposal.     
 
@@ -7,24 +7,23 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
-If you are a C#/.net developer, you may prefer to use the [original FHIRcast sandbox](https://github.com/fhircast/sandbox).
+If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 ![frontend](frontend.png)
 
 
 # Usage
 You can try it in the cloud [here](https://fhircast.azurewebsites.net/).
-1. Select the hub that you want to connect to.  You can leave the defaults URLs to play around in the standalone hub/client.
-2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the gray box.
+1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
+2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
-4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about the sandbox internal operations.  
+4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations.  
   
-You can use the sandbox as a client or a hub or both.
 
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
-* **The buttons do not work:** Using the browser developer tool, check in the console why the http message are not going out.  If you are testing the sandbox with another software, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
-* **The log emojis are black and white:**  Windows 7 does not support color emojis 😞.
+* **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
+* **The log emojis are black and white:**  Windows 7 does not support color emojis.
 
 
 # Installation
@@ -51,7 +50,7 @@ There are three files:  endpoints.js, frontend.html and package.json.
 
 * The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
 
-* The package.json file specifies the node modules used in the app.
+* The package.json file specifies the Node.js modules used in the app.
   
 
 ## Endpoints description
@@ -66,7 +65,7 @@ There are three files:  endpoints.js, frontend.html and package.json.
 
 * "/client": GET with standard query string to receive callback check from the hub. 
 
-### Sandbox endpoints (not in the standard)
+### Utility endpoints (not in the standard)
 
 * "/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
 
