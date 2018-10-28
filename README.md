@@ -3,11 +3,11 @@ JavaScript stack (Node.js) sandbox for FHIRcast.
 
 This is a WIP implementation of the FHIRcast proposal.  Missing features required to comply to the proposal are described in the issues list.   
 
-FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at fhircast.org: [http://fhircast.org].
+FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](https://fhircast.org).
 
-The first communication channel defined by FHIRcast is the W3C WebSub RFC [https://www.w3.org/TR/websub/].  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a 'safety check' by asking the client about a common secret. In the same message, the hub also sends the location where the client can send new events to be broadcasted (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
+The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a 'safety check' by asking the client about a common secret. In the same message, the hub also sends the location where the client can send new events to be broadcasted (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
-If you are a C#/.net developer, you may prefer to use the original FHIRcast sandbox: [https://github.com/fhircast/sandbox].
+If you are a C#/.net developer, you may prefer to use the [original FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 ![frontend](frontend.png)
 
@@ -33,7 +33,7 @@ On Windows or MacOS:
 5. Navigate your browser to "http://localhost:3000/" to access the UI.
 
 
-[VScode][https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
+[VScode](https://code.visualstudio.com/) can be used on MacOS and Windows for editing and debugging.
 
 In the azure cloud:
 
@@ -74,6 +74,10 @@ You can use the sandbox as a client or a hub or both.
 
 ## Front-end description
 
+### HTML
+
+
+### JavaScript
 The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLhttpRequest' instead of the newer 'fetch' function to support IE11.
 * sendSubscription:  This function builds a query string using the data from the input fields of section 2 and POSTs it to the hub with 'Content-type' header set to 'application/x-www-form-urlencoded'.
 * sendSubscription:  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
