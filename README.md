@@ -5,7 +5,7 @@ This is a WIP implementation of the FHIRcast proposal.  Missing features require
 
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at fhircast.org: [http://fhircast.org].
 
-The first communication channel defined by FHIRcast is the W3C WebSub RFC [https://www.w3.org/TR/websub/].  This model defines a "hub" that receives "subscribtions" from clients for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a 'safety check' by asking the client about a common secret. In the same message, the hub also sends to the client the location where the client can send new events to be broadcasted (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
+The first communication channel defined by FHIRcast is the W3C WebSub RFC [https://www.w3.org/TR/websub/].  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a 'safety check' by asking the client about a common secret. In the same message, the hub also sends the location where the client can send new events to be broadcasted (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 If you are a C#/.net developer, you may prefer to use the original FHIRcast sandbox: [https://github.com/fhircast/sandbox].
 
@@ -18,8 +18,9 @@ If you are a C#/.net developer, you may prefer to use the original FHIRcast sand
 4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not currently relevant to the standard.  They provide information about the sandbox internal operations.  
    
 # Troubleshooting
-1. The log text area does not display any messages:  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets then your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
-2. The emojis are black and white:  Windows 7 does not support color emojis.
+* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets then your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
+* **The buttons do not work:** Using the browser developer tool, check in the console why the http message are not going out.  If you are testing with the sandbox with another software, you may have to enable 'send data across domains'. Another possibility is that the receiving endpoint does not have 'Access-Control-Allow-Origin' header. 
+* **The emojis are black and white:**  Windows 7 does not support color emojis.
 
 
 Installation
@@ -32,9 +33,10 @@ On Windows or MacOS:
 5. Navigate your browser to "http://localhost:3000/" to access the UI.
 
 
-VScode [https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
+[VScode][https://code.visualstudio.com/] can be used on MacOS and Windows for editing and debugging.
 
 In the azure cloud:
+
 The azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells azure which program to run.
 
 # Program Description
@@ -72,4 +74,12 @@ You can use the sandbox as a client or a hub or both.
 
 ## Front-end description
 
-The two standard-relevant functions are sendEvent and sendSubscription.  Both are using 'XMLhttpRequest' instead of the newer 'fetch' to support IE11.
+The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLhttpRequest' instead of the newer 'fetch' function to support IE11.
+
+
+Other functions are specific to the sandbox:
+
+1. setURLs():  On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
+2. getHubStatus(): Makes a POST to the sandbox backend to trigger the display of active subscriptions.
+3.   
+4. 
