@@ -25,6 +25,7 @@ var hostname = os.hostname();
 var subscriptions=[];
 var logWebsocket='';
 var socketCount=0;
+var hitCounter=0;
 var startDTTM= new Date();
 
 function console_log(msg){
@@ -104,8 +105,9 @@ app.post('/client/',function(req,res){
 
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-  res.sendFile(path.join(__dirname + '/frontend.html'));  
-  console_log('🔥UI: Home page requested.');
+  res.sendFile(path.join(__dirname + '/frontend.html')); 
+  hitCounter++; 
+  console_log('🔥UI: Home page requested. There are '+socketCount+' browsers connected to the UI. Hit count:'+hitCounter+'.');
 });
 
 // Websocket to provide the logs to the client 
@@ -157,7 +159,8 @@ app.post('/status',function(req,res){
       });
     });
   }
-  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' browsers connected to the UI.  Web service running for ' + runningTime+' minutes. '+message);
+  else {message='Running in azure cloud.'}
+  console_log('🔥UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions.  Web service running for ' + runningTime+' minutes. '+message);
   res.send(200);
 });
 
