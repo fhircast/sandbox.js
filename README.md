@@ -23,8 +23,8 @@ If you are a C#/.net developer, you may prefer to use the [original FHIRcast san
 * **The log emojis are black and white:**  Windows 7 does not support color emojis 😞.
 
 
-#Installation
-##On Windows, MacOS or Linux
+# Installation
+## On Windows, MacOS or Linux
 1. Install node at http://nodejs.org.
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
@@ -34,7 +34,7 @@ If you are a C#/.net developer, you may prefer to use the [original FHIRcast san
 
 [VScode](https://code.visualstudio.com/) can be used on MacOS and Windows for editing and debugging.
 
-##In the Azure cloud
+## In the Azure cloud
 
 The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells azure which program to run.  Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
 
@@ -76,7 +76,7 @@ You can use the sandbox as a client or a hub or both.
 ## Front-end description
 
 ### HTML
-The four sections of the web page are each contained in their own division or 'div': selectHub,subscribe,notify and monitor. Simple styling is embedded to avoid an extra file to maintain.
+The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, notify and monitor. Simple styling is embedded to avoid an extra file to maintain.
 
 ### JavaScript
 The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
