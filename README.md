@@ -1,6 +1,9 @@
-# FHIRcast Playground
-The FHIRcast Playground is a set of tools to simulate the workflow of the FHIRcast standard using the JavaScript stack.
+# FHIRcast JavaScript Sandbox
+FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](https://fhircast.org).
 
+FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
+
+This sandbox (sandbox.js) implements the standard using Node.js
 
 The following deployments are supported:
 
@@ -10,7 +13,6 @@ The following deployments are supported:
 * Reporting client: https://reporting-fhircast.azurewebsites.net/
 * AI client: https://ai-fhircast.azurewebsites.net/
 
-FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](https://fhircast.org).
 
 The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
@@ -109,7 +111,7 @@ The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()
 * sendEvent():  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
 
 
-Other functions are specific to the playground:
+Other functions are specific to the sandbox:
 * setURLs(): On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
 * getHubStatus(): Makes a POST to the hub to trigger the display of active subscriptions when the button is clicked.
 * deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
