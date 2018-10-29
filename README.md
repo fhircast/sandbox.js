@@ -91,6 +91,8 @@ These two endpoints are not active when the MODE environment variable is set to 
 
 * "/log": (on ws not http), Websocket to broadcast the server side logs to the browser.
 
+These two endpoints are not active when the MODE environment variable is set to 'emr','pacs','reporting' or 'ai'.
+
 * "/status":  POST without content will trigger a hub status message to be broadcasted to the connected websockets.
 
 * "/delete":  POST without content will delete all subscriptions.
