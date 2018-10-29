@@ -4,15 +4,12 @@ The FHIRcast Playground is a set of tools to simulate the workflow of the FHIRca
 
 The following deployments are supported:
 
-HUB:                 https://hub-fhircast.azurewebsites.net/
+* HUB:                 https://hub-fhircast.azurewebsites.net/
 
-EMR client:          https://emr-fhircast.azurewebsites.net/
-
-PACS client:         https://pacs-fhircast.azurewebsites.net/
-
-Reporting client:    https://reporting-fhircast.azurewebsites.net/
-
-AI client:           https://ai-fhircast.azurewebsites.net/
+* EMR client:          https://emr-fhircast.azurewebsites.net/
+* PACS client:         https://pacs-fhircast.azurewebsites.net/
+* Reporting client:    https://reporting-fhircast.azurewebsites.net/
+* AI client:           https://ai-fhircast.azurewebsites.net/
 
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](https://fhircast.org).
 
