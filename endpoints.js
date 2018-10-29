@@ -25,7 +25,7 @@ var socketCount=0;
 var hitCounter=0;
 
 var mode = process.env.MODE;  // Do not start the hub services if we are a client.
-if (mode!='EMR' & mode!='PACS' & mode!='Reporting' ) {
+if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
   // HUB:  Receive and check subscription requests from clients
   app.post('/api/hub/',function(req,res){  
     var subscriptionRequest=req.body;
