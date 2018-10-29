@@ -33,7 +33,7 @@ Finally, add the [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](h
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
-* **The log emojis are black and white:**  Windows 7 does not support color emojis.
+* **The log emojis are black and white:**  On Windows 7, you need Office 2016 to have does color emojis.
 
 
 # Installation
@@ -51,6 +51,13 @@ Finally, add the [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](h
 
 The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
 Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
+
+## Environment variables
+### MODE
+The MODE environment variable can be used to specify if your instance is a hub, an EMR client, a PACS client, an AI or a reporting client.  If this variable is not set, the instance will be a hub.
+
+### PORT
+The PORT environment variable can be used to specify the listening port.  If this variable is not set, the port will be 3000.
 
 # Program Description
 
