@@ -85,7 +85,7 @@ These two endpoints are not active when the MODe environment variable is set to 
 
 ### Utility endpoints (not in the standard)
 
-* "/": GET with HTML/JavaScript to provide the web page to subscribe and post events to the hub.  Default is to reurn the hub.html file.  If the MODE environment variable is set to 'emr','pacs','reporting' or 'ai'; the file emr.html, pacs.html,reporting.html or ai.html will be returned.
+* "/": GET with HTML/JavaScript to provide the web page to subscribe and post events to the hub.  Default is to return the hub.html file.  If the MODE environment variable is set to 'emr','pacs','reporting' or 'ai'; the file emr.html, pacs.html,reporting.html or ai.html will be returned.
 
 * "/log": (on ws not http), Websocket to broadcast the server side logs to the browser.
 
