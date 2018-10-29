@@ -3,5 +3,5 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}"
     ],
-    "appService.defaultWebAppToDeploy": "/subscriptions/d80944b1-420e-45e6-809a-9bfbcc7d0882/resourceGroups/fhircast/providers/Microsoft.Web/sites/fhircast"
+    "appService.defaultWebAppToDeploy": "/subscriptions/d80944b1-420e-45e6-809a-9bfbcc7d0882/resourceGroups/fhircast/providers/Microsoft.Web/sites/emr-fhircast"
 }

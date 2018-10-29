@@ -10,6 +10,7 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/endpoints.js"
+            //,"env": {"MODE":""}  //  Specify "" for normal operation.  EMR,PACS,Reporting for cleint only.
         }
     ]
 }

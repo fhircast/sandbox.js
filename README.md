@@ -44,11 +44,11 @@ Azure will deploy the app with SSL on port 443 so you do not have to handle cert
 
 # Program Description
 
-There are three files:  endpoints.js, frontend.html and package.json.
+There are three files:  endpoints.js, hub.html and package.json.
 
 * The endpoints.js file provides all listening (client and hub) endpoints using Node.js with the express module.  
 
-* The frontend.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
+* The hub.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
 
 * The package.json file specifies the Node.js modules used in the app.
   
