@@ -5,7 +5,6 @@ The FHIRcast Playground is a set of tools to simulate the workflow of the FHIRca
 The following deployments are supported:
 
 * HUB:                 https://hub-fhircast.azurewebsites.net/
-
 * EMR client:          https://emr-fhircast.azurewebsites.net/
 * PACS client:         https://pacs-fhircast.azurewebsites.net/
 * Reporting client:    https://reporting-fhircast.azurewebsites.net/
@@ -21,12 +20,14 @@ If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](htt
 
 
 # Usage
-You can try it in the cloud [here](https://fhircast.azurewebsites.net/).
+You can start with the [combined hub/client](https://hub-fhircast.azurewebsites.net/) in the cloud.
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
 4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations.  
   
+Next, you can use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.
+Finally, add the [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) client to simulate a complete workflow.
 
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
@@ -97,5 +98,5 @@ The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()
 
 Other functions are specific to the sandbox:
 * setURLs(): On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
-* getHubStatus(): Makes a POST to the sandbox backend to trigger the display of active subscriptions when the button is clicked.
-* deleteSubscriptions(): Makes a POST to the sandbox backend to clear the subscriptions list when the button is clicked.
+* getHubStatus(): Makes a POST to the hub to trigger the display of active subscriptions when the button is clicked.
+* deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
