@@ -28,7 +28,7 @@ You can start with the [combined hub/client](https://hub-fhircast.azurewebsites.
   
 Next, you can use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 
-Finally, add the [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) clients to simulate a complete workflow.
+Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/)), [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) clients to simulate a complete workflow.
 
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
@@ -50,11 +50,11 @@ Finally, add the [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](h
 ## In the Azure cloud
 
 The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
-Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself.  You can create an account and use the free trial [here](https://azure.microsoft.com).
+Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself. 
 
 ## Environment variables
 ### MODE
-The MODE environment variable can be used to specify if your instance is a hub, an EMR client, a PACS client, an AI or a reporting client.  If this variable is not set, the instance will be a hub.
+The MODE environment variable can be used to specify if the instance is a hub, an EMR client, a PACS client, an AI client or a reporting client.  If this variable is not set, the instance will be a hub.
 
 ### PORT
 The PORT environment variable can be used to specify the listening port.  If this variable is not set, the port will be 3000.
@@ -72,6 +72,7 @@ There are three files:  endpoints.js, hub.html and package.json.
 
 ## Endpoints description
 ### Server (hub) endpoints
+These two endpoints are not active when the MODe environment variable is set to 'emr','pacs','reporting' or 'ai'.
 * "/api/hub": POST with form query string to receive subscription requests from the clients
  
 * "/notify": POST with JSON payload to receive events from the clients 
@@ -84,7 +85,7 @@ There are three files:  endpoints.js, hub.html and package.json.
 
 ### Utility endpoints (not in the standard)
 
-* "/": GET with HTML/JavaScript (frontend.html file) to provide the web page to subscribe and post events to the hub.
+* "/": GET with HTML/JavaScript to provide the web page to subscribe and post events to the hub.  Default is to reurn the hub.html file.  If the MODE environment variable is set to 'emr','pacs','reporting' or 'ai'; the file emr.html, pacs.html,reporting.html or ai.html will be returned.
 
 * "/log": (on ws not http), Websocket to broadcast the server side logs to the browser.
 
