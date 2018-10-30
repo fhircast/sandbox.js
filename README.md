@@ -43,7 +43,7 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 
 
 # Installation
-## On Windows, MacOS or Linux
+## Local installation (Windows and  MacOS)
 1. Install node at http://nodejs.org.
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
@@ -53,10 +53,10 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 
 [VScode](https://code.visualstudio.com/) can be used on all platforms for editing and debugging.
 
-## In the Azure cloud
-
-The Azure vscode extension can be used to deploy the app as a web service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
-Azure will deploy the app with SSL on port 443 so you do not have to handle certificates youself. 
+## Cloud deployment 
+###Azure
+The Azure vscode extension can be used to deploy the app as a 'WebApp' service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
+ ![Azure configuration](AzureConfiguration.png)
 
 ## Environment variables
 ### MODE
