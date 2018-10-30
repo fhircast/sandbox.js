@@ -62,8 +62,10 @@ The PORT environment variable can be used to specify the listening port.  If thi
 [VScode](https://code.visualstudio.com/) can be used for editing and debugging.
 
 Different port settings are required when running multiple sandboxes locally.
-They can  be set on lunch.json or on the command-line whe starting node.
- 
+They can be set in launch.json or on the command-line when starting node:
+```
+MODE=ai PORT=3001 node endpoints.js
+```
 ## Cloud deployment 
 ### Azure
 The Azure VScode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
@@ -75,6 +77,10 @@ You can add environment variables for the instance by creating 'Application Sett
 
 ### Amazon
 In AWS, you can use the 'ElasticBeanStalk' deployment to create a WebApp.  
+
+## Mobile deploymnet (iOS, Android)
+Thanks to https://github.com/janeasystems, running Node.js applications and therefore the FHIRcast sandbox. 
+![iPhone](iPhone.png)
 
 # Program Description
 
