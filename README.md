@@ -46,16 +46,16 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
 4. Run with "node endpoint.js".  This starts the endpoints for the hub and the client.
-5. Navigate your browser to "http://localhost:3000/" to access the UI.
+5. Navigate your browser to http://localhost:3000/ to access the UI.
 
 
-[VScode](https://code.visualstudio.com/) can be used on all platforms for editing and debugging.
+[VScode](https://code.visualstudio.com/) can be used for editing and debugging.
 
 ## Cloud deployment 
 ### Azure
-The Azure vscode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
+The Azure VScode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
 
-You can add environment variables for the instance by creating "Application Settings" as shown in the following picture.
+You can add environment variables for the instance by creating 'Application Settings' as shown in the following picture.
 
 
  ![Azure configuration](AzureConfiguration.png)
