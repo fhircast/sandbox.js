@@ -64,6 +64,23 @@ They can be set in launch.json or on the command-line when starting node:
 ```
 MODE=ai PORT=3001 node endpoints.js
 ```
+## Linux installation
+Official Node.js binary distributions are provided by [NodeSource]
+(https://github.com/nodesource/distributions/blob/master/README.md).
+
+# Using Ubuntu
+```
+// chdir to where the githib was downloaded
+cd sandboxjs
+curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+sudo apt-get install -y nodejs
+// Update npm
+sudo npm install npm --global
+// install the modules
+npm install
+// start the sandbox
+node sandbox.js
+```
 
 ## Cloud deployment 
 Two important settings for cloud deploymentare the port environment variable defined in endpoint.js and the start script in the launch.json file.  
@@ -71,15 +88,16 @@ Two important settings for cloud deploymentare the port environment variable def
 ### Azure
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments.  
 You can add environment variables for the App Service instance by creating an 'Application Settings' as shown in the following picture.
+
  ![Azure configuration](AzureConfiguration.png)
 
 ### Google
-In the Google Could Platform, you can deploy with the Compute-App Engine [option](https://console.cloud.google.com/appengine).  The platform used the app.yaml file for deployment.
+In the Google Cloud Platform, you can deploy with the Compute-App Engine [option](https://console.cloud.google.com/appengine).  The platform uses the app.yaml file for deployment:
 ```
 env: flex
 runtime: nodejs
 ```
-This [article](https://medium.com/google-cloud/deploying-a-node-js-app-on-google-cloud-8419de45e5dc) provides an overview of the process: 
+This [article](https://medium.com/google-cloud/deploying-a-node-js-app-on-google-cloud-8419de45e5dc) provides an overview of the process.
 
 ### Amazon
 In AWS, you can use the 'Elastic Beanstalk' deployment to create a WebApp. 

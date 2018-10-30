@@ -22,7 +22,7 @@ var port= process.env.PORT || 3000;  // this is needed for cloud deployment alon
 var subscriptions=[];
 var logWebsocket='';
 var socketCount=0;
-var hitCounter=0;
+var pageLoads=0;
 
 var mode = process.env.MODE;  // Do not start the hub services if we are a client.
 if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
@@ -135,7 +135,7 @@ app.get('/',function(req,res){
   res.sendFile(path.join(__dirname + '/'+UIFile)); 
 
   // Log hitcount and uptime.
-  hitCounter++; 
+  pageLoads++; 
   function format(seconds){
     function pad(s){
       return (s < 10 ? '0' : '') + s;
@@ -147,7 +147,7 @@ app.get('/',function(req,res){
     return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
   }
   var uptime = process.uptime();
-  console_log('🔧UI: Home page requested '+hitCounter+' times in '+format(uptime)+' uptime.');
+  console_log('🔧UI: Home page requested '+pageLoads+' times in '+format(uptime)+' uptime.');
 });
 
 // Websocket to provide the logs to the client 
