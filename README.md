@@ -6,7 +6,8 @@ FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standa
 This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
-The following deployments are supported:
+
+The following sandbox deployments are supported:
 
 * HUB (server and client): https://hub-fhircast.azurewebsites.net/
 * EMR client: https://emr-fhircast.azurewebsites.net/
