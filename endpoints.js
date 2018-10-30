@@ -147,7 +147,7 @@ app.get('/',function(req,res){
     return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
   }
   var uptime = process.uptime();
-  console_log('🔧UI: Home page requested. '+hitCounter+' hits in '+format(uptime)+' uptime.');
+  console_log('🔧UI: Home page requested '+hitCounter+' times in '+format(uptime)+' uptime.');
 });
 
 // Websocket to provide the logs to the client 

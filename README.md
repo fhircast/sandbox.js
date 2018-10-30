@@ -66,6 +66,7 @@ They can be set in launch.json or on the command-line when starting node:
 ```
 MODE=ai PORT=3001 node endpoints.js
 ```
+
 ## Cloud deployment 
 ### Azure
 The Azure VScode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
@@ -76,11 +77,16 @@ You can add environment variables for the instance by creating 'Application Sett
  ![Azure configuration](AzureConfiguration.png)
 
 ### Amazon
-In AWS, you can use the 'ElasticBeanStalk' deployment to create a WebApp.  
+In AWS, you can use the 'ElasticBeanStalk' deployment to create a WebApp. 
+Deployment is done by uploading a zip file of the source drirectory.
 
-## Mobile deploymnet (iOS, Android)
-Thanks to https://github.com/janeasystems, running Node.js applications and therefore the FHIRcast sandbox. 
+Environment variables are set int the AWS console:
+![amazon](amazon.png)
+
+## Mobile deployement (iOS, Android)
+Thanks to https://github.com/janeasystems/nodejs-mobile, running Node.js applications and therefore the FHIRcast sandbox is possible. 
 ![iPhone](iPhone.png)
+The description from [Janea Systems](https://code.janeasystems.com/nodejs-mobile/getting-started-ios) has been used by a contributor to run the sandbox on iOS.
 
 # Program Description
 
