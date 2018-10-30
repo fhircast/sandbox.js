@@ -35,7 +35,7 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 ![workflow](workflow.png)
 
 # Troubleshooting
-* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
+* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
 * **The log emojis are black and white:**  On Windows 7, you need Office 2016 to have color emojis.
 
@@ -140,3 +140,8 @@ Other functions are specific to the sandbox:
 * setURLs(): On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
 * getHubStatus(): Makes a POST to the hub to trigger the display of active subscriptions when the button is clicked.
 * deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
+
+# Contribution
+We welcome any contributions to help further enhance this tool for the FHIRcast community! To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then follow the steps below.
+
+1. Issue a pull request on the fhircast/sandbox.js repository with your changes for review.
