@@ -142,6 +142,4 @@ Other functions are specific to the sandbox:
 * deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
 
 # Contribution
-We welcome any contributions to help further enhance this tool for the FHIRcast community! To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then follow the steps below.
-
-1. Issue a pull request on the fhircast/sandbox.js repository with your changes for review.
+We welcome any contributions to help further enhance this tool for the FHIRcast community! To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then issue a pull request on the fhircast/sandbox.js repository with your changes for review.
