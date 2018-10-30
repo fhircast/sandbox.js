@@ -20,13 +20,9 @@ The first communication channel defined by FHIRcast is the [W3C WebSub RFC](http
 
 This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
-
-
-![frontend](frontend.png)
-
-
 # Usage
 You can start with the [combined hub/client](https://hub-fhircast.azurewebsites.net/) in the cloud.
+![frontend](frontend.png)
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
@@ -59,7 +55,7 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 ### Azure
 The Azure vscode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
 
-You can add environment variables for the instance by creating "App Settings" as shown in the following picture.
+You can add environment variables for the instance by creating "Application Settings" as shown in the following picture.
 
 
  ![Azure configuration](AzureConfiguration.png)
@@ -76,11 +72,11 @@ The PORT environment variable can be used to specify the listening port.  If thi
 
 # Program Description
 
-There are three files:  endpoints.js, hub.html and package.json.
+There are seven files:  endpoints.js, hub.html,ai.html,emr.html.pacs.html,reporting.html and package.json.
 
 * The endpoints.js file provides all listening (client and hub) endpoints using Node.js with the express module.  
 
-* The hub.html file is the client UI that triggers the client subscription requests and performs client event notifications to the hub.
+* There is one HTML file for each client UI.  They trigger the client subscription requests and performs client event notifications to the hub.
 
 * The package.json file specifies the Node.js modules used in the app.
   
