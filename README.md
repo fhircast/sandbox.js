@@ -55,7 +55,7 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 
 ## Cloud deployment 
 ### Azure
-The Azure vscode extension can be used to deploy the sandboxes as  'App Services' service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
+The Azure vscode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
 
 You can add environment variables for the instance by creating "App Settings" as shown in the following picture.
 
