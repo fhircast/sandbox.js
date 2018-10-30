@@ -54,9 +54,14 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 [VScode](https://code.visualstudio.com/) can be used on all platforms for editing and debugging.
 
 ## Cloud deployment 
-###Azure
+### Azure
 The Azure vscode extension can be used to deploy the app as a 'WebApp' service.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
+
+You can add environment variables for the instance by creating "App Settings" as shown in the following picture.
  ![Azure configuration](AzureConfiguration.png)
+
+### Amazon
+In AWS, you can use the 'ElasticBeanStalk' deployment to create a WebApp.  
 
 ## Environment variables
 ### MODE
