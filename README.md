@@ -68,17 +68,16 @@ MODE=ai PORT=3001 node endpoints.js
 Official Node.js binary distributions are provided by [NodeSource]
 (https://github.com/nodesource/distributions/blob/master/README.md).
 
-# Using Ubuntu
+### Using Ubuntu
 ```
-// chdir to where the githib was downloaded
-cd sandboxjs
-curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
-sudo apt-get install -y nodejs
-// Update npm
-sudo npm install npm --global
-// install the modules
+cd sandboxjs        # change directory to where the githib was downloaded
+curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -     
+# Download binaries 
+sudo apt-get install -y nodejs  # install
+sudo npm install npm --global   # update npm
+# install the modules
 npm install
-// start the sandbox
+# start the sandbox
 node sandbox.js
 ```
 
