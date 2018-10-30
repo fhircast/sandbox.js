@@ -5,6 +5,7 @@ FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standa
 
 This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
+If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 The following deployments are supported:
 
 * HUB (server and client): https://hub-fhircast.azurewebsites.net/
@@ -18,7 +19,7 @@ The first communication channel defined by FHIRcast is the [W3C WebSub RFC](http
 
 This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
-If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
+
 
 ![frontend](frontend.png)
 
