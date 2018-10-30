@@ -5,9 +5,9 @@ FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standa
 
 This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
-If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
+If you are a C#/.net developer, you might prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-The following sandbox deployments are supported:
+The following sandbox deployments are available:
 
 * HUB (server and client): https://hub-fhircast.azurewebsites.net/
 * EMR client: https://emr-fhircast.azurewebsites.net/
@@ -26,7 +26,7 @@ You can start with the [combined hub/client](https://hub-fhircast.azurewebsites.
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
-4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in your browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations.  
+4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations.  
   
 Next, use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 
@@ -41,6 +41,16 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 
 
 # Installation
+Installing your own sandbox allows you to learn about the inner workings, fix bugs, propose new features or simply provide a private test environment for your project or institution.
+Whether deploying locally or in the cloud, environment variables setting may be needed.
+
+## Environment variables
+### MODE
+The MODE environment variable can be used to specify if the instance is a hub, an EMR client, a PACS client, an AI client or a reporting client.  If this variable is not set, the instance will be a hub.
+
+### PORT
+The PORT environment variable can be used to specify the listening port.  If this variable is not set, the port will be 3000.
+
 ## Local installation (Windows and  MacOS)
 1. Install node at http://nodejs.org.
 2. Install npm, the node package manager, at http://npmjs.org.
@@ -51,6 +61,9 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 
 [VScode](https://code.visualstudio.com/) can be used for editing and debugging.
 
+Different port settings are required when running multiple sandboxes locally.
+They can  be set on lunch.json or on the command-line whe starting node.
+ 
 ## Cloud deployment 
 ### Azure
 The Azure VScode extension can be used to deploy the sandboxes as  'App Services'.  Two critical points are the port environment variable defined in endpoint.js and the launch.json file which tells Azure which program to run. They should not need any modifications.  
@@ -62,13 +75,6 @@ You can add environment variables for the instance by creating 'Application Sett
 
 ### Amazon
 In AWS, you can use the 'ElasticBeanStalk' deployment to create a WebApp.  
-
-## Environment variables
-### MODE
-The MODE environment variable can be used to specify if the instance is a hub, an EMR client, a PACS client, an AI client or a reporting client.  If this variable is not set, the instance will be a hub.
-
-### PORT
-The PORT environment variable can be used to specify the listening port.  If this variable is not set, the port will be 3000.
 
 # Program Description
 
