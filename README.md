@@ -3,7 +3,7 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
 
-This sandbox (sandbox.js) implements the standard using Node.js
+This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 The following deployments are supported:
 
@@ -14,7 +14,9 @@ The following deployments are supported:
 * AI client: https://ai-fhircast.azurewebsites.net/
 
 
-The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
+The first communication channel defined by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
+
+This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 If you are a C#/.net developer, you may prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
