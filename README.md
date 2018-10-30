@@ -5,9 +5,9 @@ FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standa
 
 This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
-If you are a C#/.net developer, you might prefer to use the [FHIRcast sandbox](https://github.com/fhircast/sandbox).
+If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-The following sandbox deployments are available:
+The following sandbox.js deployments are available:
 
 * HUB (server and client): https://hub-fhircast.azurewebsites.net/
 * EMR client: https://emr-fhircast.azurewebsites.net/
@@ -35,7 +35,7 @@ Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai
 ![workflow](workflow.png)
 
 # Troubleshooting
-* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the cheapest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons.
+* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
 * **The log emojis are black and white:**  On Windows 7, you need Office 2016 to have color emojis.
 
@@ -77,13 +77,13 @@ You can add environment variables for the instance by creating 'Application Sett
  ![Azure configuration](AzureConfiguration.png)
 
 ### Amazon
-In AWS, you can use the 'ElasticBeanStalk' deployment to create a WebApp. 
+In AWS, you can use the 'Elastic Beanstalk' deployment to create a WebApp. 
 Deployment is done by uploading a zip file of the source drirectory.
 
-Environment variables are set int the AWS console:
+Environment variables are set in the AWS console:
 ![amazon](amazon.png)
 
-## Mobile deployement (iOS, Android)
+## Mobile deployment (iOS, Android)
 Thanks to https://github.com/janeasystems/nodejs-mobile, running Node.js applications and therefore the FHIRcast sandbox is possible. 
 ![iPhone](iPhone.png)
 The description from [Janea Systems](https://code.janeasystems.com/nodejs-mobile/getting-started-ios) has been used by a contributor to run the sandbox on iOS.
