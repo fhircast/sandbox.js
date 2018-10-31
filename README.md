@@ -65,8 +65,7 @@ They can be set in launch.json or on the command-line when starting node:
 MODE=ai PORT=3001 node endpoints.js
 ```
 ## Linux
-Official Node.js binary distributions are provided by [NodeSource]
-(https://github.com/nodesource/distributions/blob/master/README.md).
+Official Node.js binary distributions are provided by [NodeSource](https://github.com/nodesource/distributions/blob/master/README.md).
 
 ### Ubuntu
 ```
