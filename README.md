@@ -1,5 +1,5 @@
 # FHIRcast JavaScript Sandbox
-FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](https://fhircast.org).
+FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](http://fhircast.org).
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
 
@@ -78,7 +78,7 @@ node sandbox.js     # start the sandbox
 ```
 
 ## Cloud
-Two important settings for cloud deploymentare the port environment variable defined in endpoint.js and the start script in the launch.json file.  
+Two important settings for cloud deployment are the port environment variable defined in endpoint.js and the start script in the launch.json file.  
 
 ### Azure
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments.  
