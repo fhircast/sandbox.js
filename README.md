@@ -51,7 +51,7 @@ The MODE environment variable can be used to specify if the instance is a hub, a
 ### PORT
 The PORT environment variable can be used to specify the listening port.  If this variable is not set, the port will be 3000.
 
-## Local installation (Windows and  MacOS)
+## Windows and  MacOS
 1. Install node at http://nodejs.org.
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
@@ -64,29 +64,26 @@ They can be set in launch.json or on the command-line when starting node:
 ```
 MODE=ai PORT=3001 node endpoints.js
 ```
-## Linux installation
+## Linux
 Official Node.js binary distributions are provided by [NodeSource]
 (https://github.com/nodesource/distributions/blob/master/README.md).
 
-### Using Ubuntu
+### Ubuntu
 ```
 cd sandboxjs        # change directory to where the githib was downloaded
-curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -     
-# Download binaries 
+curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -  # Download binaries 
 sudo apt-get install -y nodejs  # install
 sudo npm install npm --global   # update npm
-# install the modules
-npm install
-# start the sandbox
-node sandbox.js
+npm install     # install the modules
+node sandbox.js     # start the sandbox
 ```
 
-## Cloud deployment 
+## Cloud
 Two important settings for cloud deploymentare the port environment variable defined in endpoint.js and the start script in the launch.json file.  
 
 ### Azure
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments.  
-You can add environment variables for the App Service instance by creating an 'Application Settings' as shown in the following picture.
+The MODE environment variable can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
 
  ![Azure configuration](AzureConfiguration.png)
 
@@ -105,7 +102,7 @@ Deployment is done by uploading a zip file of the source drirectory.
 Environment variables are set in the AWS console:
 ![amazon](amazon.png)
 
-## Mobile deployment (iOS, Android)
+## Mobile (iOS, Android)
 Thanks to https://github.com/janeasystems/nodejs-mobile, running Node.js applications and therefore the FHIRcast sandbox is possible. 
 ![iPhone](iPhone.png)
 The description from [Janea Systems](https://code.janeasystems.com/nodejs-mobile/getting-started-ios) has been used by a contributor to run sandbox.js on iOS.
@@ -161,4 +158,6 @@ Other functions are specific to the sandbox:
 * deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
 
 # Contribution
-We welcome any contributions to help further enhance this tool for the FHIRcast community! To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then issue a pull request on the fhircast/sandbox.js repository with your changes for review.
+We welcome any contributions to help further enhance this tool for the FHIRcast community ! 
+
+To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then issue a pull request on the fhircast/sandbox.js repository with your changes for review.

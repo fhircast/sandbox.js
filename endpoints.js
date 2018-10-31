@@ -104,8 +104,10 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
         });
       });
     }
-    else {message='Running in azure cloud.'}
-    console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. There are '+socketCount+' browsers connected to the UI. '+message);
+    else {message='Running in Azure cloud.'}
+    if (socketCount==1)  { message='There is 1 browser connected to the UI.'+message;}
+    else { message='There are '+socketCount+' browsers connected to the UI.'+message;}
+    console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. '+message);
     res.send(200);
   });
   console_log('🔧 Web service: Hub and Client mode.');
