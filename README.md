@@ -22,7 +22,7 @@ This model defines a "hub" that receives subscribtion requests from clients (sub
 
 # Usage
 You can start with the [combined hub/client](https://hub-fhircast.azurewebsites.net/) in the cloud.
-![frontend](frontend.png)
+![frontend](/images/frontend.png)
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
@@ -32,7 +32,7 @@ Next, use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscr
 
 Finally, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) clients to simulate a complete workflow.
 
-![workflow](workflow.png)
+![workflow](/images/workflow.png)
 
 # Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
@@ -55,14 +55,14 @@ The PORT environment variable can be used to specify the listening port.  If thi
 1. Install node at http://nodejs.org.
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
-4. Run with "node endpoint.js".  This starts the endpoints for the hub and the client.
+4. Run with "node sandbox.js".  This starts the endpoints for the hub and the client.
 5. Navigate your browser to http://localhost:3000/ to access the UI.
 
 
 Different port settings are required when running multiple sandboxes locally.
 They can be set in launch.json or on the command-line when starting node:
 ```
-MODE=ai PORT=3001 node endpoints.js
+MODE=ai PORT=3001 node sandbox.js
 ```
 ## Linux
 Official Node.js binary distributions are provided by [NodeSource](https://github.com/nodesource/distributions/blob/master/README.md).
@@ -84,7 +84,7 @@ Two important settings for cloud deployment are the port environment variable de
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments.  
 The MODE environment variable can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
 
- ![Azure configuration](AzureConfiguration.png)
+ ![Azure configuration](/images/AzureConfiguration.png)
 
 ### Google
 In the Google Cloud Platform, you can deploy with the Compute-App Engine [option](https://console.cloud.google.com/appengine).  The platform uses the app.yaml file for deployment:
@@ -99,23 +99,21 @@ In AWS, you can use the 'Elastic Beanstalk' deployment to create a WebApp.
 Deployment is done by uploading a zip file of the source drirectory.
 
 Environment variables are set in the AWS console:
-![amazon](amazon.png)
+![amazon](/images/amazon.png)
 
 ## Mobile (iOS, Android)
 Thanks to https://github.com/janeasystems/nodejs-mobile, running Node.js applications and therefore the FHIRcast sandbox is possible. 
-![iPhone](iPhone.png)
+![iPhone](/images/iPhone.png)
 The description from [Janea Systems](https://code.janeasystems.com/nodejs-mobile/getting-started-ios) has been used by a contributor to run sandbox.js on iOS.
 
 # Program Description
 
-There are seven files:  endpoints.js, hub.html,ai.html,emr.html.pacs.html,reporting.html and package.json.
+There are two files:  sandbox.js and sandbox.html.
 
-* The endpoints.js file provides all listening (client and hub) endpoints using Node.js with the express module.  
+* The sandbox.js file is the backend that runs on Node.js. It provides all listening (client and hub) endpoints using the express module.  
 
-* There is one HTML file for each client UI.  They trigger the client subscription requests and performs client event notifications to the hub.
+* Th sandbox.html file is the frontend and runs in the browser. It triggers the client subscription requests and performs client event notifications to the hub.
 
-* The package.json file specifies the Node.js modules used in the app.
-  
 
 ## Endpoints description
 ### Server (hub) endpoints

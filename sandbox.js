@@ -1,5 +1,5 @@
 const os = require( 'os' );
-const ifaces = os.networkInterfaces( );
+const EventEmitter = require('events');
 const request=require('request');
 const morgan = require('morgan');
 const bodyParser=require('body-parser');
@@ -49,6 +49,7 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
           secret: subscriptionRequest['hub.secret'],
           topic: subscriptionRequest['hub.topic'],
           lease: subscriptionRequest['hub.lease'],
+          session: subscriptionRequest['hub.topic'],
         };
       subscriptions.push(subscription);
     });
@@ -61,11 +62,13 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
     resNotify.send(200);
     console_log('📡HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
     //  Broadcast the event to all clients
-    notification=reqNotify.body.event;
+    notification=reqNotify.body;
     subscriptions.forEach(function(subscription) {
       console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
-      if(subscription.events==notification['hub.event']){
-        console_log('📡HUB: Found subscription for: '+ notification['hub.event']);
+      if( subscription.events==notification.event['hub.event'] &&
+          subscription.session==notification['cast-session']
+      ){
+        console_log('📡HUB: Found subscription for: '+ notification.event['hub.event']+' session:'+notification['cast-session']);
         // Send the notification to the client
         request.post({
           url: subscription['callback'] ,
@@ -79,13 +82,18 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
             console.log(error);
         });
       }
+      else {
+        console_log('📡HUB: No subscription found for: '+ notification['id'] +' event name:'+notification.event['hub.event']);
+      }
     });
   });
-  // HUB: Return hub status in the log
+
+  // HUB: Return hub status in the log - Internal - Not part of the standard
   app.post('/status',function(req,res){
     var message=''; 
     if(req.get('host').indexOf('azure')<1){ // do not show host or ip for azure-not useful
       message+='Listening on '+os.hostname +':' + port+'. IP addresses';
+      const ifaces = os.networkInterfaces( );
       Object.keys(ifaces).forEach(function (ifname) {
         var alias = 0;
         ifaces[ifname].forEach(function (iface) {
@@ -105,9 +113,12 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
       });
     }
     else {message='Running in Azure cloud.'}
-    if (socketCount==1)  { message='There is 1 browser connected to the UI.'+message;}
-    else { message='There are '+socketCount+' browsers connected to the UI.'+message;}
+    if (socketCount==1)  { message='There is 1 browser connected to the UI. '+message;}
+    else { message='There are '+socketCount+' browsers connected to the UI. '+message;}
     console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. '+message);
+    subscriptions.forEach(function(subscription) {
+      console_log('🔧UI:   Client "'+subscription.callback+'" with session id "'+subscription.session+'"subscribed to event: ' + subscription.events);
+    });
     res.send(200);
   });
   console_log('🔧 Web service: Hub and Client mode.');
@@ -130,13 +141,14 @@ app.post('/client/',function(req,res){
   res.json(200,{'context':req.body});
 });
 
+
+// CLIENT: send back mode (ai,emr,hub,reporting,pacs)
+app.post('/mode/',function(req,res){res.send(mode);});
+
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-  var UIFile='hub.html';
-  if (process.env.MODE) {UIFile=process.env.MODE+'.html';}
-  res.sendFile(path.join(__dirname + '/'+UIFile)); 
-
-  // Log hitcount and uptime.
+  res.sendFile(path.join(__dirname + '/sandbox.html')); 
+  // Log page loads and uptime on new session.
   pageLoads++; 
   function format(seconds){
     function pad(s){
@@ -145,7 +157,6 @@ app.get('/',function(req,res){
     var hours = Math.floor(seconds / (60*60));
     var minutes = Math.floor(seconds % (60*60) / 60);
     var seconds = Math.floor(seconds % 60);
-  
     return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
   }
   var uptime = process.uptime();
@@ -160,7 +171,12 @@ function console_log(msg){
  
  app.ws('/log', function(ws, req) {
   socketCount++;
-  console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
+  //console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
+  ws.onmessage= e => {
+    //ws.id=e.data ;  // We recive our session id from the browser on connect
+    console_log('🚀WEBSOCKET: Accepting connection number '+socketCount+ ' with ID:'+e.data +'.');
+  
+  }
 
   ws.on('close', function(msg) {
     socketCount--;
@@ -168,18 +184,34 @@ function console_log(msg){
   });
 
   var logWss = expressWs.getWss('/log');
+
+  //var event = new Event('log');
+  //event.addEventListener('log', function (e) {
+  //  if (ws.readyState==1) {
+  //    logWss.clients.forEach(function (client) {
+  //      client.send(e);
+  //      console.log('Websocket message sent to: '+client.id );
+  //    }, false);
+  //  }
+  //});
+
+  //document.addEventListener("log", function(e) {
+  //  console.log(e.detail); // Prints "Example of an event"
+  //});
+
   setInterval(() => { 
       if (logWebsocket!='') {       
         if (ws.readyState==1) {
           logWss.clients.forEach(function (client) {
             client.send(logWebsocket);
-            console.log('Websocket message sent.' );
+            console.log('Websocket message sent to: '+client.id );
          });
         logWebsocket='';
         } 
       } 
     },1000);
-});
+
+});  
 
 
 // UI: Clear all subscriptions

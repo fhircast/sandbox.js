@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<head>
+    <title>FHIRcast JavaScript - Hub and Client</title>
+    <style>
+        body {padding: 2px;  background-color: darkgray;font-family: Arial, Helvetica, sans-serif; font-weight: 500;border: 1px solid black; font-size: 16}
+        header {background-color:white; text-align:center;}
+        h2 {display: inline; background-color:white; text-align:center;}
+        div.selectHub {border-top: 1px solid black;}
+        div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
+        div.notify {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
+        label,button {padding: 2px; display: inline-block;width: 24.5%}
+        input,textarea,select {width: 65%;border:1px solid}
+        textarea {vertical-align: top;}
+        textarea.incomingMsgOutput {width: 99%;font-family: "Segoe UI Emoji";}
+        textarea.incomingMsgOutput,textarea.subscriptionResponse,textarea.eventResponse {background-color:whitesmoke}
+        div.monitor {border-top: 1px solid black;text-align:left}
+    </style>
+</head>
+<body>
+<header><h2><span id="docTitle"></span></h2></header>
+<div class="selectHub">
+    <h3>1. Select the hub:
+    <input id="hubSubscribeURI" name="hubSubscribeURI" value="http://localhost:3000/api/hub/">
+    </h3>
+</div>
+<div class="subscribe">
+    <h3>2. Subscribe to an event</h3>
+    <label>hub.callback: </label>
+    <input id="clientEndpoint" name="hub.callback"   size="29" value="http://localhost:3000/client"/>    
+    <label>hub.mode:</label>
+    <select id="hub.mode" name="hub.mode">
+            <option value="subscribe" selected >subscribe</option>
+            <option value="unsubscribe" >unsubscribe</option>
+    </select>
+    <label>hub.events:</label>
+    <select id="hub.events" name="hub.events">
+            <option value="open-patient-chart" selected >open-patient-chart</option>
+            <option value="switch-patient-chart">switch-patient-chart</option>
+            <option value="close-patient-chart">close-patient-chart</option>
+            <option value="open-imaging-study">open-imaging-study</option>
+            <option value="switch-imaging-study">switch-imaging-study</option>
+            <option value="close-imaging-study">close-imaging-study</option>
+            <option value="logout-user">user-logout</option>
+            <option value="hibernate-user">user-hibernate</option>
+    </select>
+    <label>hub.secret: </label>
+    <input id="hub.secret" name="hub.secret" type="text" value="secret">        
+    <label>hub.topic: </label>
+    <input id="hub.topic" name="hub.topic" type="text" value="FHIRcast testing">
+    <label>hub.lease: </label> 
+    <input id="hub.lease" name="hub.lease" type="text" value="999">
+    <button onclick="sendSubscription(document.getElementById('hubSubscribeURI').value)">Send</button>
+    <textarea class="subscriptionResponse" id="subscriptionResponse"></textarea>
+</div>
+
+<div class="notify">
+    <h3>3. Send an event to the hub</h3> 
+    <label>id:</label> 
+    <input id="EventId" name="EventId" type="text" value="">
+    <label>hub.topic:</label>
+    <input id="hubNotifyURI" name="hubNotifyURI" value="http://localhost:3000/notify"/>;
+    <label>hub.events:</label>
+    <select id="hub.Notifyevents" name="hub.Notifyevents">
+            <option value="open-patient-chart" selected >open-patient-chart</option>
+            <option value="switch-patient-chart">switch-patient-chart</option>
+            <option value="close-patient-chart">close-patient-chart</option>
+            <option value="open-imaging-study">open-imaging-study</option>
+            <option value="switch-imaging-study">switch-imaging-study</option>
+            <option value="close-imaging-study">close-imaging-study</option>
+            <option value="logout-user">user-logout</option>
+            <option value="hibernate-user">user-hibernate</option>
+    </select>
+    <label>context:</label>
+    <textarea  id="context" rows="9" cols="35">"key": "patient",
+"resource": 
+{
+"resourceType": "Patient",
+"id": "ewUbXT9RWEbSj5wPEdgRaBw3",
+"identifier": [
+    {
+    "system": "urn:oid:1.2.840.114350",
+    "value": "185444"
+    },
+    {
+    "system": "urn:oid:1.2.840.114350.1.13.861.1.7.5.737384.27000",
+    "value": "2667"
+    }
+]
+}</textarea>
+    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
+    <textarea class="eventResponse" id="eventResponse"></textarea>
+</div>
+
+<div class="monitor">
+    <h3>4. Monitor endpoints logs with a websocket connection</h3>
+    <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
+    <button id="buttonStatus" onclick="getHubStatus();">Get hub status</button>
+    <button id="buttonDelete" onclick="deleteSubscriptions();">Delete all subscriptions</button>
+    <button onclick="window.open('https://github.com/fhircast/sandbox.js/blob/master/README.md');">Online help</button> 
+    <textarea class="incomingMsgOutput" id="incomingMsgOutput" rows="20" ></textarea><br>
+ </div>
+
+<script>
+    var parser=document.createElement('a'); // use link tag as a url parser
+    parser.href=window.location;    
+    var SessionUUID='id-' + Math.random().toString(36).substr(2, 16);
+    var eventUUID='EventId-' + Math.random().toString(36).substr(2, 16);
+
+    if (parser.protocol=='https:' || parser.host.indexOf('azure')>0){
+        document.getElementById('hubSubscribeURI').value = "https://hub-fhircast.azurewebsites.net/api/hub/";        
+        document.getElementById('clientEndpoint').value="https://hub-fhircast.azurewebsites.net/client";
+        document.getElementById('hubNotifyURI').value="https://hub-fhircast.azurewebsites.net/notify"; 
+    }
+    else if (parser.host.indexOf('5000')>0) {
+        document.getElementById('hubSubscribeURI').value="http://localhost:5000/api/hub/";
+        document.getElementById("clientEndpoint").value="http://localhost:5000/client";
+        document.getElementById('hubNotifyURI').value="http://localhost:5000/notify";      
+    }
+    document.getElementById('hub.topic').value=SessionUUID;
+    document.getElementById('EventId').value=eventUUID;  
+
+    function sendSubscription(url){
+        data =  'hub.callback=' +document.getElementById('clientEndpoint').value;
+        data +='&hub.mode='     +document.getElementById('hub.mode').value;
+        data +='&hub.events='   +document.getElementById('hub.events').value;
+        data +='&hub.secret='   +document.getElementById('hub.secret').value;
+        data +='&hub.topic='    +document.getElementById('hub.topic').value;
+        data +='&hub.lease='    +document.getElementById('hub.lease').value;
+ 
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',url,true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        xhr.send(data);
+        xhr.onloadend = function() { 
+            document.getElementById('subscriptionResponse').value='Response code: '+this.status;
+                };
+        console.log('Subscribtion sent from browser: '+ data);  
+    }
+
+    function sendEvent(contextData,destinationURL){
+        var eventData={};
+        eventData['hub.topic']=document.getElementById('hubNotifyURI').value;
+        eventData['hub.event']=document.getElementById('hub.Notifyevents').value;
+        eventData.context=JSON.parse('{'+contextData+'}');
+        var timestamp= new Date();
+        var msg={};
+        msg.timestamp= timestamp.toJSON();
+        msg.id=document.getElementById('EventId').value;
+        msg['cast-session']=document.getElementById('hub.topic').value;
+        msg.event=eventData;
+
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',destinationURL,true);
+        xhr.setRequestHeader('Content-Type','application/json');
+        console.log('Event sent from browser: '+ JSON.stringify(msg));
+        xhr.send(JSON.stringify(msg));
+        xhr.onloadend = function() { 
+            document.getElementById('eventResponse').value='Response code: '+this.status;
+                };
+    }
+    
+    function getHubStatus(){
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',parser.protocol+'//' + parser.host + '/status');
+        xhr.send();
+        return;
+    }
+    
+    function deleteSubscriptions(){
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',parser.protocol+'//' + parser.host + '/delete');
+        xhr.send();
+        return;
+    }
+
+    var protocol='ws:';
+    if (parser.protocol=='https:'){ protocol='wss:';}
+    var ws = new WebSocket(protocol+'//' + parser.host + '/log');
+    ws.onopen = function () {
+        console.log('websocket is connected ...')
+        ws.send(SessionUUID);
+    }
+    
+    ws.onmessage = function (ev) {
+        document.getElementById('incomingMsgOutput').value=document.getElementById('incomingMsgOutput').value+ev.data;
+        document.getElementById('incomingMsgOutput').scrollTop = document.getElementById('incomingMsgOutput').scrollHeight;
+        console.log(ev.data);
+    }
+
+    ws.onclose = function () {
+        console.log('websocket is closed ...')
+    }
+
+
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST',parser.protocol+'//' + parser.host + '/mode');
+    xhr.send();
+    xhr.onloadend = function() { 
+        var mode=this.responseText;
+        titleSpan = document.getElementById("docTitle");
+        if (mode=='ai') {
+            document.title='FHIRcast JavaScript - AI Client';
+            titleSpan.textContent = "FHIRcast JavaScript - AI Client";
+            document.body.style.backgroundColor = "rgb(250, 233, 243)";
+            document.getElementById('clientEndpoint').value="https://ai-fhircast.azurewebsites.net/client";
+            document.getElementById('buttonDelete').style.visibility = 'hidden';
+            document.getElementById('buttonStatus').style.visibility = 'hidden';
+        }
+        else if(mode=='emr')
+        {
+            document.title='FHIRcast JavaScript - EMR Client';
+            titleSpan.textContent = "FHIRcast JavaScript - EMR Client";
+            document.body.style.backgroundColor = "rgb(255, 229, 188)";
+            document.getElementById('clientEndpoint').value="https://emr-fhircast.azurewebsites.net/client";
+            document.getElementById('buttonDelete').style.visibility = 'hidden';
+            document.getElementById('buttonStatus').style.visibility = 'hidden';
+        }
+        else if(mode=='pacs')
+        {
+            document.title='FHIRcast JavaScript - PACS Client';
+            titleSpan.textContent = "FHIRcast JavaScript - PACS Client";
+            document.body.style.backgroundColor = "#DDF9D9";
+            document.getElementById('clientEndpoint').value="https://pacs-fhircast.azurewebsites.net/client";
+            document.getElementById('buttonDelete').style.visibility = 'hidden';
+            document.getElementById('buttonStatus').style.visibility = 'hidden';
+        }
+        else if(mode=='reporting')
+        {
+            document.title='FHIRcast JavaScript - Reporting Client';
+            titleSpan.textContent = "FHIRcast JavaScript - Reporting Client";
+            document.body.style.backgroundColor = "#ADD9FE";
+            document.getElementById('clientEndpoint').value="https://reporting-fhircast.azurewebsites.net/client";
+            document.getElementById('buttonDelete').style.visibility = 'hidden';
+            document.getElementById('buttonStatus').style.visibility = 'hidden';
+        }
+        else {
+            titleSpan.textContent = "FHIRcast JavaScript Sandbox - Hub and Client";
+        }
+    };
+    
+</script>
+
+</body>

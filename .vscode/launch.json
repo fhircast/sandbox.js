@@ -9,8 +9,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/endpoints.js"
-            //,"env": {"MODE":""}  //  Specify "" for normal operation.  emr,pacs,ai,reporting for client only.
+            "program": "${workspaceFolder}/sandbox.js",
+            "env": {"MODE":"hub"}  //  Specify "" for normal operation.  emr,pacs,ai,reporting for client only.
         }
     ]
 }
