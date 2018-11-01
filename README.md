@@ -96,7 +96,7 @@ This [article](https://medium.com/google-cloud/deploying-a-node-js-app-on-google
 
 ### Amazon
 In AWS, you can use the 'Elastic Beanstalk' deployment to create a WebApp. 
-Deployment is done by uploading a zip file of the source drirectory.
+Deployment is done by uploading a zip file of the source directory.
 
 Environment variables are set in the AWS console:
 ![amazon](/images/amazon.png)
@@ -112,7 +112,7 @@ There are two files:  sandbox.js and sandbox.html.
 
 * The sandbox.js file is the backend that runs on Node.js. It provides all listening (client and hub) endpoints using the express module.  
 
-* Th sandbox.html file is the frontend and runs in the browser. It triggers the client subscription requests and performs client event notifications to the hub.
+* The sandbox.html file is the frontend and runs in the browser. It triggers the client subscription requests and performs client event notifications to the hub.  It is served to the browser by the sandbox.js app service.
 
 
 ## Endpoints description
