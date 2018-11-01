@@ -34,7 +34,8 @@ Next, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai-fh
 
 ![workflow](/images/workflow.png)
 
-Finally, open two reporting client browser session.  Register to an event from one of the browsers and generate an event in the hub.  Do both reporting browsers get a message?
+
+Finally, open two reporting client browser sessions.  Subscribe to an event from one of the browsers and generate an event in the hub.  Do both reporting browsers get a message?
 
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
