@@ -39,37 +39,25 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
-# Troubleshooting
+## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
 * **The log emojis are black and white:**  Color emojis require Office 2016 on Windows 7.
 
 
 # Installation
-Installing your own sandbox allows you to learn about the inner workings, fix bugs, propose new features or simply provide a private test environment for your project or institution.
+Installing your own sandbox allows you to learn, fix bugs, propose new features or simply provide a private test environment for your project or institution.
 Whether deploying locally or in the cloud, environment variable settings may be needed.
 
 ## Environment variables
-If no environment variables are set, then instance will run as a combined hub and client.
+If no environment variables are set, the instance will run as a combined hub and client.
 
-### MODE
-The MODE environment variable specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
-
-### PORT
-The PORT environment variable specifies the listening port. Default is 3000.
-
-### HUB_URL
-The HUB_URL environment variable specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
-
-### CLIENT_URL
-The CLIENT_URL environment variable specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000/client.
-
-### TITLE
-Sets the title.
-
-### BACKGROUND_COLOR
-Sets the background color.
-
++ MODE: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
++ PORT: Specifies the listening port. Default is 3000. Do not set this variable in cloud deployment.
++ HUB_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
++ CLIENT_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000/client.
++ TITLE: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
++ BACKGROUND_COLOR: Sets the background color. Default is 'darkgray'.
 
 ## Windows and  MacOS
 1. Install node at http://nodejs.org.
@@ -80,12 +68,12 @@ Sets the background color.
 
 
 Different port settings are required when running multiple sandboxes locally.
-They can be set on the command-line when starting node:
+They can be set on the command-line when starting the instance:
 ```
-MODE=ai PORT=3001 node sandbox.js
+MODE=client PORT=3001 node sandbox.js
 ```
 
-They can be set in launch.json as well:
+Or in launch.json:
 ```
   "configurations": [
         {
@@ -118,11 +106,11 @@ node sandbox.js     # start the sandbox
 ```
 
 ## Cloud
-Two important settings for cloud deployment are the port environment variable defined in endpoint.js and the start script in the launch.json file.  
+Do not set the port environment variable when deploying in a cloud platform.  The cloud service will define it for its environment.
 
 ### Azure
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments.  
-The MODE environment variable can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
+The environment variables can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
 
  ![Azure configuration](/images/AzureConfiguration.png)
 
@@ -190,7 +178,7 @@ The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()
 
 
 Other functions are specific to the sandbox:
-* setURLs(): On page load, this function attemps to preselect the correct endpoints from the three drop-down menus.  
+  
 * getHubStatus(): Makes a POST to the hub to trigger the display of active subscriptions when the button is clicked.
 * deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
 
