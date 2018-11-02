@@ -14,9 +14,6 @@ The following sandbox.js deployments are available in the Azure cloud (Europe We
 * Reporting client: https://reporting-fhircast.azurewebsites.net/
 * AI client: https://ai-fhircast.azurewebsites.net/
 
-In the Amazon Cloud (us-west):
-* HUB (server and client): https://HubFhircast-env.qn7fcmwauz.us-west-2.elasticbeanstalk.com/
-
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
 
@@ -77,21 +74,22 @@ MODE=client PORT=3001 node sandbox.js
 
 Or in launch.json:
 ```
-  "configurations": [
+"configurations": [
+    {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Program",
+        "program": "${workspaceFolder}/sandbox.js",
+        "env": 
         {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/sandbox.js",
-            "env": 
-            {
-                "MODE":"hub",
-                "HUB_URL":"http://localhost:3000",
-                "CLIENT_URL":"http://localhost:3000/client",
-                "TITLE":"my FHIRcast tester",
-                "BACKGROUND_COLOR":"blue"
-            }
+            "MODE":"hub",
+            "HUB_URL":"http://localhost:3000",
+            "CLIENT_URL":"http://localhost:3000/client",
+            "TITLE":"my FHIRcast tester",
+            "BACKGROUND_COLOR":"blue"
         }
+    }
+]
 ```
   
 ## Linux
@@ -126,8 +124,13 @@ This [article](https://medium.com/google-cloud/deploying-a-node-js-app-on-google
 
 ### Amazon
 In AWS, you can use the 'Elastic Beanstalk' deployment to create a WebApp. 
-Deployment is done by uploading a zip file of the source directory.
+Deployment is done by uploading a zip file containing the following four files:
++ sandbox.js
++ sandbox.html
++ package.json
++ fhir.ico
 
+When creating the application in AWS, choose 'Configure more options' and select 'high'availibility'.  SSL cannot be configured without the load balancer provided with the HA deployment.  You need to have certificates to configure Amazon cloud.
 Environment variables are set in the AWS console:
 ![amazon](/images/amazon.png)
 
