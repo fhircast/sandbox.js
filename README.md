@@ -58,22 +58,17 @@ The MODE environment variable specifies if the instance is a 'hub' with a client
 ### PORT
 The PORT environment variable specifies the listening port. Default is 3000.
 
-## HUB_URL
+### HUB_URL
 The HUB_URL environment variable specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
 
-## HUB_SUBSCRIBE ENDPOINT
-Default is /api/hub.
-
-## HUB_PUBLISH ENDPOINT
-Default is /notify.
-
-## CLIENT_URL
+### CLIENT_URL
 The CLIENT_URL environment variable specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000/client.
 
-## TITLE
+### TITLE
+Sets the title.
 
-## BACKGROUND_COLOR
-
+### BACKGROUND_COLOR
+Sets the background color.
 
 
 ## Windows and  MacOS
