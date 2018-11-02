@@ -11,12 +11,12 @@
             "program": "${workspaceFolder}/sandbox.js",
             "env": 
             {
-                "MODE":"hub",
+//                "MODE":"hub",
                 "HUB_URL":"http://localhost:3000",
                 "CLIENT_URL":"http://localhost:3000/client",
-                "TITLE":"my FHIRcast tester",
-                "BACKGROUND_COLOR":"blue"
-            }
+//                "TITLE":"my FHIRcast tester",
+//                "BACKGROUND_COLOR":"blue"
+           }
         }
     ]
 }

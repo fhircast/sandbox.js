@@ -7,13 +7,15 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-The following sandbox.js deployments are available:
-
+The following sandbox.js deployments are available in the Azure cloud (Europe West):
 * HUB (server and client): https://hub-fhircast.azurewebsites.net/
 * EMR client: https://emr-fhircast.azurewebsites.net/
 * PACS client: https://pacs-fhircast.azurewebsites.net/
 * Reporting client: https://reporting-fhircast.azurewebsites.net/
 * AI client: https://ai-fhircast.azurewebsites.net/
+
+In the Amazon Cloud (us-west):
+* HUB (server and client): https://HubFhircast-env.qn7fcmwauz.us-west-2.elasticbeanstalk.com/
 
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
@@ -55,7 +57,7 @@ If no environment variables are set, the instance will run as a combined hub and
 + MODE: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
 + PORT: Specifies the listening port. Default is 3000. Do not set this variable in cloud deployment.
 + HUB_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
-+ CLIENT_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000/client.
++ CLIENT_URL: Specifies the address where the client node will receive published events.  Default is http://localhost:3000/client.
 + TITLE: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
 + BACKGROUND_COLOR: Sets the background color. Default is 'darkgray'.
 
