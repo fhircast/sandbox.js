@@ -18,14 +18,21 @@ app.use(function(req, res, next) {
   next();
 });
 
-var port= process.env.PORT || 3000;  // this is needed for cloud deployment along with the launch.json file
 var subscriptions=[];
 var logWebsocket='';
 var socketCount=0;
 var pageLoads=0;
+var env ={};
+env.hubURL= process.env.HUB_URL || 'http://localhost:3000';
+env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub';
+env.hubPublish = process.env.HUB_PUBLISH || '/notify';
+env.clientURL = process.env.CLIENT_URL || 'http://localhost:3000/client';
+env.title = process.env.TITLE ||'FHIRcast JavaScript Sandbox - Hub and Client';
+env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
+env.mode = process.env.MODE || 'hub'; 
+env.port= process.env.PORT || 3000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
 
-var mode = process.env.MODE;  // Do not start the hub services if we are a client.
-if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
+if (env.mode!='client') {
   // HUB:  Receive and check subscription requests from clients
   app.post('/api/hub/',function(req,res){  
     var subscriptionRequest=req.body;
@@ -36,7 +43,7 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
         url: subscriptionRequest['hub.callback'],
         qs: {
               "hub.challenge": subscriptionRequest['hub.secret'],
-              "hub.topic": "http://"+os.hostname+":"+port+"/notify",
+              "hub.topic": env.hubURL+env.hubPublish,
             }    
       }, function (error, response, body) {
       //console.log('HUB: error:', error); // Print the error if one occurred
@@ -92,7 +99,7 @@ if (mode!='emr' & mode!='pacs' & mode!='reporting' & mode!='ai' ) {
   app.post('/status',function(req,res){
     var message=''; 
     if(req.get('host').indexOf('azure')<1){ // do not show host or ip for azure-not useful
-      message+='Listening on '+os.hostname +':' + port+'. IP addresses';
+      message+='Listening on '+os.hostname +':' + env.port+'. IP addresses';
       const ifaces = os.networkInterfaces( );
       Object.keys(ifaces).forEach(function (ifname) {
         var alias = 0;
@@ -142,8 +149,8 @@ app.post('/client/',function(req,res){
 });
 
 
-// CLIENT: send back mode (ai,emr,hub,reporting,pacs)
-app.post('/mode/',function(req,res){res.send(mode);});
+// CLIENT: send environment variable
+app.post('/mode/',function(req,res){res.send(env);});
 
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
@@ -221,7 +228,7 @@ app.post('/delete',function(req,res){
   res.send(200);
 });
 
-app.listen(port,function(){
+app.listen(env.port,function(){
   console_log('🔧 Web service: Started on '+ Date());
 });
 

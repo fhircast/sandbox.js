@@ -54,7 +54,7 @@
 </div>
 
 <div class="notify">
-    <h3>3. Send an event to the hub</h3> 
+    <h3>3. Publish an event to the hub</h3> 
     <label>id:</label> 
     <input id="EventId" name="EventId" type="text" value="">
     <label>hub.topic:</label>
@@ -101,24 +101,7 @@
  </div>
 
 <script>
-    var parser=document.createElement('a'); // use link tag as a url parser
-    parser.href=window.location;    
-    var SessionUUID='id-' + Math.random().toString(36).substr(2, 16);
-    var eventUUID='EventId-' + Math.random().toString(36).substr(2, 16);
-
-    if (parser.protocol=='https:' || parser.host.indexOf('azure')>0){
-        document.getElementById('hubSubscribeURI').value = "https://hub-fhircast.azurewebsites.net/api/hub/";        
-        document.getElementById('clientEndpoint').value="https://hub-fhircast.azurewebsites.net/client";
-        document.getElementById('hubNotifyURI').value="https://hub-fhircast.azurewebsites.net/notify"; 
-    }
-    else if (parser.host.indexOf('5000')>0) {
-        document.getElementById('hubSubscribeURI').value="http://localhost:5000/api/hub/";
-        document.getElementById("clientEndpoint").value="http://localhost:5000/client";
-        document.getElementById('hubNotifyURI').value="http://localhost:5000/notify";      
-    }
-    document.getElementById('hub.topic').value=SessionUUID;
-    document.getElementById('EventId').value=eventUUID;  
-
+ 
     function sendSubscription(url){
         data =  'hub.callback=' +document.getElementById('clientEndpoint').value;
         data +='&hub.mode='     +document.getElementById('hub.mode').value;
@@ -159,6 +142,8 @@
                 };
     }
     
+
+    //  Below internal functions - not part of standard
     function getHubStatus(){
         var xhr=new XMLHttpRequest();
         xhr.open('POST',parser.protocol+'//' + parser.host + '/status');
@@ -173,6 +158,33 @@
         return;
     }
 
+    // Set UI according to environment variables retrieved from sandbox.js.
+    var parser=document.createElement('a'); // use link tag as a url parser
+    parser.href=window.location;
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST',parser.protocol+'//' + parser.host + '/mode');
+    xhr.send();
+    xhr.onloadend = function() { 
+        var env=JSON.parse(this.responseText);
+        if (env.mode=='client') {
+            document.getElementById('buttonDelete').style.visibility = 'hidden';
+            document.getElementById('buttonStatus').style.visibility = 'hidden';
+        }
+        document.title=env.title;
+        var titleSpan = document.getElementById("docTitle");
+        titleSpan.textContent = env.title;;
+        document.body.style.backgroundColor = env.backgroundColor;
+        document.getElementById('clientEndpoint').value=env.clientURL;
+        document.getElementById('hubSubscribeURI').value = env.hubURL+env.hubSubscribe;
+        document.getElementById('hubNotifyURI').value=env.hubURL+env.hubPublish; 
+    };
+
+    var eventUUID='event-id-' + Math.random().toString(36).substr(2, 16);
+    document.getElementById('EventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
+    var SessionUUID='session-id-' + Math.random().toString(36).substr(2, 16);
+    document.getElementById('hub.topic').value=SessionUUID;
+     
+    // Start websocket
     var protocol='ws:';
     if (parser.protocol=='https:'){ protocol='wss:';}
     var ws = new WebSocket(protocol+'//' + parser.host + '/log');
@@ -192,52 +204,6 @@
     }
 
 
-    var xhr=new XMLHttpRequest();
-    xhr.open('POST',parser.protocol+'//' + parser.host + '/mode');
-    xhr.send();
-    xhr.onloadend = function() { 
-        var mode=this.responseText;
-        titleSpan = document.getElementById("docTitle");
-        if (mode=='ai') {
-            document.title='FHIRcast JavaScript - AI Client';
-            titleSpan.textContent = "FHIRcast JavaScript - AI Client";
-            document.body.style.backgroundColor = "rgb(250, 233, 243)";
-            document.getElementById('clientEndpoint').value="https://ai-fhircast.azurewebsites.net/client";
-            document.getElementById('buttonDelete').style.visibility = 'hidden';
-            document.getElementById('buttonStatus').style.visibility = 'hidden';
-        }
-        else if(mode=='emr')
-        {
-            document.title='FHIRcast JavaScript - EMR Client';
-            titleSpan.textContent = "FHIRcast JavaScript - EMR Client";
-            document.body.style.backgroundColor = "rgb(255, 229, 188)";
-            document.getElementById('clientEndpoint').value="https://emr-fhircast.azurewebsites.net/client";
-            document.getElementById('buttonDelete').style.visibility = 'hidden';
-            document.getElementById('buttonStatus').style.visibility = 'hidden';
-        }
-        else if(mode=='pacs')
-        {
-            document.title='FHIRcast JavaScript - PACS Client';
-            titleSpan.textContent = "FHIRcast JavaScript - PACS Client";
-            document.body.style.backgroundColor = "#DDF9D9";
-            document.getElementById('clientEndpoint').value="https://pacs-fhircast.azurewebsites.net/client";
-            document.getElementById('buttonDelete').style.visibility = 'hidden';
-            document.getElementById('buttonStatus').style.visibility = 'hidden';
-        }
-        else if(mode=='reporting')
-        {
-            document.title='FHIRcast JavaScript - Reporting Client';
-            titleSpan.textContent = "FHIRcast JavaScript - Reporting Client";
-            document.body.style.backgroundColor = "#ADD9FE";
-            document.getElementById('clientEndpoint').value="https://reporting-fhircast.azurewebsites.net/client";
-            document.getElementById('buttonDelete').style.visibility = 'hidden';
-            document.getElementById('buttonStatus').style.visibility = 'hidden';
-        }
-        else {
-            titleSpan.textContent = "FHIRcast JavaScript Sandbox - Hub and Client";
-        }
-    };
-    
 </script>
 
 </body>

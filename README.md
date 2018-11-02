@@ -47,14 +47,34 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 # Installation
 Installing your own sandbox allows you to learn about the inner workings, fix bugs, propose new features or simply provide a private test environment for your project or institution.
-Whether deploying locally or in the cloud, environment variables setting may be needed.
+Whether deploying locally or in the cloud, environment variable settings may be needed.
 
 ## Environment variables
+If no environment variables are set, then instance will run as a combined hub and client.
+
 ### MODE
-The MODE environment variable can be used to specify if the instance is a hub, an EMR client, a PACS client, an AI client or a reporting client.  If this variable is not set, the instance will be a hub.
+The MODE environment variable specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
 
 ### PORT
-The PORT environment variable can be used to specify the listening port.  If this variable is not set, the port will be 3000.
+The PORT environment variable specifies the listening port. Default is 3000.
+
+## HUB_URL
+The HUB_URL environment variable specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
+
+## HUB_SUBSCRIBE ENDPOINT
+Default is /api/hub.
+
+## HUB_PUBLISH ENDPOINT
+Default is /notify.
+
+## CLIENT_URL
+The CLIENT_URL environment variable specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000/client.
+
+## TITLE
+
+## BACKGROUND_COLOR
+
+
 
 ## Windows and  MacOS
 1. Install node at http://nodejs.org.
@@ -65,10 +85,30 @@ The PORT environment variable can be used to specify the listening port.  If thi
 
 
 Different port settings are required when running multiple sandboxes locally.
-They can be set in launch.json or on the command-line when starting node:
+They can be set on the command-line when starting node:
 ```
 MODE=ai PORT=3001 node sandbox.js
 ```
+
+They can be set in launch.json as well:
+```
+  "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/sandbox.js",
+            "env": 
+            {
+                "MODE":"hub",
+                "HUB_URL":"http://localhost:3000",
+                "CLIENT_URL":"http://localhost:3000/client",
+                "TITLE":"my FHIRcast tester",
+                "BACKGROUND_COLOR":"blue"
+            }
+        }
+```
+  
 ## Linux
 Official Node.js binary distributions are provided by [NodeSource](https://github.com/nodesource/distributions/blob/master/README.md).
 

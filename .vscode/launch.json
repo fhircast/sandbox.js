@@ -4,13 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/sandbox.js",
-            "env": {"MODE":"hub"}  //  Specify "" for normal operation.  emr,pacs,ai,reporting for client only.
+            "env": 
+            {
+                "MODE":"hub",
+                "HUB_URL":"http://localhost:3000",
+                "CLIENT_URL":"http://localhost:3000/client",
+                "TITLE":"my FHIRcast tester",
+                "BACKGROUND_COLOR":"blue"
+            }
         }
     ]
 }
