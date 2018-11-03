@@ -7,7 +7,7 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-The following sandbox.js deployments are available in the Azure cloud (Europe West):
+The following sandbox.js deployments are available online:
 * HUB (server and client): https://hub-fhircast.azurewebsites.net/
 * EMR client: https://emr-fhircast.azurewebsites.net/
 * PACS client: https://pacs-fhircast.azurewebsites.net/
@@ -38,6 +38,14 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
+## SMART launch
+One topic for FHIRcast is how to get the latest context when starting up.  The SMART on FHIR launch scenario offers a built-in method.  The sandbox supports this by providing the launch endpoint for SMART launch.  
+
+Test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org .
+
+Alternatively this [link](http://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=)  will launch the online reporting client from the SMART sandbox.
+
+
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
@@ -52,9 +60,9 @@ Whether deploying locally or in the cloud, environment variable settings may be 
 If no environment variables are set, the instance will run as a combined hub and client.
 
 + MODE: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
-+ PORT: Specifies the listening port. Default is 3000. Do not set this variable in cloud deployment.
-+ HUB_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
-+ CLIENT_URL: Specifies the address where the client node will receive published events.  Default is http://localhost:3000/client.
++ PORT: Specifies the listening port. Default is 8000. Do not set this variable in cloud deployment.
++ HUB_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:8000.
++ CLIENT_URL: Specifies the address where the client node will receive published events.  Default is http://localhost:8000/client.
 + TITLE: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
 + BACKGROUND_COLOR: Sets the background color. Default is 'darkgray'.
 
@@ -63,13 +71,13 @@ If no environment variables are set, the instance will run as a combined hub and
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
 4. Run with "node sandbox.js".  This starts the endpoints for the hub and the client.
-5. Navigate your browser to http://localhost:3000/ to access the UI.
+5. Navigate your browser to http://localhost:8000/ to access the UI.
 
 
 Different port settings are required when running multiple sandboxes locally.
 They can be set on the command-line when starting the instance:
 ```
-MODE=client PORT=3001 node sandbox.js
+MODE=client PORT=8001 node sandbox.js
 ```
 
 Or in launch.json:
@@ -174,7 +182,7 @@ The following two endpoints are not active when the MODE environment variable is
 
 ## Front-end description
 ### HTML
-The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, notify and monitor. Simple styling is embedded to avoid an extra file to maintain.
+The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, publish and monitor. Simple styling is embedded to avoid an extra file to maintain.
 
 ### JavaScript
 The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
