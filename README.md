@@ -48,8 +48,6 @@ This should launch the FHIRcast client within the Simulated EHR and set the cont
 ![SMARTlaunched](/images/SMARTlaunched.png)
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
 
-Alternatively, this [link](  will launch the online FHIRcast sandbox.js reporting client from the SMART App launcher with a preselected patient, provider and 'App Launch URL'. 
-
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
@@ -138,7 +136,7 @@ This [article](https://medium.com/google-cloud/deploying-a-node-js-app-on-google
 
 ### Amazon
 In AWS, you can use the 'Elastic Beanstalk' deployment to create a WebApp. 
-Deployment is done by uploading a zip file containing the following four files:
+Deployment is done by uploading a zip file containing the four following files:
 + sandbox.js
 + sandbox.html
 + package.json
