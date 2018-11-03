@@ -39,20 +39,22 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
 ## <img src="/images/SMARTlogo.svg" width="30"> SMART on FHIR launch
-One topic for FHIRcast is how to get the latest context when starting up.  The SMART on FHIR launch scenario offers a built-in method.  The sandbox supports this by providing the launch endpoint for SMART launch.  
+One topic for FHIRcast is how to get the latest context when starting up.  The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario offers a built-in method.  
 
-Test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url.
-
-Alternatively this [link](http://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=)  will launch the online FHIRcast reporting client from the SMART sandbox with a preselected patient and provider.  Just hit the green launch button in the bottom right corner.
+Test the online [SMART App launcher](http://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=)  with a preselected patient, provider with the 'App Launch URL' set to the online sandbox.js reporting client. Click the green 'Launch App!' button in the lower right corner.
 ![SMARTlaunch](/images/SMARTlaunch.png)
 
-This should launch the FHIRcast client within the EHR and set the context text area with the correct patient context.
+This should launch the FHIRcast client within the Simulated EHR and set the context text area with the correct patient context.
 ![SMARTlaunched](/images/SMARTlaunched.png)
+Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
+
+Alternatively, this [link](  will launch the online FHIRcast sandbox.js reporting client from the SMART App launcher with a preselected patient, provider and 'App Launch URL'. 
 
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
 * **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
+* **Response error 404-Not found:** The configured hub url node may be set to run as a client-only and therefore the hub endpoints are not available.
 * **The log emojis are black and white:**  Color emojis require Office 2016 on Windows 7.
 
 
