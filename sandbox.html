@@ -7,15 +7,16 @@
         h2 {display: inline; background-color:white; text-align:center;}
         div.selectHub {border-top: 1px solid black;}
         div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
-        div.notify {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
+        div.publish {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
         label,button {padding: 2px; display: inline-block;width: 24.5%}
         input,textarea,select {width: 65%;border:1px solid}
         textarea {vertical-align: top;}
-        textarea.incomingMsgOutput {width: 99%;font-family: "Segoe UI Emoji";}
-        textarea.incomingMsgOutput,textarea.subscriptionResponse,textarea.eventResponse {background-color:whitesmoke}
+        textarea.textAreaMonitor {width: 99%;font-family: "Segoe UI Emoji";}
+        textarea.textAreaMonitor,textarea.subscriptionResponse,textarea.eventResponse {background-color:whitesmoke}
         div.monitor {border-top: 1px solid black;text-align:left}
     </style>
 </head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <body>
 <header><h2><span id="docTitle"></span></h2></header>
 <div class="selectHub">
@@ -53,14 +54,14 @@
     <textarea class="subscriptionResponse" id="subscriptionResponse"></textarea>
 </div>
 
-<div class="notify">
+<div class="publish">
     <h3>3. Publish an event to the hub</h3> 
     <label>id:</label> 
-    <input id="EventId" name="EventId" type="text" value="">
+    <input id="eventId" name="eventId" type="text" value="">
     <label>hub.topic:</label>
-    <input id="hubNotifyURI" name="hubNotifyURI" value="http://localhost:3000/notify"/>;
+    <input id="publishURI" name="publishURI" value="http://localhost:3000/notify"/>;
     <label>hub.events:</label>
-    <select id="hub.Notifyevents" name="hub.Notifyevents">
+    <select id="publishEvents" name="publishEvents">
             <option value="open-patient-chart" selected >open-patient-chart</option>
             <option value="switch-patient-chart">switch-patient-chart</option>
             <option value="close-patient-chart">close-patient-chart</option>
@@ -87,23 +88,23 @@
     }
 ]
 }</textarea>
-    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubNotifyURI').value)">Send</button>
+    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('publishURI').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
 
 <div class="monitor">
     <h3>4. Monitor endpoints logs with a websocket connection</h3>
     <button onclick="window.open('https://github.com/fhircast/sandbox.js/blob/master/README.md');">Online help</button> 
-    <button onclick="document.getElementById('incomingMsgOutput').value=''">Clear log window</button>
+    <button onclick="document.getElementById('textAreaMonitor').value=''">Clear log window</button>
     <button id="buttonStatus" onclick="getHubStatus();">Get hub status</button>
     <button id="buttonDelete" onclick="deleteSubscriptions();">Delete all subscriptions</button>
-    <textarea class="incomingMsgOutput" id="incomingMsgOutput" rows="20" ></textarea><br>
+    <textarea class="textAreaMonitor" id="textAreaMonitor" rows="20" ></textarea><br>
  </div>
 
 <script>
  
     function sendSubscription(url){
-        data =  'hub.callback=' +document.getElementById('clientEndpoint').value;
+        data  ='hub.callback=' +document.getElementById('clientEndpoint').value;
         data +='&hub.mode='     +document.getElementById('hub.mode').value;
         data +='&hub.events='   +document.getElementById('hub.events').value;
         data +='&hub.secret='   +document.getElementById('hub.secret').value;
@@ -120,20 +121,20 @@
         console.log('Subscribtion sent from browser: '+ data);  
     }
 
-    function sendEvent(contextData,destinationURL){
+    function sendEvent(contextData,url){
         var eventData={};
-        eventData['hub.topic']=document.getElementById('hubNotifyURI').value;
-        eventData['hub.event']=document.getElementById('hub.Notifyevents').value;
+        eventData['hub.topic']=document.getElementById('publishURI').value;
+        eventData['hub.event']=document.getElementById('publishEvents').value;
         eventData.context=JSON.parse('{'+contextData+'}');
         var timestamp= new Date();
         var msg={};
         msg.timestamp= timestamp.toJSON();
-        msg.id=document.getElementById('EventId').value;
+        msg.id=document.getElementById('eventId').value;
         msg['cast-session']=document.getElementById('hub.topic').value;
         msg.event=eventData;
 
         var xhr=new XMLHttpRequest();
-        xhr.open('POST',destinationURL,true);
+        xhr.open('POST',url,true);
         xhr.setRequestHeader('Content-Type','application/json');
         console.log('Event sent from browser: '+ JSON.stringify(msg));
         xhr.send(JSON.stringify(msg));
@@ -172,16 +173,74 @@
         }
         document.title=env.title;
         var titleSpan = document.getElementById("docTitle");
-        titleSpan.textContent = env.title;;
+        titleSpan.textContent = env.title;
         document.body.style.backgroundColor = env.backgroundColor;
         document.getElementById('clientEndpoint').value=env.clientURL;
         document.getElementById('hubSubscribeURI').value = env.hubURL+env.hubSubscribe;
-        document.getElementById('hubNotifyURI').value=env.hubURL+env.hubPublish; 
+        document.getElementById('publishURI').value=env.hubURL+env.hubPublish; 
     };
-
-    var eventUUID='event-id-' + Math.random().toString(36).substr(2, 16);
-    document.getElementById('EventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
+    document.getElementById('eventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
+    
     var SessionUUID='session-id-' + Math.random().toString(36).substr(2, 16);
+    //  Check if this is a SMART launch
+    var state = getUrlParameter("state");  // session key
+    var code = getUrlParameter("code");    // authorization code
+    if (code!= null){
+         // load the app parameters stored in the session
+        var params = JSON.parse(sessionStorage[state]);  // load app session
+        var tokenUri = params.tokenUri;
+        var clientId = params.clientId;
+        var secret = params.secret;
+        var serviceUri = params.serviceUri;
+        var redirectUri = params.redirectUri;
+        
+        // Prep the token exchange call parameters
+        var data = {
+            code: code,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri
+        };
+        var options;
+        if (!secret) {
+            data['client_id'] = clientId;
+        }
+        options = {
+            url: tokenUri,
+            type: 'POST',
+            data: data
+        };
+        if (secret) {
+            options['headers'] = {'Authorization': 'Basic ' + btoa(clientId + ':' + secret)};
+        }
+        
+        // obtain authorization token from the authorization service using the authorization code
+        $.ajax(options).done(function(res){
+            // should get back the access token and the patient ID
+            var accessToken = res.access_token;
+            var patientId = res.patient;
+                    
+            // and now we can use these to construct standard FHIR
+            // REST calls to obtain patient resources with the
+            // SMART on FHIR-specific authorization header...
+            // Let's, for example, grab the patient resource and
+            // print the patient name on the screen
+            var url = serviceUri + "/Patient/" + patientId;
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                headers: {
+                    "Authorization": "Bearer " + accessToken
+                },
+            }).done(function(pt){
+                var name = pt.name[0].given.join(" ") +" "+ pt.name[0].family.join(" ");
+                var titleSpan = document.getElementById("docTitle");
+                titleSpan.textContent += " - Patient: " + name ;
+                
+            });
+        });
+    }    
+    
     document.getElementById('hub.topic').value=SessionUUID;
      
     // Start websocket
@@ -194,8 +253,8 @@
     }
     
     ws.onmessage = function (ev) {
-        document.getElementById('incomingMsgOutput').value=document.getElementById('incomingMsgOutput').value+ev.data;
-        document.getElementById('incomingMsgOutput').scrollTop = document.getElementById('incomingMsgOutput').scrollHeight;
+        document.getElementById('textAreaMonitor').value=document.getElementById('textAreaMonitor').value+ev.data;
+        document.getElementById('textAreaMonitor').scrollTop = document.getElementById('textAreaMonitor').scrollHeight;
         console.log(ev.data);
     }
 
@@ -203,7 +262,21 @@
         console.log('websocket is closed ...')
     }
 
-
+    // Convenience function for parsing of URL parameters
+    // based on http://www.jquerybyexample.net/2012/06/get-url-parameters-using-jquery.html
+    function getUrlParameter(sParam)
+    {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) 
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                var res = sParameterName[1].replace(/\+/g, '%20');
+                return decodeURIComponent(res);
+            }
+        }
+    }
 </script>
 
 </body>

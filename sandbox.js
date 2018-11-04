@@ -23,14 +23,14 @@ var logWebsocket='';
 var socketCount=0;
 var pageLoads=0;
 var env ={};
-env.hubURL= process.env.HUB_URL || 'http://localhost:3000';
+env.hubURL= process.env.HUB_URL || 'http://localhost:8000';
 env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub/';
 env.hubPublish = process.env.HUB_PUBLISH || '/notify/';
-env.clientURL = process.env.CLIENT_URL || 'http://localhost:3000/client';
+env.clientURL = process.env.CLIENT_URL || 'http://localhost:8000/client';
 env.title = process.env.TITLE ||'FHIRcast JavaScript Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
-env.port= process.env.PORT || 3000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
+env.port= process.env.PORT || 8000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
 
 if (env.mode!='client') {
   // HUB:  Receive and check subscription requests from clients
@@ -154,7 +154,22 @@ app.post('/mode/',function(req,res){res.send(env);});
 
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-  res.sendFile(path.join(__dirname + '/sandbox.html')); 
+
+  if(req.originalUrl.indexOf('launch')>0){
+    console_log('🔥SMART_ON_FHIR: Launch detected: ' + req.originalUrl ); 
+    var serviceUri =req.query.iss;
+    var launchContextId=req.query.launch;
+    console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+serviceUri);
+    res.sendFile(path.join(__dirname + '/launch.html')); 
+
+  }
+  else 
+  {
+    res.sendFile(path.join(__dirname + '/sandbox.html')); 
+
+  }
+
+  
   // Log page loads and uptime on new session.
   pageLoads++; 
   function format(seconds){

@@ -20,7 +20,7 @@ The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](htt
 This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 # Usage
-You can start with the [combined hub/client](https://hub-fhircast.azurewebsites.net/) in the cloud.
+Start with the [combined hub/client](https://hub-fhircast.azurewebsites.net/) in the cloud.
 ![frontend](/images/frontend.png)
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
@@ -183,6 +183,8 @@ The following two endpoints are not active when the MODE environment variable is
 
 * "/delete":  POST without content will delete all subscriptions.
 
+### SMART handling
+The authorization sequence is described [here](http://docs.smarthealthit.org/tutorials/authorization/).
 
 ## Front-end description
 ### HTML
