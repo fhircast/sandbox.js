@@ -8,11 +8,11 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 The following sandbox.js deployments are available online:
-* HUB (server and client): https://hub-fhircast.azurewebsites.net/
-* EHR client: https://emr-fhircast.azurewebsites.net/
-* PACS client: https://pacs-fhircast.azurewebsites.net/
-* Reporting client: https://reporting-fhircast.azurewebsites.net/
-* AI client: https://ai-fhircast.azurewebsites.net/
+* <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
+* <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
+* <a href="https://pacs-fhircast.azurewebsites.net/" target="_blank" >PACS client</a> 
+* <a href="https://reporting-fhircast.azurewebsites.net/" target="_blank" >Reporting client</a> 
+* <a href="https://ai-fhircast.azurewebsites.net/" target="_blank" >AI client</a> 
 
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
