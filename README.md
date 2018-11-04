@@ -41,7 +41,7 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ## <img src="/images/SMARTlogo.svg" width="30"> SMART on FHIR launch
 One topic for FHIRcast is how to get the latest context when starting up.  The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario offers a built-in method.  
 
-Test the online [SMART App launcher](http://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=)  with a preselected patient, provider with the 'App Launch URL' set to the online sandbox.js reporting client. Click the green 'Launch App!' button in the lower right corner.
+Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=)  with a preselected patient, provider with the 'App Launch URL' set to the online sandbox.js reporting client. Click the green 'Launch App!' button in the lower right corner.
 ![SMARTlaunch](/images/SMARTlaunch.png)
 
 This should launch the FHIRcast client within the Simulated EHR and set the context text area with the correct patient context.

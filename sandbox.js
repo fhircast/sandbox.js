@@ -154,35 +154,28 @@ app.post('/mode/',function(req,res){res.send(env);});
 
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-
   if(req.originalUrl.indexOf('launch')>0){
-    console_log('🔥SMART_ON_FHIR: Launch detected: ' + req.originalUrl ); 
-    var serviceUri =req.query.iss;
-    var launchContextId=req.query.launch;
-    console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+serviceUri);
+    console_log('🔥SMART_ON_FHIR: Launch detected. '); 
+    console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+req.query.iss);
     res.sendFile(path.join(__dirname + '/launch.html')); 
-
   }
   else 
   {
     res.sendFile(path.join(__dirname + '/sandbox.html')); 
-
-  }
-
-  
-  // Log page loads and uptime on new session.
-  pageLoads++; 
-  function format(seconds){
-    function pad(s){
-      return (s < 10 ? '0' : '') + s;
+    // Log page loads and uptime on new session.
+    pageLoads++; 
+    function format(seconds){
+      function pad(s){
+        return (s < 10 ? '0' : '') + s;
+      }
+      var hours = Math.floor(seconds / (60*60));
+      var minutes = Math.floor(seconds % (60*60) / 60);
+      var seconds = Math.floor(seconds % 60);
+      return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
     }
-    var hours = Math.floor(seconds / (60*60));
-    var minutes = Math.floor(seconds % (60*60) / 60);
-    var seconds = Math.floor(seconds % 60);
-    return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+    var uptime = process.uptime();
+    console_log('🔧UI: Home page requested '+pageLoads+' times in '+format(uptime)+' uptime.');
   }
-  var uptime = process.uptime();
-  console_log('🔧UI: Home page requested '+pageLoads+' times in '+format(uptime)+' uptime.');
 });
 
 // Websocket to provide the logs to the client 
