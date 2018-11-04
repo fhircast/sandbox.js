@@ -46,6 +46,9 @@ Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html
 
 This should launch the FHIRcast client within the Simulated EHR and set the context text area with the correct patient context.
 ![SMARTlaunched](/images/SMARTlaunched.png)
+Notice that the 'hub.topic' input textbox has been populated with the SMART session id and the context text area with the correct patient FHIR resource (both highlighted in light yellow).
+
+
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
 
 
