@@ -237,6 +237,6 @@ app.post('/delete',function(req,res){
 });
 
 app.listen(env.port,function(){
-  console_log('🔧 Web service: Started on '+ Date());
+  console_log('🔧 Web service: Started on port '+ env.port +' at  '+ Date());
 });
 

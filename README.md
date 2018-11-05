@@ -7,12 +7,16 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-The following sandbox.js deployments are available online:
+The following sandbox.js deployments are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
 * <a href="https://pacs-fhircast.azurewebsites.net/" target="_blank" >PACS client</a> 
 * <a href="https://reporting-fhircast.azurewebsites.net/" target="_blank" >Reporting client</a> 
 * <a href="https://ai-fhircast.azurewebsites.net/" target="_blank" >AI client</a> 
+
+Also without SSL in the Google Cloud Platform (Montreal):
+
+* <a href="http://35.185.207.170/" target="_blank" >HUB (server and client)</a> 
 
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
@@ -111,12 +115,14 @@ Official Node.js binary distributions are provided by [NodeSource](https://githu
 
 ### Ubuntu
 ```
-cd sandboxjs        # change directory to where the githib was downloaded
+sudo apt install git-all
+git clone https://github.com/fhircast/sandbox.js.git
+cd sandbox.js        # change directory to where the githib was downloaded
 curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -  # Download binaries 
 sudo apt-get install -y nodejs  # install
 sudo npm install npm --global   # update npm
 npm install     # install the modules
-node sandbox.js     # start the sandbox
+sudo PORT=80 HUB_URL=http://35.185.207.170 CLIENT_URL=http://35.185.207.170/client TITLE="Ubuntu FHIRcast Sandbox - Hub and Client" npm start
 ```
 
 ## Clouds
@@ -133,10 +139,19 @@ In the Google Cloud Platform, you can deploy with the Compute-App Engine [option
 ```
 env: flex
 runtime: nodejs
+env_variables:
+  MODE: hub
+  HUB_URL: https://atomic-airship-221013.appspot.com
+  CLIENT_URL: https://atomic-airship-221013.appspot.com/client
+  TITLE: GCP FHIRcast Sandbox - Hub and client
+network:
+  forwarded_ports:
+    - 65080
+  instance_tag: websocket
+
 # This sample incurs costs to run on the App Engine flexible environment. 
 # The settings below are to reduce costs during testing and are not appropriate
-# for production use. For more information, see:
-# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
+# for production use. 
 manual_scaling:
   instances: 1
 resources:
@@ -152,7 +167,10 @@ git clone https://github.com/fhircast/sandbox.js.git
 cd sandbox.js
 gcloud app create
 gcloud app deploy
-
+gcloud compute firewall-rules create default-allow-websockets \
+  --allow tcp:65080 \
+  --target-tags websocket \
+  --description "Allow websocket traffic on port 65080"
 ```
 
 To update:
