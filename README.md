@@ -126,7 +126,7 @@ Do not set the port environment variable when deploying in a cloud platform.  Th
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments. The environment variables can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
 
 
-<img src="images/AzureConfiguration.png" width="400"> 
+<img src="images/AzureConfiguration.png" width="600"> 
 
 ### Google
 In the Google Cloud Platform, you can deploy with the Compute-App Engine [option](https://console.cloud.google.com/appengine).  The platform uses the app.yaml file for deployment:
