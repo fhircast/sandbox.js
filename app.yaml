@@ -1,10 +1,10 @@
 env: flex
 runtime: nodejs
 env_variables:
-    "MODE":"hub"
-    "HUB_URL":"https://atomic-airship-221013.appspot.com"
-    "CLIENT_URL":"https://atomic-airship-221013.appspot.com/client"
-    "TITLE":"GCP FHIRcast SAndbox - Hub and client"
+  MODE:"hub"
+  HUB_URL:"https://atomic-airship-221013.appspot.com"
+  CLIENT_URL:"https://atomic-airship-221013.appspot.com/client"
+  TITLE:"GCP FHIRcast Sandbox - Hub and client"
 # This sample incurs costs to run on the App Engine flexible environment. 
 # The settings below are to reduce costs during testing and are not appropriate
 # for production use. For more information, see:
