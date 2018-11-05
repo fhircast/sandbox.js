@@ -14,7 +14,7 @@ The following sandbox.js deployments are available online (Microsoft Azure - Fra
 * <a href="https://reporting-fhircast.azurewebsites.net/" target="_blank" >Reporting client</a> 
 * <a href="https://ai-fhircast.azurewebsites.net/" target="_blank" >AI client</a> 
 
-Also without SSL in the Google Cloud Platform (Montreal):
+Also without SSL (Google Cloud Platform - Montreal):
 
 * <a href="http://35.185.207.170/" target="_blank" >HUB (server and client)</a> 
 
@@ -126,10 +126,10 @@ sudo PORT=80 HUB_URL=http://35.185.207.170 CLIENT_URL=http://35.185.207.170/clie
 ```
 
 ## Clouds
-Do not set the port environment variable when deploying in a cloud platform.  The cloud service will define it for its environment.
 
 ### Azure
 The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments. The environment variables can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
+Do not set the port environment variable when deploying in the Azure cloud.  The cloud service will define it for its environment.
 
 
 <img src="images/AzureConfiguration.png" width="600"> 
