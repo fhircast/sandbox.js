@@ -119,7 +119,7 @@ npm install     # install the modules
 node sandbox.js     # start the sandbox
 ```
 
-## Cloud
+## Clouds
 Do not set the port environment variable when deploying in a cloud platform.  The cloud service will define it for its environment.
 
 ### Azure
@@ -133,7 +133,35 @@ In the Google Cloud Platform, you can deploy with the Compute-App Engine [option
 ```
 env: flex
 runtime: nodejs
+# This sample incurs costs to run on the App Engine flexible environment. 
+# The settings below are to reduce costs during testing and are not appropriate
+# for production use. For more information, see:
+# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
+
 ```
+
+Create a Node.js project in 'App Engine-Services' and run the following commands in the Google Cloud Shell:
+```
+git clone https://github.com/fhircast/sandbox.js.git
+cd sandbox.js
+gcloud app create
+gcloud app deploy
+
+```
+
+To update:
+```
+git pull https://github.com/fhircast/sandbox.js.git
+gcloud app deploy
+```
+
+
 This [article](https://medium.com/google-cloud/deploying-a-node-js-app-on-google-cloud-8419de45e5dc) provides an overview of the process.
 
 ### Amazon
