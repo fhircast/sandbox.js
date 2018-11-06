@@ -157,7 +157,7 @@ app.get('/',function(req,res){
   if(req.originalUrl.indexOf('launch')>0){
     console_log('🔥SMART_ON_FHIR: Launch detected. '); 
     console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+req.query.iss);
-    res.sendFile(path.join(__dirname + '/launch.html')); 
+    res.sendFile(path.join(__dirname + '/SMARTlaunch.html')); 
   }
   else 
   {

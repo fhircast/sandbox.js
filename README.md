@@ -14,7 +14,7 @@ The following sandbox.js deployments are available online (Microsoft Azure - Fra
 * <a href="https://reporting-fhircast.azurewebsites.net/" target="_blank" >Reporting client</a> 
 * <a href="https://ai-fhircast.azurewebsites.net/" target="_blank" >AI client</a> 
 
-Also without SSL (Google Cloud Platform - Montreal):
+Also without TLS (Google Cloud Platform - Montr&eacute;al):
 
 * <a href="http://35.185.207.170/" target="_blank" >HUB (server and client)</a> 
 
@@ -29,7 +29,8 @@ Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank"
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
 2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
 3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
-4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations.  
+4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
+
   
 Next, use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 
