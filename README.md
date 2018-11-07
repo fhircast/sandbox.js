@@ -54,7 +54,8 @@ Notice that the 'hub.topic' input textbox has been populated with the SMART sess
 
 
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
-
+## Request context from the hub
+Another proposed way to retrieve context after start-up is to perform a GET request on the hub's notification endpoint with the session id in the query string.  There is an hidden button under the 'context' label in the UI.  If you click on this label, the browser will request the context from the hub.  If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200.
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
@@ -70,12 +71,12 @@ Whether deploying locally or in the cloud, environment variable settings may be 
 ## Environment variables
 If no environment variables are set, the instance will run as a combined hub and client.
 
-+ MODE: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
-+ PORT: Specifies the listening port. Default is 8000. Do not set this variable in cloud deployment.
-+ HUB_URL: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:8000.
-+ CLIENT_URL: Specifies the address where the client node will receive published events.  Default is http://localhost:8000/client.
-+ TITLE: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
-+ BACKGROUND_COLOR: Sets the background color. Default is 'darkgray'.
++ **MODE**: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
++ **PORT**: Specifies the listening port. Default is 8000. Do not set this variable in cloud deployment.
++ **HUB_URL**: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:8000.
++ **CLIENT_URL**: Specifies the address where the client node will receive published events.  Default is http://localhost:8000/client.
++ **TITLE**: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
++ **BACKGROUND_COLOR**: Sets the background color. Default is 'darkgray'.
 
 ## Windows and  MacOS
 1. Install node at http://nodejs.org.
@@ -129,8 +130,8 @@ sudo PORT=80 HUB_URL=http://35.185.207.170 CLIENT_URL=http://35.185.207.170/clie
 ## Clouds
 
 ### Azure
-The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments. The environment variables can be added to the App Service instance by creating an 'Application Settings' as shown in the following picture.
-Do not set the port environment variable when deploying in the Azure cloud.  The cloud service will define it for its environment.
+The [Visual Studio Code](https://code.visualstudio.com/) Azure App Service [extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) can be used for deployments. The environment variables can be added to the App Service instance by creating 'Application Settings' as shown in the following picture.
+Do not set the port environment variable when deploying in the Azure cloud; it will define the required port for its environment.
 
 
 <img src="images/AzureConfiguration.png" width="600"> 
