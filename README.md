@@ -1,7 +1,7 @@
 # FHIRcast JavaScript Sandbox
 - [FHIRcast JavaScript Sandbox](#fhircast-javascript-sandbox)
 - [Introduction](#introduction)
-  - [Online sandboxes](#online-sandboxes)
+  - [Online Sandboxes](#online-sandboxes)
   - [Communication](#communication)
 - [Usage](#usage)
   - [Get Started!](#get-started)
@@ -38,7 +38,7 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-## Online sandboxes
+## Online Sandboxes
 The following sandbox.js deployments are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
@@ -81,7 +81,7 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ## Retrieve context from the hub
 To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button of the 'Pubish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
-Notice that ther eis only context information in the response and no event name.
+Notice that there is only context information in the response and no event name.
 
 
 ## <img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch
@@ -111,7 +111,7 @@ Whether deploying locally or in the cloud, environment variable settings may be 
 Environment variables can be used to control the mode of operation , default endpoints and appearance of the instance.  If no environment variables are set, the instance will run as a combined hub and client.
 
 + **MODE**: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
-+ **PORT**: Specifies the listening port. Default is 8000. Do not set this variable in cloud deployment.
++ **PORT**: Specifies the listening port. Default is 8000. 
 + **HUB_URL**: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:8000.
 + **CLIENT_URL**: Specifies the address where the client node will receive published events.  Default is http://localhost:8000/client.
 + **TITLE**: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
@@ -296,3 +296,5 @@ Other functions are specific to the sandbox:
 We welcome any contributions to help further enhance this tool for the FHIRcast community ! 
 
 To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then issue a pull request on the fhircast/sandbox.js repository with your changes for review.
+
+[Converse at chat.fhir.org](https://chat.fhir.org/#narrow/stream/fhircast)
