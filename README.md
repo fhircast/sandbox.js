@@ -43,8 +43,11 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
+## Request context from the hub
+To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" label.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200.
+
 ## <img src="/images/SMARTlogo.svg" width="30"> SMART on FHIR launch
-One topic for FHIRcast is how to get the latest context when starting up.  The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario offers a built-in method.  
+Another way to get context on start-up is to use the [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario.  
 Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=)  with a preselected patient, provider with the 'App Launch URL' set to the online sandbox.js reporting client. Click the green 'Launch App!' button in the lower right corner.
 ![SMARTlaunch](/images/SMARTlaunch.png)
 
@@ -54,8 +57,6 @@ Notice that the 'hub.topic' input textbox has been populated with the SMART sess
 
 
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
-## Request context from the hub
-Another proposed way to retrieve context after start-up is to perform a GET request on the hub's notification endpoint with the session id in the query string.  There is an hidden button under the 'context' label in the UI.  If you click on this label, the browser will request the context from the hub.  If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200.
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
