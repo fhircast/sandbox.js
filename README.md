@@ -34,7 +34,7 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
 
-This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
+This sandbox (sandbox.js) implements the standard using JavaScript and Node.js <img src="/images/nodejs.svg" width="30">.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
