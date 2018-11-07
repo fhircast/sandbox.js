@@ -19,6 +19,7 @@ app.use(function(req, res, next) {
 });
 
 var subscriptions=[];
+var lastContext={};
 var logWebsocket='';
 var socketCount=0;
 var pageLoads=0;
@@ -70,6 +71,7 @@ if (env.mode!='client') {
     console_log('📡HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
     //  Broadcast the event to all clients
     notification=reqNotify.body;
+    lastContext=notification.event['context'];
     subscriptions.forEach(function(subscription) {
       console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
       if( subscription.events==notification.event['hub.event'] &&
@@ -94,7 +96,14 @@ if (env.mode!='client') {
       }
     });
   });
-
+  
+  // HUB: Receive context request from clients with with session id in the query string  
+  app.get('/notify/',function(req,res){
+    res.send(200,lastContext);
+    req.query['sessionId'];
+    console_log('📡HUB: Receiving context request with session id: '+req.query['sessionId']);
+  });
+  
   // HUB: Return hub status in the log - Internal - Not part of the standard
   app.post('/status',function(req,res){
     var message=''; 
@@ -224,7 +233,7 @@ function console_log(msg){
         logWebsocket='';
         } 
       } 
-    },1000);
+    },500);
 
 });  
 

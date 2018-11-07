@@ -58,8 +58,8 @@
     <h3>3. Publish an event to the hub</h3> 
     <label>id:</label> 
     <input id="eventId" name="eventId" type="text" value="">
-    <label>hub.topic:</label>
-    <input id="publishURI" name="publishURI" value="http://localhost:3000/notify"/>;
+    <label >hub.topic:</label>
+    <input id="publishURI" name="publishURI" value="http://localhost:3000/notify"/>
     <label>hub.events:</label>
     <select id="publishEvents" name="publishEvents">
             <option value="open-patient-chart" selected >open-patient-chart</option>
@@ -71,7 +71,7 @@
             <option value="logout-user">user-logout</option>
             <option value="hibernate-user">user-hibernate</option>
     </select>
-    <label>context:</label>
+    <button onclick="getContext(document.getElementById('publishURI').value)" style="text-align:left;" >context:</button>
     <textarea  id="context" rows="9" cols="35">{
 "key": "patient",
 "resource": 
@@ -144,6 +144,18 @@
             document.getElementById('eventResponse').value='Response code: '+this.status;
                 };
     }
+
+    function getContext(url){
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+ //       console.log('Event sent from browser: ' + JSON.stringify(msg));
+        xhr.send('sessionid=1234');
+        xhr.onloadend = function () {
+            var context=JSON.parse(this.responseText);
+            prompt('The hub responded with status code: '+ this.status +'\nUse Ctrl-C to copy the context:  \n' + JSON.stringify(context,null,2),JSON.stringify(context,null,2));
+        };
+    }
     
     //  Below internal functions - not part of standard
     function getHubStatus(){
@@ -181,7 +193,8 @@
         document.getElementById('publishURI').value=env.hubURL+env.hubPublish; 
     };
     document.getElementById('eventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
-    document.getElementById('hub.topic').value='session-id-' + Math.random().toString(36).substr(2, 16);
+    var clientId='session-id-' + Math.random().toString(36).substr(2, 16);
+    document.getElementById('hub.topic').value=clientId;
     
     //  Check if this is a SMART launch
     var state = getUrlParameter("state");  // session key
@@ -190,7 +203,7 @@
          // load the app parameters stored in the session
         var params = JSON.parse(sessionStorage[state]);  // load app session
         var tokenUri = params.tokenUri;
-        var clientId = params.clientId;
+        clientId = params.clientId;
         var secret = params.secret;
         var serviceUri = params.serviceUri;
         var redirectUri = params.redirectUri;
