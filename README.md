@@ -18,8 +18,7 @@ Also without TLS (Google Cloud Platform - Montr&eacute;al):
 
 * <a href="http://35.185.207.170/" target="_blank" >HUB (server and client)</a> 
 
-
-To open the sandboxes in a different tab, use right-click or ctrl-click on MacOs.
+To open the links in a different tab, use right-click or ctrl-click on MacOs.
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
 
@@ -50,7 +49,7 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 ![contextRequest](/images/contextRequest.png)
 
 ## <img src="/images/SMARTlogo.svg" width="30"> SMART on FHIR launch
-The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario provides context on start-up.  
+The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
 Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=) with a preselected patient, provider and 'App Launch URL'.  Click the green 'Launch App!' button in the lower right corner to initiate the launch.
 ![SMARTlaunch](/images/SMARTlaunch.png)
 
@@ -73,7 +72,7 @@ Installing your own sandbox allows you to learn, fix bugs, propose new features 
 Whether deploying locally or in the cloud, environment variable settings may be needed.
 
 ## Environment variables
-If no environment variables are set, the instance will run as a combined hub and client.
+Environment variables can be used to control the mode of operation , default endpoints and appearance of the instance.  If no environment variables are set, the instance will run as a combined hub and client.
 
 + **MODE**: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
 + **PORT**: Specifies the listening port. Default is 8000. Do not set this variable in cloud deployment.
@@ -217,10 +216,12 @@ There are two files:  sandbox.js and sandbox.html.
 ## Endpoints description
 ### Server (hub) endpoints
 These two endpoints are not active when the MODE environment variable is set to 'emr','pacs','reporting' or 'ai'.
-* "/api/hub": POST with form query string to receive subscription requests from the clients
+* "/api/hub": POST with form query string to receive subscription requests from the clients.
  
-* "/notify": POST with JSON payload to receive events from the clients 
+* "/notify": POST with JSON payload to receive events from the clients. 
 
+* "/notify": GET with query string to provide context in JSON. 
+  
 ### Client endpoints
 * "/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
 
