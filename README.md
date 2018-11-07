@@ -7,7 +7,7 @@
 - [Usage](#usage)
   - [Get Started!](#get-started)
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
-  - [<img src="/images/SMARTlogo.svg" width="30">SMART on FHIR launch](#img-src%22imagessmartlogosvg%22-width%2230%22smart-on-fhir-launch)
+  - [<img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch](#img-src%22imagessmartlogosvg%22-width%2220%22smart-on-fhir-launch)
   - [Troubleshooting](#troubleshooting)
 - [Installation](#installation)
   - [Environment variables](#environment-variables)
@@ -84,7 +84,7 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 ![contextRequest](/images/contextRequest.png)
 Notice that ther eis only context information in the response and no event name.
 
-## <img src="/images/SMARTlogo.svg" width="30">SMART on FHIR launch
+## <img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch
 The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
 Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=) with a preselected patient, provider and 'App Launch URL'.  Click the green 'Launch App!' button in the lower right corner to initiate the launch.
 ![SMARTlaunch](/images/SMARTlaunch.png)
