@@ -1,4 +1,27 @@
 # FHIRcast JavaScript Sandbox
+ Table of Contents
+1. [Introduction](#Introduction)
+   * [Online Sandboxes](#Online-sandboxes)
+   * [Communication](#Communication)
+2. [Usage](#Usage)
+   * [Get Started!](Get-Started!)
+   * [Request context from the hub]()
+   * [SMART on FHIR launch]()
+3. [Installation](#Installation)
+   * [Environment Variables](#Enviroment-Variables)
+   * [Windows and MacOs](#Windows-and-MacOs)
+   * [Linux](#Linux)
+   * [Clouds](#Clouds)
+       *  [Microsoft Azure](#Azure)
+       *  [Google Cloud Platform](#Google)
+       *  [Amazon AWS](#Amazon)
+   * [Mobile](#Mobile)
+4. [Program Description](#Program-Description)
+   * [Endpoints](#Endpoints-description)
+   * [Front-end](#Front-end-description)
+5. [Contribution](#Contribution)
+
+# Introduction
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](http://fhircast.org).
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
@@ -7,6 +30,7 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
+## Online sandboxes
 The following sandbox.js deployments are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
@@ -20,11 +44,13 @@ Also without TLS (Google Cloud Platform - Montr&eacute;al):
 
 To open the links in a different tab, use right-click or ctrl-click on MacOs.
 
+## Communication   
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
 
 This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 # Usage
+## Get Started!
 Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank">combined hub/client</a> in the cloud.
 ![frontend](/images/frontend.png)
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
@@ -47,8 +73,9 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ## Retrieve context from the hub
 To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button of the 'Pubish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
+Notice that ther eis only context information in the response and no event name.
 
-## <img src="/images/SMARTlogo.svg" width="30"> SMART on FHIR launch
+## <img src="/images/SMARTlogo.svg" width="30">SMART on FHIR launch
 The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
 Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=) with a preselected patient, provider and 'App Launch URL'.  Click the green 'Launch App!' button in the lower right corner to initiate the launch.
 ![SMARTlaunch](/images/SMARTlaunch.png)

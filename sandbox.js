@@ -60,13 +60,13 @@ if (env.mode!='client') {
           };
         if(subscriptionRequest['hub.mode']=='subscribe') {
           subscriptions.push(subscription);
-          console_log('📡HUB: Subscription added for session:' +subscriptionRequest['hub.topic'] + ' event:' + subscriptionRequest['hub.events'] ); // Print the response status code if a response was received
+          console_log('📡HUB: Subscription added for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] ); // Print the response status code if a response was received
         }
         else {
           subscriptions = subscriptions.filter(function( obj ) {
             return obj.events !== subscriptionRequest['hub.events'] &&  obj.session !== subscriptionRequest['hub.topic'] ;
           });
-          console_log('📡HUB: Subscription removed for session:' +subscriptionRequest['hub.topic'] + ' event:' + subscriptionRequest['hub.events'] );
+          console_log('📡HUB: Subscription removed for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] );
         }
 
       });
