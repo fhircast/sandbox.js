@@ -7,6 +7,7 @@
    * [Get Started!](Get-Started!)
    * [Request context from the hub]()
    * [SMART on FHIR launch]()
+   * [Troubleshooting](#Troubleshooting)
 3. [Installation](#Installation)
    * [Environment Variables](#Enviroment-Variables)
    * [Windows and MacOs](#Windows-and-MacOs)
