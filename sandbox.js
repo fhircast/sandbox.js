@@ -47,20 +47,29 @@ if (env.mode!='client') {
               "hub.topic": env.hubURL+env.hubPublish,
             }    
       }, function (error, response, body) {
-      //console.log('HUB: error:', error); // Print the error if one occurred
-      console_log('📡HUB: Callback check challenge response: ' + body); 
-      console_log('📡HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
-      var subscription = {
-          channel:"websub",
-          callback: subscriptionRequest['hub.callback'],
-          events: subscriptionRequest['hub.events'],
-          secret: subscriptionRequest['hub.secret'],
-          topic: subscriptionRequest['hub.topic'],
-          lease: subscriptionRequest['hub.lease'],
-          session: subscriptionRequest['hub.topic'],
-        };
-      subscriptions.push(subscription);
-    });
+        console_log('📡HUB: Callback check challenge response: ' + body); 
+        console_log('📡HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
+        var subscription = {
+            channel:"websub",
+            callback: subscriptionRequest['hub.callback'],
+            events: subscriptionRequest['hub.events'],
+            secret: subscriptionRequest['hub.secret'],
+            topic: subscriptionRequest['hub.topic'],
+            lease: subscriptionRequest['hub.lease'],
+            session: subscriptionRequest['hub.topic'],
+          };
+        if(subscriptionRequest['hub.mode']=='subscribe') {
+          subscriptions.push(subscription);
+          console_log('📡HUB: Subscription added for session:' +subscriptionRequest['hub.topic'] + ' event:' + subscriptionRequest['hub.events'] ); // Print the response status code if a response was received
+        }
+        else {
+          subscriptions = subscriptions.filter(function( obj ) {
+            return obj.events !== subscriptionRequest['hub.events'] &&  obj.session !== subscriptionRequest['hub.topic'] ;
+          });
+          console_log('📡HUB: Subscription removed for session:' +subscriptionRequest['hub.topic'] + ' event:' + subscriptionRequest['hub.events'] );
+        }
+
+      });
     res.send(202);
     console_log('📡HUB: Sending subscription response statusCode: 202'); // Print the response status code if a response was received
   });
@@ -99,9 +108,8 @@ if (env.mode!='client') {
   
   // HUB: Receive context request from clients with with session id in the query string  
   app.get('/notify/',function(req,res){
+    console_log('📡HUB: Receiving context request for session id: '+req.query.sessionid);
     res.send(200,lastContext);
-    req.query['sessionId'];
-    console_log('📡HUB: Receiving context request with session id: '+req.query['sessionId']);
   });
   
   // HUB: Return hub status in the log - Internal - Not part of the standard

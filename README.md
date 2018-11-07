@@ -44,8 +44,8 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
-## Request context from the hub
-To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
+## Retrieve context from the hub
+To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button of the 'Pubish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
 
 ## <img src="/images/SMARTlogo.svg" width="30"> SMART on FHIR launch

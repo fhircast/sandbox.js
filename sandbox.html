@@ -71,7 +71,7 @@
             <option value="logout-user">user-logout</option>
             <option value="hibernate-user">user-hibernate</option>
     </select>
-    <button onclick="getContext(document.getElementById('publishURI').value)" style="text-align:left;" >context:</button>
+    <button onclick="getContext(document.getElementById('publishURI').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
     <textarea  id="context" rows="9" cols="35">{
 "key": "patient",
 "resource": 
@@ -145,12 +145,12 @@
                 };
     }
 
-    function getContext(url){
+    function getContext(url,sessionid){
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
+        xhr.open('GET', url+'?sessionid='+sessionid, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
- //       console.log('Event sent from browser: ' + JSON.stringify(msg));
-        xhr.send('sessionid=1234');
+        xhr.send();
+        console.log('Context request sent from browser for session: ' + sessionid);
         xhr.onloadend = function () {
             var context=JSON.parse(this.responseText);
             prompt('The hub responded with status code: '+ this.status +'\nUse Ctrl-C to copy the context:  \n' + JSON.stringify(context,null,2),JSON.stringify(context,null,2));
