@@ -1,5 +1,4 @@
 # FHIRcast JavaScript Sandbox
- Table of Contents
 - [FHIRcast JavaScript Sandbox](#fhircast-javascript-sandbox)
 - [Introduction](#introduction)
   - [Online sandboxes](#online-sandboxes)
@@ -83,6 +82,7 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button of the 'Pubish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
 Notice that ther eis only context information in the response and no event name.
+
 
 ## <img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch
 The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
