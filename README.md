@@ -1,13 +1,10 @@
 # FHIRcast JavaScript Sandbox
 - [Introduction](#introduction)
-  - [Online Sandboxes](#online-sandboxes)
+  - [Online sandboxes](#online-sandboxes)
   - [Communication](#communication)
 - [Usage](#usage)
   - [Try it online !](#Try-it-online-!)       
-      1.[ Select the hub.](#1.-Select-the-hub:)
-      2.[ Subscribe to an event.](#2.-Subscribe-to-an-event:)
-      3.[ Publish an event.](#3.-Publish-an-event)
-      4.[ Monitor the endpoints.](#4.-Monitor-the-endpoints:)
+      1-Select the hub.  2-Subscribe to an event.  3-Publish an event. 4-Monitor the endpoints.
   - [Simulate workflows](#Simulate-workflows)
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
   - [<img src="/images/SMARTlogo.svg" width="20">Do a SMART on FHIR launch](#img-src%22imagessmartlogosvg%22-width%2220%22smart-on-fhir-launch)
@@ -38,7 +35,7 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
 
-This sandbox (sandbox.js) implements the standard using JavaScript and Node.js <img src="/images/nodejs.svg" width="50">.
+This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
@@ -69,7 +66,7 @@ Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank"
 Leave the defaults URLs. 
 2. Subscribe to an event:  
  Send a subscription request with the send button.  The hub response code should be 202 - Acccepted.
-3. Publish an event:  
+3. Publish an event: 
  Publish the same type of event with the context defined in the text area with the 'send' button.  The hub response code should be 200 - OK.
 4. Monitor the endpoints:  
 Log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
