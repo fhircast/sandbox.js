@@ -1,12 +1,16 @@
 # FHIRcast JavaScript Sandbox
-- [FHIRcast JavaScript Sandbox](#fhircast-javascript-sandbox)
 - [Introduction](#introduction)
   - [Online Sandboxes](#online-sandboxes)
   - [Communication](#communication)
 - [Usage](#usage)
-  - [Get Started !](#get-started)
+  - [Try it online !](#Try-it-online-!)       
+      1.[ Select the hub.](#1.-Select-the-hub:)
+      2.[ Subscribe to an event.](#2.-Subscribe-to-an-event:)
+      3.[ Publish an event.](#3.-Publish-an-event)
+      4.[ Monitor the endpoints.](#4.-Monitor-the-endpoints:)
+  - [Simulate workflows](#Simulate-workflows)
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
-  - [<img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch](#img-src%22imagessmartlogosvg%22-width%2220%22smart-on-fhir-launch)
+  - [<img src="/images/SMARTlogo.svg" width="20">Do a SMART on FHIR launch](#img-src%22imagessmartlogosvg%22-width%2220%22smart-on-fhir-launch)
   - [Troubleshooting](#troubleshooting)
 - [Installation](#installation)
   - [Environment variables](#environment-variables)
@@ -39,7 +43,7 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js <
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 ## Online Sandboxes
-The following sandbox.js deployments are available online (Microsoft Azure - Frankfurt):
+The following instances are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
 * <a href="https://pacs-fhircast.azurewebsites.net/" target="_blank" >PACS client</a> 
@@ -58,16 +62,20 @@ The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](htt
 This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 # Usage
-## Get Started !
+## Try it online !
 Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank">combined hub/client</a> in the cloud.
 ![frontend](/images/frontend.png)
-1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
-2. Select the client endpoint (hub.callback) that will receive the events and then send a subscription request with the send button.  The hub response will be shown in the light gray box next to the button.
-3. Send an event to the endpoint specified by the hub in the callback check (hub.topic). The hub response will be shown in the gray box.
-4. You can monitor the hub and client endpoints in this text area. The log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
+1. Select the hub:  
+Leave the defaults URLs. 
+2. Subscribe to an event:  
+ Send a subscription request with the send button.  The hub response code should be 202 - Acccepted.
+3. Publish an event:  
+ Publish the same type of event with the context defined in the text area with the 'send' button.  The hub response code should be 200 - OK.
+4. Monitor the endpoints:  
+Log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
 
-  
-Next, use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
+## Simulate workflows
+Use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 
 Next, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) clients to simulate a complete workflow.
 
@@ -79,7 +87,7 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
 ## Retrieve context from the hub
-To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button of the 'Pubish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
+To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button if the 'Publish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
 
