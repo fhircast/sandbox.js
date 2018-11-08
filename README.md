@@ -39,7 +39,7 @@ This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
 
 If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-## Online Sandboxes
+## Online sandboxes
 The following instances are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
@@ -84,7 +84,7 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
 ## Retrieve context from the hub
-To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button if the 'Publish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status sucess 200. The context will be shown in an prompt window as pictured below.
+To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button in the 'Publish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status 200 - 'success'. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
 
@@ -94,16 +94,16 @@ The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide 
 Test the online [SMART App launcher](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=) with a preselected patient, provider and 'App Launch URL'.  Click the green 'Launch App!' button in the lower right corner to initiate the launch.
 ![SMARTlaunch](/images/SMARTlaunch.png)
 
-This should launch the FHIRcast client within the Simulated EHR.
+This launches the FHIRcast client within the Simulated EHR.
 ![SMARTlaunched](/images/SMARTlaunched.png)
-Notice that the 'hub.topic' input textbox has been populated with the SMART session id and the context text area with the correct patient FHIR resource (both highlighted in light yellow).
+Notice that the 'hub.topic' input textbox has been populated with the SMART session-id and the context text area with the correct patient FHIR resource (both highlighted in light yellow).
 
 
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
-* **The buttons do not work:** Using the browser developer tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
+* **The buttons do not work:** Using the browser developper tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
 * **Response error 404-Not found:** The configured hub url node may be set to run as a client-only and therefore the hub endpoints are not available.
 * **The log emojis are black and white:**  Color emojis require Office 2016 on Windows 7.
 
@@ -113,7 +113,7 @@ Installing your own sandbox allows you to learn, fix bugs, propose new features 
 Whether deploying locally or in the cloud, environment variable settings may be needed.
 
 ## Environment variables
-Environment variables can be used to control the mode of operation , default endpoints and appearance of the instance.  If no environment variables are set, the instance will run as a combined hub and client.
+Environment variables can be used to control the mode of operation, default endpoints and appearance of the instance.  If no environment variables are set, the instance will run as a combined hub and client.
 
 + **MODE**: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
 + **PORT**: Specifies the listening port. Default is 8000. 
@@ -284,10 +284,10 @@ The authorization sequence is described [here](http://docs.smarthealthit.org/tut
 
 ## Front-end description
 ### HTML
-The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, publish and monitor. Simple styling is embedded to avoid an extra file to maintain.
+The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, publish and monitor.
 
 ### JavaScript
-The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
+The three FHIRcast-relevant functions are **sendEvent()**, **sendSubscription()** and **getContext().  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
 * sendSubscription():  This function builds a query string using the data from the input fields of section 2 and POSTs it to the hub with 'Content-type' header set to 'application/x-www-form-urlencoded'.
 * sendEvent():  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
 * getContext():  This function requests the current context from the hub and displays it in a message box.
@@ -299,7 +299,7 @@ Other functions are specific to the sandbox:
 * deleteSubscriptions(): Makes a POST to the hub to clear the subscriptions list when the button is clicked.
 
 # Contribution
-We welcome any contributions to help further enhance this tool for the FHIRcast community ! 
+We welcome any contributions to help improve this tool for the FHIRcast community ! 
 
 To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then issue a pull request on the fhircast/sandbox.js repository with your changes for review.
 
