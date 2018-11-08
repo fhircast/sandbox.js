@@ -4,7 +4,7 @@
   - [Online Sandboxes](#online-sandboxes)
   - [Communication](#communication)
 - [Usage](#usage)
-  - [Get Started!](#get-started)
+  - [Get Started !](#get-started)
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
   - [<img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch](#img-src%22imagessmartlogosvg%22-width%2220%22smart-on-fhir-launch)
   - [Troubleshooting](#troubleshooting)
@@ -55,10 +55,10 @@ To open the links in a different tab, use right-click or ctrl-click on MacOs.
 ## Communication   
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
 
-This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Client subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
+This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 # Usage
-## Get Started!
+## Get Started !
 Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank">combined hub/client</a> in the cloud.
 ![frontend](/images/frontend.png)
 1. Select the hub that you want to connect to.  Leave the defaults URLs to play around in the standalone hub/client.
@@ -285,6 +285,7 @@ The four sections of the web page are each contained in their own division or 'd
 The two FHIRcast-relevant functions are **sendEvent()** and **sendSubscription()**.  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
 * sendSubscription():  This function builds a query string using the data from the input fields of section 2 and POSTs it to the hub with 'Content-type' header set to 'application/x-www-form-urlencoded'.
 * sendEvent():  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
+* getContext():  This function requests the current context from the hub and displays it in a message box.
 
 
 Other functions are specific to the sandbox:
