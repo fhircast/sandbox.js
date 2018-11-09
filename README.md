@@ -5,9 +5,9 @@
 - [Usage](#usage)
   - [Try it online !](#Try-it-online-!)       
     1. [Select the hub.](#Try-it-online-!)
-    2. [Subscribe to an event.](#Try-it-online-!)
-    3. [Publish an event.](#Try-it-online-!)
-    4. [Monitor the endpoints.](Try-it-online-!)
+    1. [Subscribe to an event.](#Try-it-online-!)
+    1. [Publish an event.](#Try-it-online-!)
+    1. [Monitor the endpoints.](Try-it-online-!)
     
   - [Simulate workflows](#Simulate-workflows)
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
