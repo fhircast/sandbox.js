@@ -4,7 +4,11 @@
   - [Communication](#communication)
 - [Usage](#usage)
   - [Try it online !](#Try-it-online-!)       
-      1-Select the hub.  2-Subscribe to an event.  3-Publish an event. 4-Monitor the endpoints.
+    1. [Select the hub.](#Try-it-online-!)
+    2. [Subscribe to an event.](#Try-it-online-!)
+    3. [Publish an event.](#Try-it-online-!)
+    4. [Monitor the endpoints.](Try-it-online-!)
+    
   - [Simulate workflows](#Simulate-workflows)
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
   - [Do a SMART on FHIR launch](#smart-on-fhir-launch)
