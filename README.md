@@ -15,7 +15,7 @@
   - [Linux](#linux)
     - [Ubuntu](#ubuntu)
   - [Clouds](#clouds)
-    - [Azure](#azure)
+    - [Microsoft](#azure)
     - [Google](#google)
     - [Amazon](#amazon)
   - [Mobile (iOS, Android)](#mobile-ios-android)
@@ -62,13 +62,13 @@ This model defines a "hub" that receives subscribtion requests from clients (sub
 ## Try it online !
 Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank">combined hub/client</a> in the cloud.
 ![frontend](/images/frontend.png)
-1. Select the hub:  
+1. Select the hub:     
 Leave the defaults URLs. 
-2. Subscribe to an event:  
- Send a subscription request with the send button.  The hub response code should be 202 - Acccepted.
-3. Publish an event: 
- Publish the same type of event with the context defined in the text area with the 'send' button.  The hub response code should be 200 - OK.
-4. Monitor the endpoints:  
+2. Subscribe to an event:    
+Send a subscription request with the send button.  The hub response code should be 202 - Acccepted.
+3. Publish an event:    
+Publish the same type of event with the context defined in the text area with the 'send' button.  The hub response code should be 200 - OK.
+4. Monitor the endpoints:    
 Log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
 
 ## Simulate workflows
@@ -301,6 +301,6 @@ Other functions are specific to the sandbox:
 # Contribution
 We welcome any contributions to help improve this tool for the FHIRcast community ! 
 
-To contribute to this project, please see instructions above for running the application locally and testing the app to make sure the tool works as expected with your incorporated changes. Then issue a pull request on the fhircast/sandbox.js repository with your changes for review.
+To contribute to this project, please issue a pull request on the fhircast/sandbox.js repository with your changes for review.
 
 [Converse at chat.fhir.org](https://chat.fhir.org/#narrow/stream/fhircast)
