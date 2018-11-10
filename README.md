@@ -5,13 +5,12 @@
 - [Usage](#usage)
   - [Try it online !](#Try-it-online-!)       
     1. [Select the hub.](#Try-it-online-!)
-    1. [Subscribe to an event.](#Try-it-online-!)
-    1. [Publish an event.](#Try-it-online-!)
-    1. [Monitor the endpoints.](Try-it-online-!)
-    
-  - [Simulate workflows](#Simulate-workflows)
+    2. [Subscribe to an event.](#Try-it-online-!)
+    3. [Publish an event.](#Try-it-online-!)
+    4. [Monitor the endpoints.](Try-it-online-!)   
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
   - [Do a SMART on FHIR launch](#smart-on-fhir-launch)
+  - [Simulate workflows](#Simulate-workflows)
   - [Troubleshoot](#troubleshooting)
 - [Installation](#installation)
   - [Environment variables](#environment-variables)
@@ -75,23 +74,10 @@ Publish the same type of event with the context defined in the text area with th
 4. Monitor the endpoints:    
 Log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
 
-## Simulate workflows
-Use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
-
-Next, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) clients to simulate a complete workflow.
-
-![workflow](/images/workflow.png)
-
-
-Finally, open two reporting client browser sessions.  Subscribe to an event from one of the browsers and generate an event in the hub.  Do both reporting browsers get a message?
-
-![twoBrowserSessions](/images/twoBrowserSessions.png)
-
 ## Retrieve context from the hub
 To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button in the 'Publish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status 200 - 'success'. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
-
 
 ## <img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch
 The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
@@ -104,6 +90,18 @@ Notice that the 'hub.topic' input textbox has been populated with the SMART sess
 
 
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
+
+## Simulate workflows
+Use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
+
+Next, add the [EMR](https://emr-fhircast.azurewebsites.net/), [AI](https://ai-fhircast.azurewebsites.net/)  and [reporting](https://reporting-fhircast.azurewebsites.net/) clients to simulate a complete workflow.
+
+![workflow](/images/workflow.png)
+
+
+Finally, open two reporting client browser sessions.  Subscribe to an event from one of the browsers and generate an event in the hub.  Do both reporting browsers get a message?
+
+![twoBrowserSessions](/images/twoBrowserSessions.png)
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
@@ -125,6 +123,7 @@ Environment variables can be used to control the mode of operation, default endp
 + **CLIENT_URL**: Specifies the address where the client node will receive published events.  Default is http://localhost:8000/client.
 + **TITLE**: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
 + **BACKGROUND_COLOR**: Sets the background color. Default is 'darkgray'.
++ **DEFAULT_CONTEXT**: Sets the content of the context text area of the browser on page load. Value must be a valid JSON string.  Default is a sample patient context with id 185444. 
 
 ## Windows and  MacOS
 1. Install node at http://nodejs.org.

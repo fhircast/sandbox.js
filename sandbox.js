@@ -32,6 +32,24 @@ env.title = process.env.TITLE ||'FHIRcast JavaScript Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
 env.port= process.env.PORT || 8000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
+env.defaultContext= process.env.DEFAULT_CONTEXT || `{
+  "key": "patient",
+  "resource": 
+  {
+  "resourceType": "Patient",
+  "id": "ewUbXT9RWEbSj5wPEdgRaBw3",
+  "identifier": [
+      {
+      "system": "urn:oid:1.2.840.114350",
+      "value": "185444"
+      },
+      {
+      "system": "urn:oid:1.2.840.114350.1.13.861.1.7.5.737384.27000",
+      "value": "2667"
+      }
+  ]
+  }
+  }`;
 
 if (env.mode!='client') {
   // HUB:  Receive and check subscription requests from clients

@@ -35,14 +35,14 @@
     </select>
     <label>hub.events:</label>
     <select id="hub.events" name="hub.events">
-            <option value="open-patient-chart" selected >open-patient-chart</option>
-            <option value="switch-patient-chart">switch-patient-chart</option>
-            <option value="close-patient-chart">close-patient-chart</option>
-            <option value="open-imaging-study">open-imaging-study</option>
-            <option value="switch-imaging-study">switch-imaging-study</option>
-            <option value="close-imaging-study">close-imaging-study</option>
-            <option value="logout-user">user-logout</option>
-            <option value="hibernate-user">user-hibernate</option>
+        <option value="open-patient-chart" selected >open-patient-chart</option>
+        <option value="switch-patient-chart">switch-patient-chart</option>
+        <option value="close-patient-chart">close-patient-chart</option>
+        <option value="open-imaging-study">open-imaging-study</option>
+        <option value="switch-imaging-study">switch-imaging-study</option>
+        <option value="close-imaging-study">close-imaging-study</option>
+        <option value="logout-user">logout-user</option>
+        <option value="hibernate-user">hibernate-user</option>
     </select>
     <label>hub.secret: </label>
     <input id="hub.secret" name="hub.secret" type="text" value="secret">        
@@ -62,34 +62,17 @@
     <input id="publishURI" name="publishURI" value="http://localhost:3000/notify"/>
     <label>hub.events:</label>
     <select id="publishEvents" name="publishEvents">
-            <option value="open-patient-chart" selected >open-patient-chart</option>
-            <option value="switch-patient-chart">switch-patient-chart</option>
-            <option value="close-patient-chart">close-patient-chart</option>
-            <option value="open-imaging-study">open-imaging-study</option>
-            <option value="switch-imaging-study">switch-imaging-study</option>
-            <option value="close-imaging-study">close-imaging-study</option>
-            <option value="logout-user">user-logout</option>
-            <option value="hibernate-user">user-hibernate</option>
+        <option value="open-patient-chart" selected >open-patient-chart</option>
+        <option value="switch-patient-chart">switch-patient-chart</option>
+        <option value="close-patient-chart">close-patient-chart</option>
+        <option value="open-imaging-study">open-imaging-study</option>
+        <option value="switch-imaging-study">switch-imaging-study</option>
+        <option value="close-imaging-study">close-imaging-study</option>
+        <option value="logout-user">logout-user</option>
+        <option value="hibernate-user">hibernate-user</option>
     </select>
     <button onclick="getContext(document.getElementById('publishURI').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
-    <textarea  id="context" rows="9" cols="35">{
-"key": "patient",
-"resource": 
-{
-"resourceType": "Patient",
-"id": "ewUbXT9RWEbSj5wPEdgRaBw3",
-"identifier": [
-    {
-    "system": "urn:oid:1.2.840.114350",
-    "value": "185444"
-    },
-    {
-    "system": "urn:oid:1.2.840.114350.1.13.861.1.7.5.737384.27000",
-    "value": "2667"
-    }
-]
-}
-}</textarea>
+    <textarea  id="context" rows="9" cols="35">{}</textarea>
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('publishURI').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
@@ -191,6 +174,8 @@
         document.getElementById('clientEndpoint').value=env.clientURL;
         document.getElementById('hubSubscribeURI').value = env.hubURL+env.hubSubscribe;
         document.getElementById('publishURI').value=env.hubURL+env.hubPublish; 
+        document.getElementById('context').value=env.defaultContext; 
+        
     };
     document.getElementById('eventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
     var clientId='session-id-' + Math.random().toString(36).substr(2, 16);
