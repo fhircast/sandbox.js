@@ -1,7 +1,5 @@
 # FHIRcast JavaScript Sandbox
 - [Introduction](#introduction)
-  - [Online sandboxes](#online-sandboxes)
-  - [Communication](#communication)
 - [Usage](#usage)
   - [Try it online !](#Try-it-online-!)       
     1. [Select the hub.](#Try-it-online-!)
@@ -36,13 +34,13 @@
 # Introduction
 FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](http://fhircast.org).
 
-FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.
+FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Working Group-20 to provide early feedback on implementability.
 
-This sandbox (sandbox.js) implements the standard using JavaScript and Node.js.
+This sandbox (sandbox.js) implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
+The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/). This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
-## Online sandboxes
+# Usage
 The following instances are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
@@ -51,17 +49,10 @@ The following instances are available online (Microsoft Azure - Frankfurt):
 * <a href="https://ai-fhircast.azurewebsites.net/" target="_blank" >AI client</a> 
 
 Also without TLS (Google Cloud Platform - Montr&eacute;al):
-
-* <a href="http://35.185.207.170/" target="_blank" >HUB (server and client)</a> 
+ * <a href="http://35.185.207.170/" target="_blank" >HUB (server and client)</a> 
 
 To open the links in a different tab, use right-click or ctrl-click on MacOs.
 
-## Communication   
-The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/).  
-
-This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
-
-# Usage
 ## Try it online !
 Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank">combined hub/client</a> in the cloud.
 ![frontend](/images/frontend.png)
@@ -287,7 +278,9 @@ The authorization sequence is described [here](http://docs.smarthealthit.org/tut
 
 ## Front-end description
 ### HTML
-The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, publish and monitor.
+sandbox.html: The four sections of the web page are each contained in their own division or 'div':  selectHub, subscribe, publish and monitor.
+
+SMARTlaunch.html:  THis is the launch.html file from the SMART App launcher example.  
 
 ### JavaScript
 The three FHIRcast-relevant functions are **sendEvent()**, **sendSubscription()** and **getContext().  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
