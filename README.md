@@ -83,9 +83,11 @@ Notice that the 'hub.topic' input textbox has been populated with the SMART sess
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
 
 ###  HTML5 Web Messaging 
-[SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Desicion Support (CDS) applications. This [webmsg endpoint](https://fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
+[SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Decision Support (CDS) applications. This [webmsg endpoint](https://fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
 ![webmessage](/images/webmessage.png)
-Click the 'Send' buttons to see 'postMessage()' actions across iframes.
+
+
+Click the 'Send' buttons to see 'postMessage()' actions across iframes.  The 'Launch AI in another window' button may produce a 'pop-up' warning in your browser.
 ## Simulate workflows
 Use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 

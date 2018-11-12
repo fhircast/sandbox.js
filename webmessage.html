@@ -6,7 +6,7 @@
             body {padding: 2px;  background-color: rgb(255,255,204);font-family: Arial, Helvetica, sans-serif; font-weight: 500;border: 1px solid black; font-size: 16}
             header {background-color:white; text-align:center; border-bottom: 1px solid black;}
             h2 { display: inline; background-color:white; text-align:center;}
-            div.reporting,div.ai {border-top: 1px solid black;}
+            div.cds, div.reporting,div.ai {border-top: 1px solid black;}
             label,button {padding: 2px; display: inline-block;width: 24.5%}
             input,textarea,select {width: 65%;border:1px solid}
             textarea {vertical-align: top;background-color:whitesmoke}
@@ -16,23 +16,42 @@
     <body>
         <header><h2><span id="docTitle">EMR Client - HTML5 Web Messaging</span></h2></header>       
         </br>
-        <label>Receive messages</label>
+        <label>Receive Web Messages:</label>
         <textarea id="receiveMessage"></textarea>
         </br></br>
-        <div class="reporting">
+        <div class="cds">
             </br>
-            <button onclick="postMessage('https://reporting-fhircast.azurewebsites.net','Reporting','iframeReporting')">Send message</button>
-            <textarea id="Reporting">Hello from the EMR client</textarea>
-            <iframe id="iframeReporting" src="https://reporting-fhircast.azurewebsites.net?webmessage=true" width="750" height="130" ></iframe>
+            <button onclick="postMessage('https://cds-fhircast.azurewebsites.net','cds','iframecds')">Send Web Message to the iframe</button>
+            <textarea id="cds">Good afternoon from the EMR client</textarea>
+            <iframe id="iframecds" src="https://cds-fhircast.azurewebsites.net?webmessage=true" width="750" height="130" ></iframe>
+            </br></br>
         </div>
+        
+       <div class="reporting">
         </br>
+            <button onclick="postMessage('https://reporting-fhircast.azurewebsites.net','Reporting','iframeReporting')">Send Web Message to the iframe</button>
+            <textarea id="Reporting">Good afternoon from the EMR client</textarea>
+            <iframe id="iframeReporting" src="https://reporting-fhircast.azurewebsites.net?webmessage=true" width="750" height="130" ></iframe>
+            </br></br>
+        </div>
+        
         <div class="ai">
             </br>
-            <button onclick="postMessage('https://ai-fhircast.azurewebsites.net','ai','iframeAi')">Send message</button>
+            <button onclick="launchAIClient()">Launch AI Client in another window</button>
+            </br>
+            <button onclick="postMessageAI('https://ai-fhircast.azurewebsites.net','ai')">Send Web Message to the other window</button>
             <textarea id="ai">Hello from the EMR client</textarea>
-            <iframe id="iframeAi" src="https://ai-fhircast.azurewebsites.net?webmessage=true" width="750" height="130" ></iframe>
         </div>
     <script>
+        var aiClient=null;
+        function launchAIClient(){
+            aiClient=window.open('https://ai-fhircast.azurewebsites.net?webmessage=true');
+        }
+        function postMessageAI(url,elementId){
+            var message= document.getElementById(elementId).value;
+            aiClient.postMessage(message,'*');         
+        }
+
         function postMessage(url,elementId,frameId){
                 var o = document.getElementById(frameId);
                 var message= document.getElementById(elementId).value;
