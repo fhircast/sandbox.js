@@ -187,9 +187,11 @@ app.post('/client/',function(req,res){
 // CLIENT: send environment variable
 app.post('/mode/',function(req,res){res.send(env);});
 
+app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmessage.html'));  });
+
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
-  if(req.originalUrl.indexOf('launch')>0){
+if(req.originalUrl.indexOf('launch')>0){
     console_log('🔥SMART_ON_FHIR: Launch detected. '); 
     console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+req.query.iss);
     res.sendFile(path.join(__dirname + '/SMARTlaunch.html')); 
@@ -234,20 +236,6 @@ function console_log(msg){
   });
 
   var logWss = expressWs.getWss('/log');
-
-  //var event = new Event('log');
-  //event.addEventListener('log', function (e) {
-  //  if (ws.readyState==1) {
-  //    logWss.clients.forEach(function (client) {
-  //      client.send(e);
-  //      console.log('Websocket message sent to: '+client.id );
-  //    }, false);
-  //  }
-  //});
-
-  //document.addEventListener("log", function(e) {
-  //  console.log(e.detail); // Prints "Example of an event"
-  //});
 
   setInterval(() => { 
       if (logWebsocket!='') {       

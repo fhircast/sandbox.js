@@ -8,6 +8,7 @@
     4. [Monitor the endpoints.](Try-it-online-!)   
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
   - [Do a SMART on FHIR launch](#smart-on-fhir-launch)
+    - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
   - [Simulate workflows](#Simulate-workflows)
   - [Troubleshoot](#troubleshooting)
 - [Installation](#installation)
@@ -36,7 +37,7 @@ FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive 
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Working Group-20 to provide early feedback on implementability.
 
-This sandbox (sandbox.js) implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
+This sandbox (sandbox.js) partially implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/). This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
@@ -79,9 +80,12 @@ This launches the FHIRcast client within the Simulated EHR.
 ![SMARTlaunched](/images/SMARTlaunched.png)
 Notice that the 'hub.topic' input textbox has been populated with the SMART session-id and the context text area with the correct patient FHIR resource (both highlighted in light yellow).
 
-
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
 
+###  HTML5 Web Messaging 
+[SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Desicion Support (CDS) applications. This [webmsg endpoint](https://fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
+![webmessage](/images/webmessage.png)
+Click the 'Send' buttons to see 'postMessage()' actions across iframes.
 ## Simulate workflows
 Use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 

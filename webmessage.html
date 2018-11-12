@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web messaging demo</title>
+        <style>
+            body {padding: 2px;  background-color: rgb(255,255,204);font-family: Arial, Helvetica, sans-serif; font-weight: 500;border: 1px solid black; font-size: 16}
+            header {background-color:white; text-align:center; border-bottom: 1px solid black;}
+            h2 { display: inline; background-color:white; text-align:center;}
+            div.reporting,div.ai {border-top: 1px solid black;}
+            label,button {padding: 2px; display: inline-block;width: 24.5%}
+            input,textarea,select {width: 65%;border:1px solid}
+            textarea {vertical-align: top;background-color:whitesmoke}
+            textarea.textAreaMonitor {width: 99%;font-family: "Segoe UI Emoji";}
+        </style>        
+    </head>
+    <body>
+        <header><h2><span id="docTitle">EMR Client - HTML5 Web Messaging</span></h2></header>       
+        </br>
+        <label>Receive messages</label>
+        <textarea id="receiveMessage"></textarea>
+        </br></br>
+        <div class="reporting">
+            </br>
+            <button onclick="postMessage('https://reporting-fhircast.azurewebsites.net','Reporting','iframeReporting')">Send message</button>
+            <textarea id="Reporting">Hello from the EMR client</textarea>
+            <iframe id="iframeReporting" src="https://reporting-fhircast.azurewebsites.net?webmessage=true" width="750" height="130" ></iframe>
+        </div>
+        </br>
+        <div class="ai">
+            </br>
+            <button onclick="postMessage('https://ai-fhircast.azurewebsites.net','ai','iframeAi')">Send message</button>
+            <textarea id="ai">Hello from the EMR client</textarea>
+            <iframe id="iframeAi" src="https://ai-fhircast.azurewebsites.net?webmessage=true" width="750" height="130" ></iframe>
+        </div>
+    <script>
+        function postMessage(url,elementId,frameId){
+                var o = document.getElementById(frameId);
+                var message= document.getElementById(elementId).value;
+               o.contentWindow.postMessage(message, '*');
+        }
+
+        function receiver(event) {
+//	    if (event.origin == 'http://example.net') {
+		    document.getElementById('receiveMessage').value=event.data;
+//	    }   
+        }
+    
+        window.addEventListener('message', receiver, false);
+        </script>
+    </body>
+</html>
+    
