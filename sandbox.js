@@ -11,7 +11,7 @@ const expressWs = require('express-ws')(app);
 app.use(morgan('dev'));
 app.use(express.json());  
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(favicon(path.join(__dirname + '/fhir.ico')))
+app.use(favicon(path.join(__dirname + '/fhircast.png')))
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
