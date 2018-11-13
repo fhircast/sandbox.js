@@ -7,7 +7,7 @@
     3. [Publish an event.](#Try-it-online-!)
     4. [Monitor the endpoints.](Try-it-online-!)   
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
-  - [Do a SMART on FHIR launch](#smart-on-fhir-launch)
+  - [Do a SMART on FHIR launch](#SMART-on-FHIR-launch)
     - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
   - [Simulate workflows](#Simulate-workflows)
   - [Troubleshoot](#troubleshooting)
@@ -45,6 +45,7 @@ The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](htt
 The following instances are available online (Microsoft Azure - Frankfurt):
 * <a href="https://hub-fhircast.azurewebsites.net/" target="_blank" >HUB (server and client)</a> 
 * <a href="https://emr-fhircast.azurewebsites.net/" target="_blank" >EHR  client</a> 
+* <a href="https://cds-fhircast.azurewebsites.net/" target="_blank" >CDS client</a> 
 * <a href="https://pacs-fhircast.azurewebsites.net/" target="_blank" >PACS client</a> 
 * <a href="https://reporting-fhircast.azurewebsites.net/" target="_blank" >Reporting client</a> 
 * <a href="https://ai-fhircast.azurewebsites.net/" target="_blank" >AI client</a> 
@@ -71,7 +72,7 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
 
-## <img src="/images/SMARTlogo.svg" width="20">SMART on FHIR launch
+## SMART on FHIR launch
 The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
 Test the online SMART App launcher with a [preselected patient, provider and 'App Launch URL'](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=).  Click the green 'Launch App!' button in the lower right corner to initiate the launch.
 ![SMARTlaunch](/images/SMARTlaunch.png)

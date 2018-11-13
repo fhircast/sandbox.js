@@ -95,10 +95,9 @@
 </div>
 <script>
     function postMessageSandbox(){
-        //var o = document.getElementById(frameId);
         var message= document.getElementById('sendWebMessage').value;
         window.parent.postMessage(message,'*');
-        //o.contentWindow.postMessage(message, '*');
+        window.opener.postMessage(message,'*');
     }
 
     function sendSubscription(url){
