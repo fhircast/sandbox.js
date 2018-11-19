@@ -24,14 +24,15 @@ var logWebsocket='';
 var socketCount=0;
 var pageLoads=0;
 var env ={};
-env.hubURL= process.env.HUB_URL || 'http://localhost:8000';
+env.port= process.env.PORT || 3000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
+env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
 env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub/';
 env.hubPublish = process.env.HUB_PUBLISH || '/notify/';
-env.clientURL = process.env.CLIENT_URL || 'http://localhost:8000/client';
+env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client';
 env.title = process.env.TITLE ||'FHIRcast JavaScript Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
-env.port= process.env.PORT || 8000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
+
 env.defaultContext= process.env.DEFAULT_CONTEXT || `{
   "key": "patient",
   "resource": 

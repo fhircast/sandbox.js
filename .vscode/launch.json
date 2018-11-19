@@ -12,8 +12,8 @@
             "env": 
             {
 //                "MODE":"hub",
-                "HUB_URL":"http://localhost:8000",
-                "CLIENT_URL":"http://localhost:8000/client",
+ //               "HUB_URL":"http://localhost:8000",
+ //               "CLIENT_URL":"http://localhost:8000/client",
 //                "TITLE":"my FHIRcast tester",
 //                "BACKGROUND_COLOR":"blue"
            }
