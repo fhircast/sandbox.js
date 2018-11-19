@@ -53,44 +53,50 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `{
 
 if (env.mode!='client') {
   // HUB:  Receive and check subscription requests from clients
-  app.post('/api/hub/',function(req,res){  
+  app.post('/api/hub/',async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
     console_log('📡HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
     // Check the supplied callback URL
-    request({
-        url: subscriptionRequest['hub.callback'],
-        qs: {
-              "hub.challenge": subscriptionRequest['hub.secret'],
-              "hub.topic": env.hubURL+env.hubPublish,
-            }    
-      }, function (error, response, body) {
-        console_log('📡HUB: Callback check challenge response: ' + body); 
-        console_log('📡HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
-        var subscription = {
-            channel:"websub",
-            callback: subscriptionRequest['hub.callback'],
-            events: subscriptionRequest['hub.events'],
-            secret: subscriptionRequest['hub.secret'],
-            topic: subscriptionRequest['hub.topic'],
-            lease: subscriptionRequest['hub.lease'],
-            session: subscriptionRequest['hub.topic'],
-          };
-        if(subscriptionRequest['hub.mode']=='subscribe') {
-          subscriptions.push(subscription);
-          console_log('📡HUB: Subscription added for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] ); // Print the response status code if a response was received
-        }
-        else {
-          subscriptions = subscriptions.filter(function( obj ) {
-            return obj.events !== subscriptionRequest['hub.events'] &&  obj.session !== subscriptionRequest['hub.topic'] ;
-          });
-          console_log('📡HUB: Subscription removed for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] );
-        }
-
-      });
+    var  checkResult= await checkSubcription(subscriptionRequest);
     res.send(202);
     console_log('📡HUB: Sending subscription response statusCode: 202'); // Print the response status code if a response was received
   });
+
+  function checkSubcription(subscriptionRequest){
+    request({
+      url: subscriptionRequest['hub.callback'],
+      qs: {
+            "hub.challenge": subscriptionRequest['hub.secret'],
+            "hub.topic": env.hubURL+env.hubPublish,
+          }    
+    },  function (error, response, body) {
+      console_log('📡HUB: Callback check challenge response: ' + body); 
+      console_log('📡HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
+      var subscription = {
+          channel:"websub",
+          callback: subscriptionRequest['hub.callback'],
+          events: subscriptionRequest['hub.events'],
+          secret: subscriptionRequest['hub.secret'],
+          topic: subscriptionRequest['hub.topic'],
+          lease: subscriptionRequest['hub.lease'],
+          session: subscriptionRequest['hub.topic'],
+        };
+      if(subscriptionRequest['hub.mode']=='subscribe') {
+        subscriptions.push(subscription);
+        console_log('📡HUB: Subscription added for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] ); // Print the response status code if a response was received
+      }
+      else {
+        subscriptions = subscriptions.filter(function( obj ) {
+          return obj.events !== subscriptionRequest['hub.events'] &&  obj.session !== subscriptionRequest['hub.topic'] ;
+        });
+        console_log('📡HUB: Subscription removed for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] );
+      }
+    });
+    return true;
+  }
+
+
 
   // HUB: Receive events from clients with application/json payload  
   app.post('/notify/',function(reqNotify,resNotify){
@@ -221,11 +227,36 @@ function console_log(msg){
   logWebsocket+=msg+'\n';
  }
  
- app.ws('/log', function(ws, req) {
+ 
+ app.ws('/publish', function(Myws, req) {
+  var publishWss = expressWs.getWss('/log');
+  console_log('🚀WEBSOCKET:  Accepting connection.');
+  Myws.send('hello');
+  
+  Myws.onmessage= e => {
+    //ws.id=e.data ;  // We receive our session id from the browser on connect
+    console_log('🚀WEBSOCKET: Receiving data:'+e.data +'.');
+  }
+
+  Myws.on('message', function(msg) {
+    socketCount--;
+    console_log('🚀WEBSOCKET:  Websock.');
+  });
+
+  Myws.on('close', function(msg) {
+    socketCount--;
+    console_log('🚀WEBSOCKET:  Websocket closed.');
+  });
+});
+
+
+
+app.ws('/log', function(ws, req) {
   socketCount++;
-  //console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
+  console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
+  
   ws.onmessage= e => {
-    //ws.id=e.data ;  // We recive our session id from the browser on connect
+    //ws.id=e.data ;  // We receive our session id from the browser on connect
     console_log('🚀WEBSOCKET: Accepting connection number '+socketCount+ ' with ID:'+e.data +'.');
   
   }

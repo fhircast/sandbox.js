@@ -96,7 +96,7 @@
 <script>
     function postMessageSandbox(){
         var message= document.getElementById('sendWebMessage').value;
-        window.parent.postMessage(message,'*');
+       // window.parent.postMessage(message,'*');
         window.opener.postMessage(message,'*');
     }
 
@@ -255,7 +255,7 @@
         });
     }    
 
-    //  Check if this is a Web Messaging demo, hid unwanted divs
+    //  Check if this is a Web Messaging demo, hide unwanted divs
     var webmessage = getUrlParameter("webmessage");    
     if (webmessage!= null){
         var x = document.getElementById("selectHub");
