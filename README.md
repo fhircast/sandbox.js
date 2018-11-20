@@ -1,11 +1,11 @@
 # FHIRcast JavaScript Sandbox
 - [Introduction](#introduction)
 - [Usage](#usage)
-  - [Try it online !](#Try-it-online-!)       
-    1. [Select the hub.](#Try-it-online-!)
-    2. [Subscribe to an event.](#Try-it-online-!)
-    3. [Publish an event.](#Try-it-online-!)
-    4. [Monitor the endpoints.](Try-it-online-!)   
+  - [Try it online](#Try-it-online:)       
+    1. [Select the hub.](#Try-it-online:)
+    2. [Subscribe to an event.](#Try-it-online:)
+    3. [Publish an event.](#Try-it-online:)
+    4. [Monitor the endpoints.](Try-it-online:)   
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
   - [Do a SMART on FHIR launch](#SMART-on-FHIR-launch)
     - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
@@ -55,7 +55,7 @@ Also without TLS (Google Cloud Platform - Montr&eacute;al):
 
 To open the links in a different tab, use right-click or ctrl-click on MacOs.
 
-## Try it online !
+## Try it online:
 Start with the <a href="https://hub-fhircast.azurewebsites.net/" target="_blank">combined hub/client</a> in the cloud.
 ![frontend](/images/frontend.png)
 1. Select the hub:     
@@ -116,9 +116,9 @@ Whether deploying locally or in the cloud, environment variable settings may be 
 Environment variables can be used to control the mode of operation, default endpoints and appearance of the instance.  If no environment variables are set, the instance will run as a combined hub and client.
 
 + **MODE**: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
-+ **PORT**: Specifies the listening port. Default is 8000. 
-+ **HUB_URL**: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:8000.
-+ **CLIENT_URL**: Specifies the address where the client node will receive published events.  Default is http://localhost:8000/client.
++ **PORT**: Specifies the listening port. Default is 3000. 
++ **HUB_URL**: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
++ **CLIENT_URL**: Specifies the address where the client node will receive published events.  Default is http://localhost:3000/client.
 + **TITLE**: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
 + **BACKGROUND_COLOR**: Sets the background color. Default is 'darkgray'.
 + **DEFAULT_CONTEXT**: Sets the content of the context text area of the browser on page load. Value must be a valid JSON string.  Default is a sample patient context with id 185444. 
@@ -128,13 +128,13 @@ Environment variables can be used to control the mode of operation, default endp
 2. Install npm, the node package manager, at http://npmjs.org.
 3. Clone or download the github and run "npm install" in its directory.  This will install the modules defined in package.json.
 4. Run with "node sandbox.js".  This starts the endpoints for the hub and the client.
-5. Navigate your browser to http://localhost:8000/ to access the UI.
+5. Navigate your browser to http://localhost:3000/ to access the UI.
 
 
 Different port settings are required when running multiple sandboxes locally.
 They can be set on the command-line when starting the instance:
 ```
-MODE=client PORT=8001 node sandbox.js
+MODE=client PORT=3001 node sandbox.js
 ```
 
 Or in launch.json:
@@ -148,8 +148,8 @@ Or in launch.json:
         "env": 
         {
             "MODE":"hub",
-            "HUB_URL":"http://localhost:8000",
-            "CLIENT_URL":"http://localhost:8000/client",
+            "HUB_URL":"http://localhost:3000",
+            "CLIENT_URL":"http://localhost:3000/client",
             "TITLE":"my FHIRcast tester",
             "BACKGROUND_COLOR":"blue"
         }
@@ -290,7 +290,7 @@ sandbox.html: The four sections of the web page are each contained in their own 
 SMARTlaunch.html:  THis is the launch.html file from the SMART App launcher example.  
 
 ### JavaScript
-The three FHIRcast-relevant functions are **sendEvent()**, **sendSubscription()** and **getContext().  Both are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
+The three FHIRcast-relevant functions are **sendEvent()**, **sendSubscription()** and **getContext()**.  All are using 'XMLHttpRequest' instead of the newer 'fetch' function in order to support Internet Explorer.
 * sendSubscription():  This function builds a query string using the data from the input fields of section 2 and POSTs it to the hub with 'Content-type' header set to 'application/x-www-form-urlencoded'.
 * sendEvent():  This function builds a JSON string using the data from the input fields of section 3 and POSTs it to the hub with 'Content-type' header set to 'application/json'.
 * getContext():  This function requests the current context from the hub and displays it in a message box.

@@ -1,12 +1,12 @@
 const os = require( 'os' );
 const EventEmitter = require('events');
-const request=require('request');
 const morgan = require('morgan');
 const bodyParser=require('body-parser');
 const path = require('path');
 const favicon = require('serve-favicon');
 const express=require('express'), app=express();
 const expressWs = require('express-ws')(app);
+const axios = require('axios');
 
 app.use(morgan('dev'));
 app.use(express.json());  
@@ -54,50 +54,58 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `{
 
 if (env.mode!='client') {
   // HUB:  Receive and check subscription requests from clients
-  app.post('/api/hub/',async function(req,res){  
+  app.post('/api/hub/', async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
-    console_log('📡HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
     // Check the supplied callback URL
-    var  checkResult= await checkSubcription(subscriptionRequest);
-    res.send(202);
-    console_log('📡HUB: Sending subscription response statusCode: 202'); // Print the response status code if a response was received
-  });
-
-  function checkSubcription(subscriptionRequest){
-    request({
-      url: subscriptionRequest['hub.callback'],
-      qs: {
-            "hub.challenge": subscriptionRequest['hub.secret'],
-            "hub.topic": env.hubURL+env.hubPublish,
-          }    
-    },  function (error, response, body) {
-      console_log('📡HUB: Callback check challenge response: ' + body); 
-      console_log('📡HUB: Sending callback check response statusCode:' + response.statusCode); // Print the response status code if a response was received
+    checkResult= await checkSubscriptionRequest(subscriptionRequest);
+    console_log('📡HUB: Receiving response from the client. status code:' + checkResult.status + ', challenge: '+ checkResult.data); // Print the response status code if a response was received
+    // if code =200 and secret
+    if (checkResult.status == 200 && checkResult.data == subscriptionRequest['hub.secret']) {
+      //  add or remove subscription
       var subscription = {
-          channel:"websub",
-          callback: subscriptionRequest['hub.callback'],
-          events: subscriptionRequest['hub.events'],
-          secret: subscriptionRequest['hub.secret'],
-          topic: subscriptionRequest['hub.topic'],
-          lease: subscriptionRequest['hub.lease'],
-          session: subscriptionRequest['hub.topic'],
-        };
-      if(subscriptionRequest['hub.mode']=='subscribe') {
+        channel: "websub",
+        callback: subscriptionRequest['hub.callback'],
+        events: subscriptionRequest['hub.events'],
+        secret: subscriptionRequest['hub.secret'],
+        topic: subscriptionRequest['hub.topic'],
+        lease: subscriptionRequest['hub.lease'],
+        session: subscriptionRequest['hub.topic'],
+      };
+      if (subscriptionRequest['hub.mode'] == 'subscribe') {
         subscriptions.push(subscription);
-        console_log('📡HUB: Subscription added for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] ); // Print the response status code if a response was received
+        console_log('📡HUB: Subscription added for session:' + subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']); // Print the response status code if a response was received
       }
       else {
-        subscriptions = subscriptions.filter(function( obj ) {
-          return obj.events !== subscriptionRequest['hub.events'] &&  obj.session !== subscriptionRequest['hub.topic'] ;
+        subscriptions = subscriptions.filter(function (obj) {
+          return obj.events !== subscriptionRequest['hub.events'] && obj.session !== subscriptionRequest['hub.topic'];
         });
-        console_log('📡HUB: Subscription removed for session:' +subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events'] );
+        console_log('📡HUB: Subscription removed for session:' + subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']);
       }
-    });
-    return true;
+      res.send(202);
+      console_log('📡HUB: Sending subscription response statusCode: 202'); // Print the response status code if a response was received
+  } else {
+    res.send(500);
+    console_log('📡HUB: Sending subscription response statusCode: 500'); // Print the response status code if a response was received
   }
-
-
+});
+ 
+async function checkSubscriptionRequest(subscriptionRequest){
+  console_log('📡HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
+    await axios.get(subscriptionRequest['hub.callback'],{
+      params: {
+        "hub.challenge": subscriptionRequest['hub.secret'],
+        "hub.topic": env.hubURL+env.hubPublish
+      }
+    })  
+    .then(function (response) {
+      axios_response=response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    return(axios_response);
+  }
 
   // HUB: Receive events from clients with application/json payload  
   app.post('/notify/',function(reqNotify,resNotify){
