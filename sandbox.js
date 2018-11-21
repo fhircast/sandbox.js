@@ -53,18 +53,31 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `{
   }`;
 
 if (env.mode!='client') {
+
   // HUB:  Receive and check subscription requests from clients
   app.post('/api/hub/', async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
-    // Check the supplied callback URL
-    checkResult= await checkSubscriptionRequest(subscriptionRequest);
+    // Check if it's a websub or websocket channel
+    var checkResult={};
+    if (typeof subscriptionRequest['hub.channel.type'] === 'undefined') {
+      // websub - Check the supplied callback URL
+      checkResult= await checkSubscriptionRequest(subscriptionRequest);
+      subscriptionRequest['hub.channel.type']='websub';
+    } else {
+      // websocket - 
+      subscriptionRequest['hub.channel.type']='websocket';
+      subscriptionRequest['hub.callback']=subscriptionRequest['hub.channel.endpoint'];
+      checkResult.status =200;
+      checkResult.data= subscriptionRequest['hub.secret'];
+    }
+
     console_log('📡HUB: Receiving response from the client. status code:' + checkResult.status + ', challenge: '+ checkResult.data); // Print the response status code if a response was received
     // if code =200 and secret
     if (checkResult.status == 200 && checkResult.data == subscriptionRequest['hub.secret']) {
       //  add or remove subscription
       var subscription = {
-        channel: "websub",
+        channel: subscriptionRequest['hub.channel.type'],
         callback: subscriptionRequest['hub.callback'],
         events: subscriptionRequest['hub.events'],
         secret: subscriptionRequest['hub.secret'],
@@ -204,13 +217,15 @@ app.post('/mode/',function(req,res){res.send(env);});
 
 app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmessage.html'));  });
 
+app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/websocket.html'));  });
+
 //  UI This endpoint is to serve the client web page
 app.get('/',function(req,res){  
 if(req.originalUrl.indexOf('launch')>0){
     console_log('🔥SMART_ON_FHIR: Launch detected. '); 
     console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+req.query.iss);
     res.sendFile(path.join(__dirname + '/SMARTlaunch.html')); 
-  }
+  } 
   else 
   {
     res.sendFile(path.join(__dirname + '/sandbox.html')); 
@@ -238,23 +253,41 @@ function console_log(msg){
  
  
  app.ws('/publish', function(Myws, req) {
-  var publishWss = expressWs.getWss('/log');
-  console_log('🚀WEBSOCKET:  Accepting connection.');
-  Myws.send('hello');
-  
-  Myws.onmessage= e => {
-    //ws.id=e.data ;  // We receive our session id from the browser on connect
-    console_log('🚀WEBSOCKET: Receiving data:'+e.data +'.');
-  }
-
-  Myws.on('message', function(msg) {
-    socketCount--;
-    console_log('🚀WEBSOCKET:  Websock.');
+  var publishWss = expressWs.getWss('/publish');
+  console_log('Accepting connection.');
+  // check if we have a subscription for this socket
+  websocketEndpoint=req.query.bind;
+  subscriptions.forEach(function(subscription) {
+    console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
+    if( subscription.callback==websocketEndpoint) {
+      console_log('📡HUB: Binding websocket for: '+ websocketEndpoint);
+      publishWss.clients.forEach(function (client) {
+        client.id=websocketEndpoint;
+     });
+      
+    }
   });
+  
+  Myws.on('message', function(msg) {
+
+    console_log('Receiving event on Websocket: ' + msg);
+    notification=JSON.parse(msg);
+    subscriptions.forEach(function(subscription) {
+      if( subscription.events==notification.event['hub.event']) {
+        console_log('📡HUB:Found a subscription for '+subscription.events);
+        publishWss.clients.forEach(function (client) {
+          console.log(client.id);
+       });
+        
+      }
+    });
+
+   });
+  
 
   Myws.on('close', function(msg) {
-    socketCount--;
-    console_log('🚀WEBSOCKET:  Websocket closed.');
+  
+    console_log(' Websocket closed.');
   });
 });
 
