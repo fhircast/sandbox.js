@@ -202,7 +202,8 @@
     };
     document.getElementById('eventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
     var clientId='session-id-' + Math.random().toString(36).substr(2, 16);
-    document.getElementById('hub.topic').value=clientId;
+    document.getElementById('hub.channel.endpoint').value=clientId;
+    document.getElementById('hub.topic').value='DrXRay';
     
     //  Check if this is a SMART launch
     var state = getUrlParameter("state");  // session key

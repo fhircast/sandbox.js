@@ -7,6 +7,7 @@ const favicon = require('serve-favicon');
 const express=require('express'), app=express();
 const expressWs = require('express-ws')(app);
 const axios = require('axios');
+const request = require('request');
 
 app.use(morgan('dev'));
 app.use(express.json());  
@@ -24,12 +25,12 @@ var logWebsocket='';
 var socketCount=0;
 var pageLoads=0;
 var env ={};
-env.port= process.env.PORT || 3000;  // Do not set this env var if deploying in the cloud.  The cloud service will set it.
+env.port= process.env.PORT || 3000;  
 env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
 env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub/';
 env.hubPublish = process.env.HUB_PUBLISH || '/notify/';
 env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client';
-env.title = process.env.TITLE ||'FHIRcast JavaScript Sandbox - Hub and Client';
+env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
 
@@ -67,7 +68,6 @@ if (env.mode!='client') {
     } else {
       // websocket - 
       subscriptionRequest['hub.channel.type']='websocket';
-      subscriptionRequest['hub.callback']=subscriptionRequest['hub.channel.endpoint'];
       checkResult.status =200;
       checkResult.data= subscriptionRequest['hub.secret'];
     }
@@ -78,6 +78,7 @@ if (env.mode!='client') {
       //  add or remove subscription
       var subscription = {
         channel: subscriptionRequest['hub.channel.type'],
+        endpoint: subscriptionRequest['hub.channel.endpoint'],
         callback: subscriptionRequest['hub.callback'],
         events: subscriptionRequest['hub.events'],
         secret: subscriptionRequest['hub.secret'],
@@ -103,20 +104,16 @@ if (env.mode!='client') {
   }
 });
  
-async function checkSubscriptionRequest(subscriptionRequest){
-  console_log('📡HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
+  async function checkSubscriptionRequest(subscriptionRequest){
+    console_log('📡HUB: Sending challenge:'+ subscriptionRequest['hub.secret']);
     await axios.get(subscriptionRequest['hub.callback'],{
-      params: {
-        "hub.challenge": subscriptionRequest['hub.secret'],
-        "hub.topic": env.hubURL+env.hubPublish
-      }
+        params: {
+          "hub.challenge": subscriptionRequest['hub.secret'],
+          "hub.topic": env.hubURL+env.hubPublish
+        }
     })  
-    .then(function (response) {
-      axios_response=response;
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
+    .then(function (response) { axios_response=response;})
+    .catch(function (error) {console.log(error);})
     return(axios_response);
   }
 
@@ -125,31 +122,7 @@ async function checkSubscriptionRequest(subscriptionRequest){
     resNotify.send(200);
     console_log('📡HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
     //  Broadcast the event to all clients
-    notification=reqNotify.body;
-    lastContext=notification.event['context'];
-    subscriptions.forEach(function(subscription) {
-      console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
-      if( subscription.events==notification.event['hub.event'] &&
-          subscription.session==notification['cast-session']
-      ){
-        console_log('📡HUB: Found subscription for: '+ notification.event['hub.event']+' session:'+notification['cast-session']);
-        // Send the notification to the client
-        request.post({
-          url: subscription['callback'] ,
-          method: 'POST',
-          json: true,
-          body: notification    
-        }, function (error, response, body) {
-            console_log('📡HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received
-            console.log(body);
-            console.log(response);
-            console.log(error);
-        });
-      }
-      else {
-        console_log('📡HUB: No subscription found for: '+ notification['id'] +' event name:'+notification.event['hub.event']);
-      }
-    });
+    sendEvents(reqNotify.body)
   });
   
   // HUB: Receive context request from clients with with session id in the query string  
@@ -215,8 +188,10 @@ app.post('/client/',function(req,res){
 // CLIENT: send environment variable
 app.post('/mode/',function(req,res){res.send(env);});
 
+// HTML5 web messaging demo
 app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmessage.html'));  });
 
+//  websocket client
 app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/websocket.html'));  });
 
 //  UI This endpoint is to serve the client web page
@@ -251,47 +226,55 @@ function console_log(msg){
   logWebsocket+=msg+'\n';
  }
  
- 
+ //  websocket publish endpoint
  app.ws('/publish', function(Myws, req) {
   var publishWss = expressWs.getWss('/publish');
-  console_log('Accepting connection.');
+  console_log('Accepting websocket connection.');
   // check if we have a subscription for this socket
   websocketEndpoint=req.query.bind;
   subscriptions.forEach(function(subscription) {
-    console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
-    if( subscription.callback==websocketEndpoint) {
+    //  why is this line circular?
+   // console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
+    if( subscription.endpoint==websocketEndpoint ) {
       console_log('📡HUB: Binding websocket for: '+ websocketEndpoint);
-      publishWss.clients.forEach(function (client) {
-        client.id=websocketEndpoint;
-     });
-      
+      subscription.websocket=Myws;   
     }
   });
   
+  //  here we receive events to publish
   Myws.on('message', function(msg) {
-
     console_log('Receiving event on Websocket: ' + msg);
-    notification=JSON.parse(msg);
-    subscriptions.forEach(function(subscription) {
-      if( subscription.events==notification.event['hub.event']) {
-        console_log('📡HUB:Found a subscription for '+subscription.events);
-        publishWss.clients.forEach(function (client) {
-          console.log(client.id);
-       });
-        
-      }
-    });
-
-   });
+    sendEvents(JSON.parse(msg));
+  });
   
-
-  Myws.on('close', function(msg) {
-  
+  Myws.on('close', function(msg) { 
     console_log(' Websocket closed.');
   });
 });
 
-
+function sendEvents(notification){
+  lastContext=notification.event['context'];
+  subscriptions.forEach(function(subscription) {
+    if(subscription.events.includes(notification.event['hub.event'])) {
+      console_log('📡HUB:Found a subscription for '+subscription.events);
+      if (subscription.channel=='websocket') {
+        subscription.websocket.send(JSON.stringify(notification));        
+      } else {  // not websocket- send json post
+        request.post({
+          url: subscription['callback'] ,
+          method: 'POST',
+          json: true,
+          body: notification    
+        }, function (error, response, body) {
+            console_log('📡HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received
+            console.log(body);
+            console.log(response);
+            console.log(error);
+        });
+      }
+     }  
+  });
+}
 
 app.ws('/log', function(ws, req) {
   socketCount++;
@@ -315,7 +298,7 @@ app.ws('/log', function(ws, req) {
         if (ws.readyState==1) {
           logWss.clients.forEach(function (client) {
             client.send(logWebsocket);
-            console.log('Websocket message sent to: '+client.id );
+            console.log('Websocket message sent to: '+client );
          });
         logWebsocket='';
         } 

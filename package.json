@@ -8,7 +8,9 @@
         "express": "^4.16.3",
         "express-ws": "^4.0.0",
         "morgan": "^1.9.1",
+        "request": "^2.88.0",
         "serve-favicon": "^2.5.0",
+        "sshpk": "^1.15.2",
         "tslint": "^5.11.0"
     }
 }
