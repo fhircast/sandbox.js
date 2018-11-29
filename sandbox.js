@@ -1,5 +1,4 @@
 const os = require( 'os' );
-const EventEmitter = require('events');
 const morgan = require('morgan');
 const bodyParser=require('body-parser');
 const path = require('path');
@@ -27,8 +26,8 @@ var pageLoads=0;
 var env ={};
 env.port= process.env.PORT || 3000;  
 env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
-env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub/';
-env.hubPublish = process.env.HUB_PUBLISH || '/notify/';
+env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/subscribe/';
+env.hubPublish = process.env.HUB_PUBLISH || '/publish/';
 env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client';
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
@@ -56,7 +55,7 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `{
 if (env.mode!='client') {
 
   // HUB:  Receive and check subscription requests from clients
-  app.post('/api/hub/', async function(req,res){  
+  app.post('/subscribe/', async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
     // Check if it's a websub or websocket channel
@@ -118,7 +117,7 @@ if (env.mode!='client') {
   }
 
   // HUB: Receive events from clients with application/json payload  
-  app.post('/notify/',function(reqNotify,resNotify){
+  app.post('/publish/',function(reqNotify,resNotify){
     resNotify.send(200);
     console_log('📡HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
     //  Broadcast the event to all clients
@@ -126,7 +125,7 @@ if (env.mode!='client') {
   });
   
   // HUB: Receive context request from clients with with session id in the query string  
-  app.get('/notify/',function(req,res){
+  app.get('/publish/',function(req,res){
     console_log('📡HUB: Receiving context request for session id: '+req.query.sessionid);
     res.send(200,lastContext);
   });
@@ -227,17 +226,18 @@ function console_log(msg){
  }
  
  //  websocket publish endpoint
- app.ws('/publish', function(Myws, req) {
-  var publishWss = expressWs.getWss('/publish');
+ app.ws('/bind/:endpoint', function(Myws, req) {
   console_log('Accepting websocket connection.');
   // check if we have a subscription for this socket
-  websocketEndpoint=req.query.bind;
   subscriptions.forEach(function(subscription) {
-    //  why is this line circular?
-   // console_log('📡HUB:  Processing subscription for:' + JSON.stringify(subscription));
-    if( subscription.endpoint==websocketEndpoint ) {
-      console_log('📡HUB: Binding websocket for: '+ websocketEndpoint);
+    if(subscription.endpoint==req.params.endpoint ) {
+      console_log('📡HUB: Binding websocket for: '+ req.params.endpoint);
       subscription.websocket=Myws;   
+      var confirmation={};
+      var timestamp= new Date();
+      confirmation.timestamp= timestamp.toJSON();
+      confirmation.bound=req.params.endpoint;
+      Myws.send(JSON.stringify(confirmation));
     }
   });
   
@@ -278,7 +278,7 @@ function sendEvents(notification){
 
 app.ws('/log', function(ws, req) {
   socketCount++;
-  console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
+  //console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
   
   ws.onmessage= e => {
     //ws.id=e.data ;  // We receive our session id from the browser on connect
@@ -318,4 +318,3 @@ app.post('/delete',function(req,res){
 app.listen(env.port,function(){
   console_log('🔧 Web service: Started on port '+ env.port +' at  '+ Date());
 });
-
