@@ -20,8 +20,7 @@ app.use(function(req, res, next) {
 
 var subscriptions=[];
 var lastContext={};
-var logWebsocket='';
-var socketCount=0;
+var logSockets=[];
 var pageLoads=0;
 var env ={};
 env.port= process.env.PORT || 3000;  
@@ -32,7 +31,6 @@ env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client'
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
-
 env.defaultContext= process.env.DEFAULT_CONTEXT || `{
   "key": "patient",
   "resource": 
@@ -155,8 +153,8 @@ if (env.mode!='client') {
       });
     }
     else {message='Running in Azure cloud.'}
-    if (socketCount==1)  { message='There is 1 browser connected to the UI. '+message;}
-    else { message='There are '+socketCount+' browsers connected to the UI. '+message;}
+    if (logSockets.length==1)  { message='There is 1 browser connected to the UI. '+message;}
+    else { message='There are '+logSockets.length+' browsers connected to the UI. '+message;}
     console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. '+message);
     subscriptions.forEach(function(subscription) {
       console_log('🔧UI:   Client "'+subscription.callback+'" with session id "'+subscription.session+'"subscribed to event: ' + subscription.events);
@@ -190,10 +188,10 @@ app.post('/mode/',function(req,res){res.send(env);});
 // HTML5 web messaging demo
 app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmessage.html'));  });
 
-//  websocket client
+//  UI This endpoint is to serve the websocket client web page
 app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/websocket.html'));  });
 
-//  UI This endpoint is to serve the client web page
+//  UI This endpoint is to serve the websub client web page
 app.get('/',function(req,res){  
 if(req.originalUrl.indexOf('launch')>0){
     console_log('🔥SMART_ON_FHIR: Launch detected. '); 
@@ -218,37 +216,32 @@ if(req.originalUrl.indexOf('launch')>0){
     console_log('🔧UI: Home page requested '+pageLoads+' times in '+format(uptime)+' uptime.');
   }
 });
-
-// Websocket to provide the logs to the client 
-function console_log(msg){
-  console.log(msg);
-  logWebsocket+=msg+'\n';
- }
  
  //  websocket publish endpoint
- app.ws('/bind/:endpoint', function(Myws, req) {
+ app.ws('/bind/:endpoint', function(publishWebsocket, req) {
   console_log('Accepting websocket connection.');
   // check if we have a subscription for this socket
   subscriptions.forEach(function(subscription) {
     if(subscription.endpoint==req.params.endpoint ) {
       console_log('📡HUB: Binding websocket for: '+ req.params.endpoint);
-      subscription.websocket=Myws;   
+      subscription.websocket=publishWebsocket;   
       var confirmation={};
       var timestamp= new Date();
       confirmation.timestamp= timestamp.toJSON();
       confirmation.bound=req.params.endpoint;
-      Myws.send(JSON.stringify(confirmation));
+      publishWebsocket.send(JSON.stringify(confirmation));
     }
   });
   
   //  here we receive events to publish
-  Myws.on('message', function(msg) {
+  publishWebsocket.on('message', function(msg) {
     console_log('Receiving event on Websocket: ' + msg);
     sendEvents(JSON.parse(msg));
   });
   
-  Myws.on('close', function(msg) { 
+  publishWebsocket.on('close', function(msg) { 
     console_log(' Websocket closed.');
+    // should we delete relatd subscription here or wait for reconnect?
   });
 });
 
@@ -259,6 +252,7 @@ function sendEvents(notification){
       console_log('📡HUB:Found a subscription for '+subscription.events);
       if (subscription.channel=='websocket') {
         subscription.websocket.send(JSON.stringify(notification));        
+        console_log('📡HUB: Sent notification to websocket.'); // Print the response status code if a response was received
       } else {  // not websocket- send json post
         request.post({
           url: subscription['callback'] ,
@@ -276,37 +270,24 @@ function sendEvents(notification){
   });
 }
 
+// Websocket to provide the logs to the client 
 app.ws('/log', function(ws, req) {
-  socketCount++;
-  //console_log('🚀WEBSOCKET:  Accepting connection number '+socketCount+'.');
-  
   ws.onmessage= e => {
-    //ws.id=e.data ;  // We receive our session id from the browser on connect
-    console_log('🚀WEBSOCKET: Accepting connection number '+socketCount+ ' with ID:'+e.data +'.');
-  
+    logSockets.push(ws);
+    console_log('🚀WEBSOCKET: Accepting logging connection number '+ logSockets.length+ ' with ID:'+e.data +'.');
   }
-
   ws.on('close', function(msg) {
-    socketCount--;
-    console_log('🚀WEBSOCKET:  One websocket closed. '+socketCount+' remaining.');
+    logSockets = logSockets.filter(item => item !== ws);
+    console_log('🚀WEBSOCKET:  One websocket closed. '+ logSockets.length +' remaining.');
   });
-
-  var logWss = expressWs.getWss('/log');
-
-  setInterval(() => { 
-      if (logWebsocket!='') {       
-        if (ws.readyState==1) {
-          logWss.clients.forEach(function (client) {
-            client.send(logWebsocket);
-            console.log('Websocket message sent to: '+client );
-         });
-        logWebsocket='';
-        } 
-      } 
-    },500);
-
 });  
 
+function console_log(msg){
+  console.log(msg);
+  logSockets.forEach(function(socket) { 
+    if (socket.readyState==1) {socket.send(msg+'\n');} 
+  });
+ }
 
 // UI: Clear all subscriptions
 app.post('/delete',function(req,res){
