@@ -7,6 +7,7 @@ const express=require('express'), app=express();
 const expressWs = require('express-ws')(app);
 const axios = require('axios');
 const request = require('request');
+const crypto=require('crypto');
 
 app.use(morgan('dev'));
 app.use(express.json());  
@@ -177,8 +178,13 @@ app.get('/client/',function(req,res){
 
 // CLIENT: Receive events from the hub with application/json payload
 app.post('/client/',function(req,res){
-  console_log('🖥️CLIENT: Receiving notification from the hub: '+JSON.stringify(req.body));
+  console_log('🖥️CLIENT: Receiving notification from the hub: '+JSON.stringify(req.body) );
   res.json(200,{'context':req.body});
+  console_log('🖥️CLIENT: Checking x-hub-signature in header: ' + JSON.stringify(req.headers['x-hub-signature']) );
+  const hmac = crypto.createHmac('sha256','secret');
+  hmac.update(JSON.stringify(req.body));
+  console_log('🖥️CLIENT: HMAC calculation from secret is:    ' + hmac.digest('hex') );
+  console.log();
 });
 
 
@@ -246,10 +252,12 @@ if(req.originalUrl.indexOf('launch')>0){
 });
 
 function sendEvents(notification){
-  lastContext=notification.event['context'];
+  lastContext=notification.event['context'];  
   subscriptions.forEach(function(subscription) {
     if(subscription.events.includes(notification.event['hub.event'])) {
       console_log('📡HUB:Found a subscription for '+subscription.events);
+      const hmac = crypto.createHmac('sha256',subscription.secret);
+      hmac.update(JSON.stringify(notification));
       if (subscription.channel=='websocket') {
         subscription.websocket.send(JSON.stringify(notification));        
         console_log('📡HUB: Sent notification to websocket.'); // Print the response status code if a response was received
@@ -258,13 +266,19 @@ function sendEvents(notification){
           url: subscription['callback'] ,
           method: 'POST',
           json: true,
-          body: notification    
+          body: notification,
+          headers:  {
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8',
+            'X-Hub-Signature': hmac.digest('hex')
+           }    
         }, function (error, response, body) {
             console_log('📡HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received
             console.log(body);
             console.log(response);
             console.log(error);
         });
+        console_log('📡HUB: Sent notification to websub.');
       }
      }  
   });
