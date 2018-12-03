@@ -75,7 +75,9 @@ Notice that there is only context information in the response and no event name.
 ## Try the websocket channel proposed addition
 The [FHIR subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.
 A possible implementation would be to add 'hub.channel.type' and 'hub.channel.endpoint' to the current subscription request and to provide a wss://fhircast-hub/bind/:[endpoint] service on the hub that binds the websocket created by the client to the subscription.
-Keep the websub client and open the [websocket client](https://hub-fhircast.azurewebsites.net/websocket) in parralel to subscribe to the same topic with a websocket connection.  
+
+
+Keep the websub client and open the [websocket client](https://hub-fhircast.azurewebsites.net/websocket) in parallel to subscribe to the same topic with a websocket connection.  
 ![contextRequest](/images/websocketChannel.png)
 You should see notifications propagating to both clients: the websub and the websocket.  In the browser console log, you will see the browser sending the subscription and immediately after open the websocket connection.  The hub acknowleges the binding with the following response:
 ```
