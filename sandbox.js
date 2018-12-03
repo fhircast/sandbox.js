@@ -200,8 +200,8 @@ app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/web
 //  UI This endpoint is to serve the websub client web page
 app.get('/',function(req,res){  
 if(req.originalUrl.indexOf('launch')>0){
-    console_log('🔥SMART_ON_FHIR: Launch detected. '); 
-    console_log('🔥SMART_ON_FHIR: Requesting auth server and other info from FHiR server :'+req.query.iss);
+    console_log('🔥SMART_ON_FHIR®: Launch detected. '); 
+    console_log('🔥SMART_ON_FHIR®: Requesting auth server and other info from FHiR server :'+req.query.iss);
     res.sendFile(path.join(__dirname + '/SMARTlaunch.html')); 
   } 
   else 

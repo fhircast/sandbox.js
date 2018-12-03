@@ -33,9 +33,9 @@
 - [Contribution](#contribution)
 
 # Introduction
-FHIRcast is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](http://fhircast.org).
+FHIRcast® is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](http://fhircast.org).
 
-FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Working Group-20 to provide early feedback on implementability.
+FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Imaging Integration WorkGruop to provide early feedback on implementability.
 
 This sandbox (sandbox.js) partially implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
@@ -65,15 +65,33 @@ Send a subscription request with the send button.  The hub response code should 
 3. Publish an event:    
 Publish the same type of event with the context defined in the text area with the 'send' button.  The hub response code should be 200 - OK.
 4. Monitor the endpoints:    
-Log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR:' log entries are posted when receiving a request for launch.html from a SMART launch application.
+Log entries starting with '📡HUB:' and '🖥️CLIENT:' describe backend messages relevant to the standard.  Frontend messages can be seen in the browser console using the browser developer tools. The log entries starting with '🔧UI:' and '🚀WEBSOCKET:' are not relevant to the standard.  They provide information about internal operations. '🔥SMART_ON_FHIR®:' log entries are posted when receiving a request for launch.html from a SMART launch application.
 
 ## Retrieve context from the hub
 To retrieve context after start-up, perform a GET request on the hub's notification endpoint with the session id in the query string by clicking on the "context" button in the 'Publish' section.   If the hub has not received a notification for this session-id yet, it will return an empty response with code status 200 - 'success'. The context will be shown in an prompt window as pictured below.
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
 
+## Try the websocket channel proposed addition
+The [FHIR subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.
+A possible implementation would be to add 'hub.channel.type' and 'hub.channel.endpoint' to the current subscription request and to provide a wss://fhircast-hub/bind/:[endpoint] service on the hub that binds the websocket created by the client to the subscription.
+Keep the websub client and open the [websocket client](https://hub-fhircast.azurewebsites.net/websocket) in parralel to subscribe to the same topic with a websocket connection.  
+![contextRequest](/images/websocketChannel.png)
+You should see notifications propagating to both clients: the websub and the websocket.  In the browser console log, you will see the browser sending the subscription and immediately after open the websocket connection.  The hub acknowleges the binding with the following response:
+```
+{
+  "timestamp": "2018-01-08T01:37:05.14",
+  "bound": "jhwer87skrfh345drhxf"
+}
+```
+where jhwer87skrfh345drhxf is the endpoint uid that the client provided in the subscription.
+
+
+This prototype has the client posting JSON to the hub to publish events.   It may be preferable to publish to the hub through the websocket connection.  These topics have not been debated at the moment. 
+
+
 ## SMART on FHIR launch
-The [SMART on FHIR](https://dev.smarthealthit.org/) launch scenario can provide context on start-up.  
+The [SMART on FHIR](https://dev.smarthealthit.org/)® launch scenario can provide context on start-up.  
 Test the online SMART App launcher with a [preselected patient, provider and 'App Launch URL'](https://launch.smarthealthit.org/index.html?auth_error=&fhir_version_1=r2&fhir_version_2=r2&iss=&launch_ehr=1&launch_url=https%3A%2F%2Freporting-fhircast.azurewebsites.net%2F&patient=smart-4444001&prov_skip_auth=1&prov_skip_login=1&provider=COREPRACTITIONER1&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=).  Click the green 'Launch App!' button in the lower right corner to initiate the launch.
 ![SMARTlaunch](/images/SMARTlaunch.png)
 
@@ -307,3 +325,5 @@ We welcome any contributions to help improve this tool for the FHIRcast communit
 To contribute to this project, please issue a pull request on the fhircast/sandbox.js repository with your changes for review.
 
 [Converse at chat.fhir.org](https://chat.fhir.org/#narrow/stream/fhircast)
+
+HL7®, FHIR® and the FHIR logo 🔥® are the registered trademarks of Health Level Seven International.

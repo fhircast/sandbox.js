@@ -11,7 +11,7 @@
         label,button {padding: 2px; display: inline-block;width: 24.5%}
         input,textarea,select {width: 65%;border:1px solid}
         textarea {vertical-align: top;}
-        textarea.textAreaMonitor {width: 99%;font-family: "Segoe UI Emoji";}
+        textarea.textAreaMonitor,textarea.textAreaReceive {width: 99%;font-family: "Segoe UI Emoji";}
         textarea.textAreaMonitor,textarea.subscriptionResponse,textarea.eventResponse {background-color:whitesmoke}
         div.monitor,div.receive {border-top: 1px solid black;text-align:left}
         div.webmessage {display: none;}
@@ -85,14 +85,17 @@
 
 <div class="receive" id="receive">
     <h3>4. Receive websocket events </h3>
-
     <textarea class="textAreaReceive" id="textAreaReceive" rows="20" ></textarea><br>
  </div>
 
 <div class="monitor" id="monitor">
+    <h3>5. Monitor endpoints logs with a websocket connection</h3>
     <button onclick="window.open('https://github.com/fhircast/sandbox.js/blob/master/README.md');">Online help</button> 
     <button id="buttonDelete" onclick="deleteSubscriptions();">Delete all subscriptions</button>
- </div>
+    <button id="buttonStatus" onclick="getHubStatus();">Get hub status</button>
+    <button id="buttonDelete" onclick="deleteSubscriptions();">Delete all subscriptions</button>
+    <textarea class="textAreaMonitor" id="textAreaMonitor" rows="20" ></textarea><br>
+  </div>
 
 <script>
     var wsEvents;
@@ -124,7 +127,7 @@
                 }
                 
                 wsEvents.onmessage = function (ev) {
-                    document.getElementById('textAreaReceive').value=document.getElementById('textAreaReceive').value+ev.data;
+                    document.getElementById('textAreaReceive').value=document.getElementById('textAreaReceive').value+ev.data+'\n';
                     document.getElementById('textAreaReceive').scrollTop = document.getElementById('textAreaReceive').scrollHeight;
                     console.log(ev.data);
                 }
@@ -286,7 +289,24 @@
         }
     }
 
+// Start websocket for logging
+var protocol='ws:';
+    if (parser.protocol=='https:'){ protocol='wss:';}
+    var ws = new WebSocket(protocol+'//' + parser.host + '/log');
+    ws.onopen = function () {
+        console.log('websocket is connected ...')
+        ws.send(clientId);
+    }
+    
+    ws.onmessage = function (ev) {
+        document.getElementById('textAreaMonitor').value=document.getElementById('textAreaMonitor').value+ev.data;
+        document.getElementById('textAreaMonitor').scrollTop = document.getElementById('textAreaMonitor').scrollHeight;
+        console.log(ev.data);
+    }
 
+    ws.onclose = function () {
+        console.log('websocket is closed ...')
+    }
 
 </script>
 
