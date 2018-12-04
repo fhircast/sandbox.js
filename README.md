@@ -7,6 +7,7 @@
     3. [Publish an event.](#Try-it-online)
     4. [Monitor the endpoints.](Try-it-online)   
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
+  - [Test the proposed WebSocket channel](#Test-the-websocket-channel-proposed-addition)
   - [Do a SMART on FHIR launch](#SMART-on-FHIR-launch)
     - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
   - [Simulate workflows](#Simulate-workflows)
@@ -72,8 +73,8 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
 
-## Try the websocket channel proposed addition
-The [FHIR subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.
+## Test the websocket channel proposed addition
+The [FHIR® subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.
 A possible implementation would be to add 'hub.channel.type' and 'hub.channel.endpoint' to the current subscription request and to provide a wss://fhircast-hub/bind/:[endpoint] service on the hub that binds the websocket created by the client to the subscription.
 
 
