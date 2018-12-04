@@ -77,7 +77,7 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 Notice that there is only context information in the response and no event name.
 
 ## Test the websocket channel proposed addition
-The [FHIR® subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.  With this channel, the clients communicate directly with the hub and the applications servers are not involved.
+The [FHIR® subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.  With this channel, the end clients communicate directly with the hub and the applications servers are not involved.
 ![websocket](/images/websocket.png)
 A possible implementation would be to add 'hub.channel.type' and 'hub.channel.endpoint' to the current subscription request and to provide a wss://fhircast-hub/bind/:[endpoint] service on the hub that binds the websocket created by the client to the subscription.
 
