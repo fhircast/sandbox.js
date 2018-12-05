@@ -7,6 +7,7 @@
     3. [Publish an event.](#Try-it-online)
     4. [Monitor the endpoints.](Try-it-online)   
   - [Retrieve context from the hub](#retrieve-context-from-the-hub)
+  - [Test the proposed WebSocket channel](#Test-the-websocket-channel-proposed-addition)
   - [Do a SMART on FHIR launch](#SMART-on-FHIR-launch)
     - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
   - [Simulate workflows](#Simulate-workflows)
@@ -39,7 +40,10 @@ FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standa
 
 This sandbox (sandbox.js) partially implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
-The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/). This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
+The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/). This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  With WebSub, 'clients' are actually application servers that manage communication between the central hub and their clients.  With this concept, each application can choose whatever is most convenient to relay the information to their clients, possibly using an existing proprietary channel.
+![websub](/images/websub.png)
+
+Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback). The hub then performs a validation by asking the client about a common secret. In the same message, the hub sends the url where the client can send new events to be published (hub.topic).  If this step succeeds, the hub will start forwarding events to the client.
 
 # Usage
 The following instances are available online (Microsoft Azure - Frankfurt):
@@ -72,13 +76,14 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 ![contextRequest](/images/contextRequest.png)
 Notice that there is only context information in the response and no event name.
 
-## Try the websocket channel proposed addition
-The [FHIR subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.
+## Test the websocket channel proposed addition
+The [FHIR® subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.  With this channel, the end clients communicate directly with the hub and the applications servers are not involved.
+![websocket](/images/websocket.png)
 A possible implementation would be to add 'hub.channel.type' and 'hub.channel.endpoint' to the current subscription request and to provide a wss://fhircast-hub/bind/:[endpoint] service on the hub that binds the websocket created by the client to the subscription.
 
 
 Keep the websub client and open the [websocket client](https://hub-fhircast.azurewebsites.net/websocket) in parallel to subscribe to the same topic with a websocket connection.  
-![contextRequest](/images/websocketChannel.png)
+![websocketChannel](/images/websocketChannel.png)
 You should see notifications propagating to both clients: the websub and the websocket.  In the browser console log, you will see the browser sending the subscription and immediately after open the websocket connection.  The hub acknowleges the binding with the following response:
 ```
 {
