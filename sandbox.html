@@ -101,12 +101,12 @@
     }
 
     function sendSubscription(url){
-        data  ='hub.callback=' +document.getElementById('clientEndpoint').value;
-        data +='&hub.mode='     +document.getElementById('hub.mode').value;
-        data +='&hub.events='   +document.getElementById('hub.events').value;
-        data +='&hub.secret='   +document.getElementById('hub.secret').value;
-        data +='&hub.topic='    +document.getElementById('hub.topic').value;
-        data +='&hub.lease='    +document.getElementById('hub.lease').value;
+        data  ='hub.callback=' +encodeURIComponent(document.getElementById('clientEndpoint').value);
+        data +='&hub.mode='     +encodeURIComponent(document.getElementById('hub.mode').value);
+        data +='&hub.events='   +encodeURIComponent(document.getElementById('hub.events').value);
+        data +='&hub.secret='   +encodeURIComponent(document.getElementById('hub.secret').value);
+        data +='&hub.topic='    +encodeURIComponent(document.getElementById('hub.topic').value);
+        data +='&hub.lease='    +encodeURIComponent(document.getElementById('hub.lease').value);
  
         var xhr=new XMLHttpRequest();
         xhr.open('POST',url,true);
