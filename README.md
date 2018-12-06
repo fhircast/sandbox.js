@@ -171,7 +171,7 @@ $ dotnet run --project Hub
 
 Navigate the browser to http://localhost:5001/client.
 
-![dotnetClient](/images/dotnetClient.PNG)
+![dotnetClient](/images/dotnetClient.png)
 Fill in the entries as shown in the picture above and click the subscribe button.
 
 4. Send an event
