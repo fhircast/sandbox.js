@@ -119,7 +119,6 @@
                 //  open websocket
                 var protocol='ws:';
                 if (parser.protocol=='https:'){ protocol='wss:';}
-//                wsEvents = new WebSocket(protocol+'//' + parser.host + '/publish?bind='+document.getElementById('hub.channel.endpoint').value);
                 wsEvents = new WebSocket(protocol+'//' + parser.host + '/bind/'+document.getElementById('hub.channel.endpoint').value);
                 wsEvents.onopen = function () {
                     console.log('websocket is connected ...')

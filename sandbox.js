@@ -26,13 +26,12 @@ var pageLoads=0;
 var env ={};
 env.port= process.env.PORT || 3000;  
 env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
-env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/subscribe/';
-env.hubPublish = process.env.HUB_PUBLISH || '/publish/';
+env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub/';
 env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client';
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
-env.defaultContext= process.env.DEFAULT_CONTEXT || `{
+env.defaultContext= process.env.DEFAULT_CONTEXT || `[{
   "key": "patient",
   "resource": 
   {
@@ -49,12 +48,12 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `{
       }
   ]
   }
-  }`;
+  }]`;
 
 if (env.mode!='client') {
 
   // HUB:  Receive and check subscription requests from clients
-  app.post('/subscribe/', async function(req,res){  
+  app.post(env.hubSubscribe, async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
     // Check if it's a websub or websocket channel
@@ -107,7 +106,7 @@ if (env.mode!='client') {
     await axios.get(subscriptionRequest['hub.callback'],{
         params: {
           "hub.challenge": subscriptionRequest['hub.secret'],
-          "hub.topic": env.hubURL+env.hubPublish
+          "hub.topic": subscriptionRequest['hub.topic']
         }
     })  
     .then(function (response) { axios_response=response;})
@@ -116,16 +115,16 @@ if (env.mode!='client') {
   }
 
   // HUB: Receive events from clients with application/json payload  
-  app.post('/publish/',function(reqNotify,resNotify){
+  app.post(env.hubSubscribe+':topic',function(reqNotify,resNotify){
     resNotify.send(200);
-    console_log('📡HUB: Receiving event with content: '+ JSON.stringify(reqNotify.body));
+    console_log('📡HUB: Receiving event with topic: '+ reqNotify.params.topic +' and with content: '+ JSON.stringify(reqNotify.body));
     //  Broadcast the event to all clients
     sendEvents(reqNotify.body)
   });
   
   // HUB: Receive context request from clients with with session id in the query string  
-  app.get('/publish/',function(req,res){
-    console_log('📡HUB: Receiving context request for session id: '+req.query.sessionid);
+  app.get(env.hubSubscribe+':topic',function(req,res){
+    console_log('📡HUB: Receiving context request for session id: '+req.params.topic);
     res.send(200,lastContext);
   });
   

@@ -16,17 +16,22 @@
         div.monitor {border-top: 1px solid black;text-align:left}
         div.webmessage {display: none;}
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
 <body>
 <header><h2><span id="docTitle"></span></h2></header>
+
 <div class="selectHub" id="selectHub">
     <h3>1. Select the hub:
-    <input id="hubSubscribeURI" name="hubSubscribeURI" value="http://localhost:3000/subscribe/">
+    <input id="hubURL" name="hubURL" value="http://localhost:3000">
     </h3>
 </div>
+
 <div class="subscribe" id="subscribe">
     <h3>2. Subscribe to an event</h3>
+    <label>hub subscription endpoint: </label>
+    <input id="hubSubscribeURI" name="hubSubscribeURI" value="http://localhost:3000/api/hub/">
     <label>hub.callback: </label>
     <input id="clientEndpoint" name="hub.callback"   size="29" value="http://localhost:3000/client"/>    
     <label>hub.mode:</label>
@@ -59,8 +64,6 @@
     <h3>3. Publish an event to the hub</h3> 
     <label>id:</label> 
     <input id="eventId" name="eventId" type="text" value="">
-    <label >hub.topic:</label>
-    <input id="publishURI" name="publishURI" value="http://localhost:3000/publish"/>
     <label>hub.events:</label>
     <select id="publishEvents" name="publishEvents">
         <option value="open-patient-chart" selected >open-patient-chart</option>
@@ -72,9 +75,9 @@
         <option value="logout-user">logout-user</option>
         <option value="hibernate-user">hibernate-user</option>
     </select>
-    <button onclick="getContext(document.getElementById('publishURI').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
+    <button onclick="getContext(document.getElementById('hubSubscribeURI').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
     <textarea  id="context" rows="9" cols="35">{}</textarea>
-    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('publishURI').value)">Send</button>
+    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubSubscribeURI').value+document.getElementById('hub.topic').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
 
@@ -108,7 +111,6 @@
         data +='&hub.topic='    +encodeURIComponent(document.getElementById('hub.topic').value);
         data +='&hub.lease='    +encodeURIComponent(document.getElementById('hub.lease').value);
  
-        var xhr=new XMLHttpRequest();
         xhr.open('POST',url,true);
         xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
         xhr.send(data);
@@ -120,7 +122,7 @@
 
     function sendEvent(contextData,url){
         var eventData={};
-        eventData['hub.topic']=document.getElementById('publishURI').value;
+        eventData['hub.topic']=document.getElementById('hub.topic').value;
         eventData['hub.event']=document.getElementById('publishEvents').value;
         eventData.context=JSON.parse(contextData);
         var timestamp= new Date();
@@ -130,7 +132,6 @@
         msg['cast-session']=document.getElementById('hub.topic').value;
         msg.event=eventData;
 
-        var xhr=new XMLHttpRequest();
         xhr.open('POST',url,true);
         xhr.setRequestHeader('Content-Type','application/json');
         console.log('Event sent from browser: '+ JSON.stringify(msg));
@@ -142,7 +143,7 @@
 
     function getContext(url,sessionid){
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', url+'?sessionid='+sessionid, true);
+        xhr.open('GET', url+sessionid, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
         console.log('Context request sent from browser for session: ' + sessionid);
@@ -183,9 +184,9 @@
         var titleSpan = document.getElementById("docTitle");
         titleSpan.textContent = env.title;
         document.body.style.backgroundColor = env.backgroundColor;
+        document.getElementById('hubURL').value = env.hubURL;
         document.getElementById('clientEndpoint').value=env.clientURL;
         document.getElementById('hubSubscribeURI').value = env.hubURL+env.hubSubscribe;
-        document.getElementById('publishURI').value=env.hubURL+env.hubPublish; 
         document.getElementById('context').value=env.defaultContext; 
         document.getElementById('sendWebMessage').value="Goedemiddag from the " + env.title;
     };
