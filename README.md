@@ -171,7 +171,7 @@ $ dotnet run --project Hub
   Navigate the browser to http://localhost:5001/client.
 
   ![dotnetClient](/images/dotnetClient.png)
-  Fill in the entries as shown in the picture above. Nte that 'Hub url' is pointing to port 3000 and make sure that 'Topic' as the chosen session id at the end. 
+  Fill in the entries as shown in the picture above. Note that 'Hub url' is pointing to port 3000 and make sure that 'Topic' has the chosen session id (subscription topic) at the end. 
 
   Click the 'Subscribe' button.
 
