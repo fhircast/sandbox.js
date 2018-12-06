@@ -11,7 +11,7 @@
   - [Do a SMART on FHIR launch](#SMART-on-FHIR-launch)
     - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
   - [Simulate workflows](#Simulate-workflows)
-  - [Test the .Net Core sandbox and JavaScript sandbox together](#Test-the-.Net-Core-sandbox-and-JavaScript sandbox-together)
+  - [Test the two sandboxes together](#Test-the-two-sandboxes-together)
   - [Troubleshoot](#troubleshooting)
 - [Installation](#installation)
   - [Environment variables](#environment-variables)
@@ -125,12 +125,12 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 ###  HTML5 Web Messaging 
 [SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Decision Support (CDS) applications. This [webmsg endpoint](https://hub-fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
 
-<img src="/images/webmessage.png" alt="" width="600"/>
+<img src="/images/webmessage.png" alt="" width="700"/>
 
 
 Click the 'Send' buttons to see 'postMessage()' actions across iframes.  The 'Launch AI in another window' button may produce a 'pop-up' warning in your browser.
 
-## Test the .Net Core sandbox and JavaScript sandbox together
+## Test the two sandboxes together
 This section provides guidance on testing the two sandboxes against each other. The procedure assumes that both sandboxes are running on the same machine; one on port 3000 and the other on port 5000/5001.
 
 ### JS as the client and .Net as the hub
@@ -169,6 +169,7 @@ $ dotnet run --project Hub
 
 
 Navigate the browser to http://localhost:5001/client.
+
 ![dotnetClient](/images/dotnetClient.png)
 Fill in the entries as shown in the picture above and click the subscribe button.
 
