@@ -11,6 +11,7 @@
   - [Do a SMART on FHIR launch](#SMART-on-FHIR-launch)
     - [Try HTML5 Web Messaging](#HTML5-Web-Messaging)
   - [Simulate workflows](#Simulate-workflows)
+  - [Test the .Net Core sandbox and JavaScript sandbox together](#Test-the-.Net-Core-sandbox-and-JavaScript sandbox-together)
   - [Troubleshoot](#troubleshooting)
 - [Installation](#installation)
   - [Environment variables](#environment-variables)
@@ -108,16 +109,6 @@ Notice that the 'hub.topic' input textbox has been populated with the SMART sess
 
 Alternatively, test the SMART launch by navigating to the SMART launch sandbox: http://launch.smarthealthit.org and selecting a patient, provider and the app url which can be a local instance in debug mode.
 
-###  HTML5 Web Messaging 
-[SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Decision Support (CDS) applications. This [webmsg endpoint](https://hub-fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
-
-<img src="/images/webmessage.png" alt="" width="200"/>
-
-
-
-
-
-Click the 'Send' buttons to see 'postMessage()' actions across iframes.  The 'Launch AI in another window' button may produce a 'pop-up' warning in your browser.
 ## Simulate workflows
 Use the [PACS client](https://pacs-fhircast.azurewebsites.net/)  to subscripe and receive events from the hub.  Check the hub.callback input box value of this client.  How does it differ from the hub?
 
@@ -130,16 +121,19 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 ![twoBrowserSessions](/images/twoBrowserSessions.png)
 
-## Troubleshooting
-* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
-* **The buttons do not work:** Using the browser developper tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
-* **Response error 404-Not found:** The configured hub url node may be set to run as a client-only and therefore the hub endpoints are not available.
-* **The log emojis are black and white:**  Color emojis require Office 2016 on Windows 7.
 
-# Testing the .Net Core and JS sandboxes together
+###  HTML5 Web Messaging 
+[SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Decision Support (CDS) applications. This [webmsg endpoint](https://hub-fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
+
+<img src="/images/webmessage.png" alt="" width="600"/>
+
+
+Click the 'Send' buttons to see 'postMessage()' actions across iframes.  The 'Launch AI in another window' button may produce a 'pop-up' warning in your browser.
+
+## Test the .Net Core sandbox and JavaScript sandbox together
 This section provides guidance on testing the two sandboxes against each other. The procedure assumes that both sandboxes are running on the same machine; one on port 3000 and the other on port 5000/5001.
 
-## JS as the client and .Net as the hub
+### JS as the client and .Net as the hub
 1. Start the .Net hub with the following command (lastest .Net Core SDK installed)
 ```
 $ dotnet run --project Hub
@@ -160,7 +154,7 @@ Click the send button in section 2.  The console window where the hub is tunning
 
 Click the send button in section 3.  The message should be seen in the console window and the browser should show a event being received.
 
-## .Net as the client and JS as the hub
+### .Net as the client and JS as the hub
 
 1. Start the JS sandbox
 ```
@@ -181,6 +175,13 @@ Fill in the entries as shown in the picture above and click the subscribe button
 4. Send an event
 
 Click the update button.
+
+## Troubleshooting
+* **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
+* **The buttons do not work:** Using the browser developper tool, check in the console why the http messages are not going out.  If you are testing with another instance, you may have to enable 'send data across domains' in your browser security settings. Another possibility is that the receiving endpoint does not have the 'Access-Control-Allow-Origin' header. 
+* **Response error 404-Not found:** The configured hub url node may be set to run as a client-only and therefore the hub endpoints are not available.
+* **The log emojis are black and white:**  Color emojis require Office 2016 on Windows 7.
+
 
 
 # Installation
