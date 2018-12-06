@@ -10,6 +10,7 @@
         div.publish {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
         label,button {padding: 2px; display: inline-block;width: 24.5%}
         input,textarea,select {width: 65%;border:1px solid}
+        input.selectHub {float: left; }
         textarea {vertical-align: top;}
         textarea.textAreaMonitor {width: 99%;font-family: "Segoe UI Emoji";}
         textarea.textAreaMonitor,textarea.subscriptionResponse,textarea.eventResponse {background-color:whitesmoke}
@@ -24,14 +25,13 @@
 
 <div class="selectHub" id="selectHub">
     <h3>1. Select the hub:
-    <input id="hubURL" name="hubURL" value="http://localhost:3000">
+        <input id="hubURL" name="hubURL"  style="width: 40%;" value="http://localhost:3000">&nbsp;
+        <input id="hubEndpoint" name="hubEndpoint"  style="width: 25%;" value="/api/hub/">
     </h3>
-</div>
+ </div>
 
 <div class="subscribe" id="subscribe">
     <h3>2. Subscribe to an event</h3>
-    <label>hub subscription endpoint: </label>
-    <input id="hubSubscribeURI" name="hubSubscribeURI" value="http://localhost:3000/api/hub/">
     <label>hub.callback: </label>
     <input id="clientEndpoint" name="hub.callback"   size="29" value="http://localhost:3000/client"/>    
     <label>hub.mode:</label>
@@ -56,7 +56,7 @@
     <input id="hub.topic" name="hub.topic" type="text" value="FHIRcast testing">
     <label>hub.lease: </label> 
     <input id="hub.lease" name="hub.lease" type="text" value="999">
-    <button onclick="sendSubscription(document.getElementById('hubSubscribeURI').value)">Send</button>
+    <button onclick="sendSubscription(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value)">Send</button>
     <textarea class="subscriptionResponse" id="subscriptionResponse"></textarea>
 </div>
 
@@ -75,9 +75,9 @@
         <option value="logout-user">logout-user</option>
         <option value="hibernate-user">hibernate-user</option>
     </select>
-    <button onclick="getContext(document.getElementById('hubSubscribeURI').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
+    <button onclick="getContext(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
     <textarea  id="context" rows="9" cols="35">{}</textarea>
-    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubSubscribeURI').value+document.getElementById('hub.topic').value)">Send</button>
+    <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value+document.getElementById('hub.topic').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
 
@@ -163,7 +163,8 @@
     
     function deleteSubscriptions(){
         var xhr=new XMLHttpRequest();
-        xhr.open('POST',parser.protocol+'//' + parser.host + '/delete');
+     //   xhr.open('POST',parser.protocol+'//' + parser.host + '/delete');
+     xhr.open('DELETE',parser.protocol+'//' + parser.host + '/');
         xhr.send();
         return;
     }
@@ -185,8 +186,8 @@
         titleSpan.textContent = env.title;
         document.body.style.backgroundColor = env.backgroundColor;
         document.getElementById('hubURL').value = env.hubURL;
+        document.getElementById('hubEndpoint').value = env.hubEndpoint;
         document.getElementById('clientEndpoint').value=env.clientURL;
-        document.getElementById('hubSubscribeURI').value = env.hubURL+env.hubSubscribe;
         document.getElementById('context').value=env.defaultContext; 
         document.getElementById('sendWebMessage').value="Goedemiddag from the " + env.title;
     };

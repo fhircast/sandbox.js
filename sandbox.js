@@ -26,7 +26,7 @@ var pageLoads=0;
 var env ={};
 env.port= process.env.PORT || 3000;  
 env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
-env.hubSubscribe = process.env.HUB_SUBSCRIBE || '/api/hub/';
+env.hubEndpoint = process.env.HUB_ENDPOINT || '/api/hub/';
 env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client';
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
@@ -53,7 +53,7 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `[{
 if (env.mode!='client') {
 
   // HUB:  Receive and check subscription requests from clients
-  app.post(env.hubSubscribe, async function(req,res){  
+  app.post(env.hubEndpoint, async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
     // Check if it's a websub or websocket channel
@@ -115,7 +115,7 @@ if (env.mode!='client') {
   }
 
   // HUB: Receive events from clients with application/json payload  
-  app.post(env.hubSubscribe+':topic',function(reqNotify,resNotify){
+  app.post(env.hubEndpoint+':topic',function(reqNotify,resNotify){
     resNotify.send(200);
     console_log('📡HUB: Receiving event with topic: '+ reqNotify.params.topic +' and with content: '+ JSON.stringify(reqNotify.body));
     //  Broadcast the event to all clients
@@ -123,7 +123,7 @@ if (env.mode!='client') {
   });
   
   // HUB: Receive context request from clients with with session id in the query string  
-  app.get(env.hubSubscribe+':topic',function(req,res){
+  app.get(env.hubEndpoint+':topic',function(req,res){
     console_log('📡HUB: Receiving context request for session id: '+req.params.topic);
     res.send(200,lastContext);
   });
@@ -303,7 +303,7 @@ function console_log(msg){
  }
 
 // UI: Clear all subscriptions
-app.post('/delete',function(req,res){
+app.delete('/',function(req,res){
   subscriptions=[];
   console_log('🔧UI: All subscriptions cleared.');
   res.send(200);

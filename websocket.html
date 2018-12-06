@@ -22,7 +22,8 @@
 <header><h2>websocket <span id="docTitle"></span></h2></header>
 <div class="selectHub" id="selectHub">
     <h3>1. Select the hub:
-    <input id="hubSubscribeURI" name="hubSubscribeURI" value="http://localhost:3000/api/hub/">
+        <input id="hubURL" name="hubURL"  style="width: 40%;" value="http://localhost:3000">&nbsp;
+        <input id="hubEndpoint" name="hubEndpoint"  style="width: 25%;" value="/api/hub/">
     </h3>
 </div>
 <div class="subscribe" id="subscribe">
@@ -56,7 +57,7 @@
     <label>hub.channel.endpoint: </label> 
     <input id="hub.channel.endpoint" name="hub.channel.endpoint" type="text" value="ec3d063d545447de946614697cd20d62">
     
-    <button onclick="sendSubscription(document.getElementById('hubSubscribeURI').value)">Send</button>
+    <button onclick="sendSubscription(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value)">Send</button>
     <textarea class="subscriptionResponse" id="subscriptionResponse"></textarea>
 </div>
 
@@ -64,8 +65,6 @@
     <h3>3. Publish an event to the hub</h3> 
     <label>id:</label> 
     <input id="eventId" name="eventId" type="text" value="">
-    <label >hub.topic:</label>
-    <input id="publishURI" name="publishURI" value="http://localhost:3000/notify"/>
     <label>hub.events:</label>
     <select id="publishEvents" name="publishEvents">
         <option value="open-patient-chart" selected >open-patient-chart</option>
@@ -77,9 +76,9 @@
         <option value="logout-user">logout-user</option>
         <option value="hibernate-user">hibernate-user</option>
     </select>
-    <button onclick="getContext(document.getElementById('publishURI').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
+    <button onclick="getContext(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
     <textarea  id="context" rows="9" cols="35">{}</textarea>
-    <button onclick="publishEvent(document.getElementById('context').value,document.getElementById('publishURI').value)">Send</button>
+    <button onclick="publishEvent(document.getElementById('context').value,document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value+document.getElementById('hub.topic').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse"></textarea>
 </div>
 
@@ -142,7 +141,7 @@
 
     function publishEvent(contextData,url){
         var eventData={};
-        eventData['hub.topic']=document.getElementById('publishURI').value;
+        eventData['hub.topic']=document.getElementById('hub.topic').value;
         eventData['hub.event']=document.getElementById('publishEvents').value;
         eventData.context=JSON.parse(contextData);
         var timestamp= new Date();
@@ -176,7 +175,7 @@
     
     function deleteSubscriptions(){
         var xhr=new XMLHttpRequest();
-        xhr.open('POST',parser.protocol+'//' + parser.host + '/delete');
+        xhr.open('DELETE',parser.protocol+'//' + parser.host + '/');
         xhr.send();
         return;
     }
@@ -197,9 +196,9 @@
         var titleSpan = document.getElementById("docTitle");
         titleSpan.textContent = env.title;
         document.body.style.backgroundColor = env.backgroundColor;
+        document.getElementById('hubURL').value = env.hubURL;
+        document.getElementById('hubEndpoint').value = env.hubEndpoint;
         document.getElementById('clientEndpoint').value=env.clientURL;
-        document.getElementById('hubSubscribeURI').value = env.hubURL+env.hubSubscribe;
-        document.getElementById('publishURI').value=env.hubURL+env.hubPublish; 
         document.getElementById('context').value=env.defaultContext; 
         
     };

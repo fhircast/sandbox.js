@@ -36,7 +36,7 @@
 # Introduction
 FHIRcast® is an HL7 specification designed to provide a lightweight, inexpensive and http-based application context synchronization standard. Find out more at [fhircast.org](http://fhircast.org).
 
-FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Imaging Integration WorkGruop to provide early feedback on implementability.
+FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Imaging Integration Workgroup (WG20) to provide early feedback on implementability.
 
 This sandbox (sandbox.js) partially implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
@@ -77,7 +77,7 @@ To retrieve context after start-up, perform a GET request on the hub's notificat
 Notice that there is only context information in the response and no event name.
 
 ## Test the websocket channel proposed addition
-The [FHIR® subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with a websocket channel.  With this channel, the end clients communicate directly with the hub and the applications servers are not involved.
+The [FHIR® subscription resource](https://www.hl7.org/fhir/subscription.html) specifies a number of communication channels and there is interest in following that model in FHIRcast starting with the addition of a websocket channel.  With this channel, the end clients communicate directly with the hub and the applications servers are not involved.
 ![websocket](/images/websocket.png)
 A possible implementation would be to add 'hub.channel.type' and 'hub.channel.endpoint' to the current subscription request and to provide a wss://fhircast-hub/bind/:[endpoint] service on the hub that binds the websocket created by the client to the subscription.
 
@@ -110,7 +110,11 @@ Alternatively, test the SMART launch by navigating to the SMART launch sandbox: 
 
 ###  HTML5 Web Messaging 
 [SMART Web Messaging](https://github.com/smart-on-fhir/smart-on-fhir.github.io/wiki/SMART-Web-Messaging) proposes HTML5 Web Messaging for communication between the EMR and Clinical Decision Support (CDS) applications. This [webmsg endpoint](https://hub-fhircast.azurewebsites.net/webmsg) explores how Web Messaging could work in other scenarios without yet implementing the SMART authorization. 
-![webmessage](/images/webmessage.png)
+
+<img src="/images/webmessage.png" alt="" width="200"/>
+
+
+
 
 
 Click the 'Send' buttons to see 'postMessage()' actions across iframes.  The 'Launch AI in another window' button may produce a 'pop-up' warning in your browser.
@@ -132,6 +136,52 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 * **Response error 404-Not found:** The configured hub url node may be set to run as a client-only and therefore the hub endpoints are not available.
 * **The log emojis are black and white:**  Color emojis require Office 2016 on Windows 7.
 
+# Testing the .Net Core and JS sandboxes together
+This section provides guidance on testing the two sandboxes against each other. The procedure assumes that both sandboxes are running on the same machine; one on port 3000 and the other on port 5000/5001.
+
+## JS as the client and .Net as the hub
+1. Start the .Net hub with the following command (lastest .Net Core SDK installed)
+```
+$ dotnet run --project Hub
+```
+2. Start the JS sandbox in client mode
+```
+MODE=client node sandbox.js
+```
+3. Submit a subscription
+
+Navigate the browser to http://localhost:3000 and change the hub URL port from 3000 to 5000 in section 1.
+
+
+Click the send button in section 2.  The console window where the hub is tunning will show the subscription being accepted.
+
+
+4. Send an event
+
+Click the send button in section 3.  The message should be seen in the console window and the browser should show a event being received.
+
+## .Net as the client and JS as the hub
+
+1. Start the JS sandbox
+```
+node sandbox.js
+```
+2. Start the .Net WebSub client  with the following command
+```
+$ dotnet run --project Hub
+```
+
+3. Submit a subscription
+
+
+Navigate the browser to http://localhost:5001/client.
+![dotnetClient](/images/dotnetClient.png)
+Fill in the entries as shown in the picture above and click the subscribe button.
+
+4. Send an event
+
+Click the update button.
+
 
 # Installation
 Installing your own sandbox allows you to learn, fix bugs, propose new features or simply provide a private test environment for your project or institution.
@@ -143,6 +193,7 @@ Environment variables can be used to control the mode of operation, default endp
 + **MODE**: Specifies if the instance is a 'hub' with a client (subscriber/publisher) or only a 'client'. Default is 'hub'.
 + **PORT**: Specifies the listening port. Default is 3000. 
 + **HUB_URL**: Specifies the address where the subscriber and publisher will connect to.  Default is http://localhost:3000.
++ **HUB_ENDPOINT**: Specifies the endpoint where the subscriber and publisher will connect to.  Default is /api/hub/.
 + **CLIENT_URL**: Specifies the address where the client node will receive published events.  Default is http://localhost:3000/client.
 + **TITLE**: Sets the title. Default is 'FHIRcast JavaScript Sandbox - Hub and Client'.
 + **BACKGROUND_COLOR**: Sets the background color. Default is 'darkgray'.
@@ -285,9 +336,9 @@ There are two files:  sandbox.js and sandbox.html.
 These two endpoints are not active when the MODE environment variable is set to 'emr','pacs','reporting' or 'ai'.
 * "/api/hub": POST with form query string to receive subscription requests from the clients.
  
-* "/notify": POST with JSON payload to receive events from the clients. 
+* "/api/hub/:topic": POST with JSON payload to receive events from the clients. 
 
-* "/notify": GET with query string to provide context in JSON. 
+* "/api/hub/:topic": GET with query string to provide context in JSON. 
   
 ### Client endpoints
 * "/client": POST with JSON payload to receive events and subscribtion cancelations from the hub.
@@ -303,7 +354,7 @@ The following two endpoints are not active when the MODE environment variable is
 
 * "/status":  POST without content will trigger a hub status message to be broadcasted to the connected websockets.
 
-* "/delete":  POST without content will delete all subscriptions.
+* "/":  DELETE without content will delete all subscriptions.
 
 ### SMART handling
 The authorization sequence is described [here](http://docs.smarthealthit.org/tutorials/authorization/).
