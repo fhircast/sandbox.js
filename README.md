@@ -168,15 +168,16 @@ $ dotnet run --project Hub
 
 3. Submit a subscription
 
+  Navigate the browser to http://localhost:5001/client.
 
-Navigate the browser to http://localhost:5001/client.
+  ![dotnetClient](/images/dotnetClient.png)
+  Fill in the entries as shown in the picture above. Nte that 'Hub url' is pointing to port 3000 and make sure that 'Topic' as the chosen session id at the end. 
 
-![dotnetClient](/images/dotnetClient.png)
-Fill in the entries as shown in the picture above and click the subscribe button.
+  Click the 'Subscribe' button.
 
 4. Send an event
 
-Click the update button.
+  Click the 'Update' button.
 
 ## Troubleshooting
 * **The log text area does not display any messages:**  Possibly the websocket connection between your browser and the hub is not working.  There could be a proxy server in your route that needs a software update or configuration change to support the websocket 'upgrade' http header.  Another possibility is that you are using more websockets than your deployment allows.  For example, the smallest Azure deployment specifies a maximum of 5 sockets.  In any case, the lack of a websocket does not prevent operation.  You should still see the responses to the messages in the small text areas next to the send buttons but you will not see events being received by the clients.
