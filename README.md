@@ -145,8 +145,10 @@ MODE=client node sandbox.js
 ```
 3. Submit a subscription
 
-Navigate Internet Explorer (chrome or safari will not work properly because of CORS header restriction) to http://localhost:3000 and change the hub URL port from 3000 to 5000 in section 1.
+Use **Internet Explorer**. Chrome or Safari will not work properly because of CORS header restriction(Allow-access origin) on the hub. Somehow IE sees localhost on different port as same domain. 
 
+Navigate to http://localhost:3000 and change the hub URL port from 3000 to 5000 in section 1.
+![JSdotnettest](/images/JSdotnettest.png)
 
 Click the send button in section 2.  The console window where the hub is running will show the subscription being accepted.
 
@@ -163,7 +165,7 @@ node sandbox.js
 ```
 2. Start the .Net WebSub client  with the following command
 ```
-$ dotnet run --project Hub
+$ dotnet run --project WebSubClient
 ```
 
 3. Submit a subscription
@@ -171,12 +173,13 @@ $ dotnet run --project Hub
   Navigate the browser to http://localhost:5001/client.
 
   ![dotnetClient](/images/dotnetClient.png)
-  Fill in the entries as shown in the picture above. Note that 'Hub url' is pointing to port 3000 and make sure that 'Topic' has the chosen session id (subscription topic) at the end. 
+  Fill in the entries as shown in the picture above. Note that 'Hub url' is pointing to **port 3000**. 
 
   Click the 'Subscribe' button.
 
 4. Send an event
 
+    In the 'User session info' section, make sure that 'Topic' has the chosen session id (subscription topic) at the end. 
   Click the 'Update' button.
 
 ## Troubleshooting
