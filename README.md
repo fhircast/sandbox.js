@@ -132,9 +132,9 @@ Finally, open two reporting client browser sessions.  Subscribe to an event from
 
 
 ## Test the two sandboxes together
-This section provides guidance on testing the two sandboxes against each other. The procedure assumes that both sandboxes are running on the same machine; one on port 3000 and the other on port 5000/5001.
+This section provides guidance on testing the two sandboxes ([.Net core](https://github.com/fhircast/sandbox) and JavaScript) against each other. The procedure assumes that both sandboxes are running on the same machine; one on port 3000 and the other on port 5000(hub)/5001(client).  Since both sandboxes have hub and client components, we can test both client/hub scenarios.
 
-### JS as the client and .Net as the hub
+### JavaScript sandbox as the client and .Net sandbox as the hub
 1. Start the .Net hub with the following command (lastest .Net Core SDK installed)
 ```
 $ dotnet run --project Hub
@@ -155,7 +155,7 @@ Click the send button in section 2.  The console window where the hub is running
 
 Click the send button in section 3.  The message should be seen in the console window and the browser should show a event being received.
 
-### .Net as the client and JS as the hub
+### .Net sandbox as the client and JavaScript sandbox as the hub
 
 1. Start the JS sandbox
 ```
