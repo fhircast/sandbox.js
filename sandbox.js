@@ -182,7 +182,7 @@ app.post('/client/',function(req,res){
   console_log('🖥️CLIENT: Checking x-hub-signature in header: ' + JSON.stringify(req.headers['x-hub-signature']) );
   const hmac = crypto.createHmac('sha256','secret');
   hmac.update(JSON.stringify(req.body));
-  console_log('🖥️CLIENT: HMAC calculation from secret is:    ' + hmac.digest('hex') );
+  console_log('🖥️CLIENT: HMAC calculation from secret is: sha256=' + hmac.digest('hex') );
   console.log();
 });
 
@@ -269,7 +269,7 @@ function sendEvents(notification){
           headers:  {
             'Accept': 'application/json',
             'Accept-Charset': 'utf-8',
-            'X-Hub-Signature': hmac.digest('hex')
+            'X-Hub-Signature': 'sha256=' + hmac.digest('hex')
            }    
         }, function (error, response, body) {
             console_log('📡HUB: Sent notification response statusCode:'+response.statusCode); // Print the response status code if a response was received

@@ -39,15 +39,15 @@ FHIRcast® is an HL7 specification designed to provide a lightweight, inexpensiv
 
 FHIRcast sandboxes provide tools to simulate the workflow of the FHIRcast standard.  They also prototype proposals from the Imaging Integration Workgroup (WG20) to provide early feedback on implementability.
 
-This sandbox (sandbox.js) partially implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
+This sandbox (sandbox.js) implements the standard using JavaScript and Node.js. If you are a C#/.net developer, you might prefer to use the other [FHIRcast sandbox](https://github.com/fhircast/sandbox).
 
 The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](https://www.w3.org/TR/websub/). This model defines a "hub" that receives subscribtion requests from clients (subscribers) for specific events.  With WebSub, 'clients' are actually application servers that manage communication between the central hub and their clients.  With this concept, each application can choose whatever is most convenient to relay the information to their clients, possibly using an existing proprietary channel.
 ![websub](/images/websub.png)
 
-Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback) and the endpoint where they want to send events (hub.topic). The hub then performs a validation by asking the client about a common secret.   If this step succeeds, the hub will respond to the original POST with code 202-Accepted and start forwarding events to the client.  The following diagram describe the subscription sequence.
+Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback) and the endpoint where they want to send events (hub.topic). The hub then performs a validation by asking the client about a common secret.   If this step succeeds, the hub will respond to the original POST with code 202-Accepted and start forwarding events to the client.  The following diagram describes the subscription sequence.
 <p align="center"> <img src="/images/Subscription_sequence.png"></p>
 
-To publish events between the apps and the hub, POST transactions are used with JSON payload containing the FHIR context description and the event name.  HMAC signatures are used in the headers to validate the content of the messages.
+To publish events between the apps and the hub, POST transactions are used with JSON payload containing the FHIR® context description and the event name.  HMAC signatures are used to validate the content of the messages.
 
 # Usage
 The following instances are available online (Microsoft Azure - Frankfurt):
@@ -364,7 +364,7 @@ The following two endpoints are not active when the MODE environment variable is
 
 * "/status":  POST without content will trigger a hub status message to be broadcasted to the connected websockets.
 
-* "/":  DELETE without content will delete all subscriptions.
+* "/api/hub":  DELETE without content will delete all subscriptions.
 
 ### SMART handling
 The authorization sequence is described [here](http://docs.smarthealthit.org/tutorials/authorization/).
