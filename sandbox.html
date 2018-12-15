@@ -86,7 +86,7 @@
     <button onclick="window.open('https://github.com/fhircast/sandbox.js/blob/master/README.md');">Online help</button> 
     <button onclick="document.getElementById('textAreaMonitor').value=''">Clear log window</button>
     <button id="buttonStatus" onclick="getHubStatus();">Get hub status</button>
-    <button id="buttonDelete" onclick="deleteSubscriptions();">Delete all subscriptions</button>
+    <button id="buttonDelete" onclick="deleteSubscriptions(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value);">Delete all subscriptions</button>
     <textarea class="textAreaMonitor" id="textAreaMonitor" rows="20" ></textarea><br>
  </div>
 

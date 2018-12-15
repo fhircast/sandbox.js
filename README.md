@@ -47,8 +47,8 @@ The first communication channel proposed by FHIRcast is the [W3C WebSub RFC](htt
 Clients subscribe to events by sending the hub the location where they want to receive the events (hub.callback) and the endpoint where they want to send events (hub.topic). The hub then performs a validation by asking the client about a common secret.   If this step succeeds, the hub will respond to the original POST with code 202-Accepted and start forwarding events to the client.  The following diagram describes the subscription sequence.
 <p align="center"> <img src="/images/Subscription_sequence.png"></p>
 
-To publish events between the apps and the hub, POST transactions are used with JSON payload containing the FHIR® context description and the event name.  HMAC signatures are used to validate the content of the messages.  The following is an example message for an open-patient-chart event sent to a hub with a client using topic 'v7tfwuk17a':
-```http
+To publish events between the apps and the hub, POST transactions are used with JSON payload containing the FHIR® context description and the event name.  The content of the message is validated by an HMAC signature in the header that is created using the common secret. The following is an example message for an open-patient-chart event sent to a hub with a client using topic 'v7tfwuk17a':
+```code
 POST https://hub-fhircast.somedomain.org/api/hub/v7tfwuk17a HTTP/1.1
 Host: subscriber
 X-Hub-Signature: sha256=dce85dc8dfde2426079063ad413268ac72dcf845f9f923193285e693be6ff3ae

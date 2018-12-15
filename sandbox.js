@@ -303,7 +303,7 @@ function console_log(msg){
  }
 
 // UI: Clear all subscriptions
-app.delete('/',function(req,res){
+app.delete(env.hubEndpoint,function(req,res){
   subscriptions=[];
   console_log('🔧UI: All subscriptions cleared.');
   res.send(200);
