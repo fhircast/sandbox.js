@@ -48,7 +48,7 @@ Clients subscribe to events by sending the hub the location where they want to r
 <p align="center"> <img src="/images/Subscription_sequence.png"></p>
 
 To publish events between the apps and the hub, POST transactions are used with JSON payload containing the FHIR® context description and the event name.  The content of the message is validated by an HMAC signature in the header that is created using the common secret. The following is an example message for an open-patient-chart event sent to a hub with a client using topic 'v7tfwuk17a':
-```code
+```HTTP
 POST https://hub-fhircast.somedomain.org/api/hub/v7tfwuk17a HTTP/1.1
 Host: subscriber
 X-Hub-Signature: sha256=dce85dc8dfde2426079063ad413268ac72dcf845f9f923193285e693be6ff3ae
