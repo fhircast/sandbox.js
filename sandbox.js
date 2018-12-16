@@ -258,8 +258,12 @@ function sendEvents(notification){
       const hmac = crypto.createHmac('sha256',subscription.secret);
       hmac.update(JSON.stringify(notification));
       if (subscription.channel=='websocket') {
-        subscription.websocket.send(JSON.stringify(notification));        
-        console_log('📡HUB: Sent notification to websocket.'); // Print the response status code if a response was received
+        if (subscription.websocket.readyState==1)
+        {
+          subscription.websocket.send(JSON.stringify(notification));        
+          console_log('📡HUB: Sent notification to websocket.'); 
+        }
+        else {console_log('📡HUB: This websocket is not open!'); }
       } else {  // not websocket- send json post
         request.post({
           url: subscription['callback'] ,

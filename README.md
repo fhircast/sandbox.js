@@ -53,7 +53,8 @@ POST https://hub-fhircast.somedomain.org/api/hub/v7tfwuk17a HTTP/1.1
 Host: subscriber
 X-Hub-Signature: sha256=dce85dc8dfde2426079063ad413268ac72dcf845f9f923193285e693be6ff3ae
 Content-Type: application/json
-
+```
+```JSON
 {
   "timestamp": "2018-12-13T01:37:05.14",
   "id": "q9v3jubddqt63n1",
