@@ -66,10 +66,10 @@
     <input id="eventId" name="eventId" type="text" value="">
     <label>hub.events:</label>
     <select id="publishEvents" name="publishEvents">
-        <option value="open-patient-chart" selected >open-patient-chart</option>
+        <option value="open-patient-chart">open-patient-chart</option>
         <option value="switch-patient-chart">switch-patient-chart</option>
         <option value="close-patient-chart">close-patient-chart</option>
-        <option value="open-imaging-study">open-imaging-study</option>
+        <option value="open-imaging-study" selected >open-imaging-study</option>
         <option value="switch-imaging-study">switch-imaging-study</option>
         <option value="close-imaging-study">close-imaging-study</option>
         <option value="logout-user">logout-user</option>
@@ -78,7 +78,7 @@
     <button onclick="getContext(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value,document.getElementById('hub.topic').value)" style="text-align:left;" >context:</button>
     <textarea  id="context" rows="9" cols="35">{}</textarea>
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value+document.getElementById('hub.topic').value)">Send</button>
-    <textarea class="eventResponse" id="eventResponse"></textarea>
+    <textarea class="eventResponse" id="eventResponse" spellcheck="false"></textarea>
 </div>
 
 <div class="monitor" id="monitor">
@@ -87,7 +87,7 @@
     <button onclick="document.getElementById('textAreaMonitor').value=''">Clear log window</button>
     <button id="buttonStatus" onclick="getHubStatus();">Get hub status</button>
     <button id="buttonDelete" onclick="deleteSubscriptions(document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value);">Delete all subscriptions</button>
-    <textarea class="textAreaMonitor" id="textAreaMonitor" rows="20" ></textarea><br>
+    <textarea class="textAreaMonitor" id="textAreaMonitor" rows="20" spellcheck="false"></textarea><br>
  </div>
 
 <div class="webmessage" id="webmessage">
@@ -161,10 +161,9 @@
         return;
     }
     
-    function deleteSubscriptions(){
+    function deleteSubscriptions(url){
         var xhr=new XMLHttpRequest();
-     //   xhr.open('POST',parser.protocol+'//' + parser.host + '/delete');
-     xhr.open('DELETE',parser.protocol+'//' + parser.host + '/');
+        xhr.open('DELETE',url);
         xhr.send();
         return;
     }

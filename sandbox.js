@@ -31,24 +31,42 @@ env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client'
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
-env.defaultContext= process.env.DEFAULT_CONTEXT || `[{
-  "key": "patient",
-  "resource": 
+env.defaultContext= process.env.DEFAULT_CONTEXT || `[
   {
-  "resourceType": "Patient",
-  "id": "ewUbXT9RWEbSj5wPEdgRaBw3",
-  "identifier": [
-      {
-      "system": "urn:oid:1.2.840.114350",
-      "value": "185444"
-      },
-      {
-      "system": "urn:oid:1.2.840.114350.1.13.861.1.7.5.737384.27000",
-      "value": "2667"
+    "key": "patient",
+    "resource": {
+      "resourceType": "Patient",
+      "id": "ewUbXT9RWEbSj5wPEdgRaBw3",
+      "identifier": [
+        {
+          "system": "urn:oid:1.2.840.114350",
+          "value": "185444"
+        },
+        {
+          "system": "urn:oid:1.2.840.114350.1.13.861.1.7.5.737384.27000",
+          "value": "2667"
+        }
+      ]
+    }
+  },
+  {
+    "key": "study",
+    "resource": {
+      "resourceType": "ImagingStudy",
+      "id": "8i7tbu6fby5ftfbku6fniuf",
+      "uid": "urn:oid:2.16.124.113543.6003.1154777499.30246.19789.3503430045",
+      "identifier": [
+        {
+          "system": "7678",
+          "value": "REMOVED"
+        }
+      ],
+      "patient": {
+        "reference": "Patient/ewUbXT9RWEbSj5wPEdgRaBw3"
       }
-  ]
+    }
   }
-  }]`;
+]`;
 
 if (env.mode!='client') {
 
@@ -224,7 +242,7 @@ if(req.originalUrl.indexOf('launch')>0){
  
  //  websocket publish endpoint
  app.ws('/bind/:endpoint', function(publishWebsocket, req) {
-  console_log('Accepting websocket connection.');
+  console_log('📡HUB: Accepting websocket connection.');
   // check if we have a subscription for this socket
   subscriptions.forEach(function(subscription) {
     if(subscription.endpoint==req.params.endpoint ) {
