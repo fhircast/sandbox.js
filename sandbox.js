@@ -8,6 +8,7 @@ const expressWs = require('express-ws')(app);
 const axios = require('axios');
 const request = require('request');
 const crypto=require('crypto');
+const mongoose = require('mongoose');
 
 app.use(morgan('dev'));
 app.use(express.json());  
@@ -31,6 +32,8 @@ env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client'
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
+env.dbURI= process.env.DB_URI || 'mongodb://hub-fhircast:hub-fhircast1@ds048279.mlab.com:48279/hub-fhircast';
+//env.dbURI= process.env.DB_URI || 'mongodb://hub-fhircast:hub-fhircast123@ds048279.mlab.com2:48279/hub-fhircast';
 env.defaultContext= process.env.DEFAULT_CONTEXT || `[
   {
     "key": "patient",
@@ -68,8 +71,18 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `[
   }
 ]`;
 
+
 if (env.mode!='client') {
 
+  //  connect to mongodb and define collections
+  mongoose.connect(env.dbURI,{ useNewUrlParser: true },function(err) {
+    if(err){ console_log('📡HUB: Mongo db error' + err);}
+    else { console_log('📡HUB: Connected to mongodb.');}
+  });
+  var ClientApp= mongoose.model('ClientApp',{ClientAppID: String,Name: String,Secret: String},'ClientApp');
+  var ClientAppUser=mongoose.model('ClientAppUser',{ClientAppUserID: String,ClientAppID: String,Username: String,UserIdentityID: String},'ClientAppUser');
+  var UserIdentity=mongoose.model('UserIdentity',{UserIdentityID: String,Topic: String,FirstName: String,LastName: String},'UserIdentity');
+ 
   // HUB:  Receive and check subscription requests from clients
   app.post(env.hubEndpoint, async function(req,res){  
     var subscriptionRequest=req.body;
@@ -142,10 +155,38 @@ if (env.mode!='client') {
   
   // HUB: Receive context request from clients with with session id in the query string  
   app.get(env.hubEndpoint+':topic',function(req,res){
-    console_log('📡HUB: Receiving context request for session id: '+req.params.topic);
-    res.send(200,lastContext);
+   if (req.params.topic == 'authenticate'){
+    console_log('📡HUB: Receiving topic request for user: '+req.query.username+' and secret: '+req.query.secret);
+    ClientApp.findOne({Secret: req.query.secret},function(err,ClientAppFound){
+      if (ClientAppFound) {
+        console_log('📡HUB: The secret matches with app: '+ClientAppFound.Name);  
+        // check if the username is existing for this app
+        ClientAppUser.findOne({ClientAppID:ClientAppFound.ClientAppID, UserName:req.query.username},function(err,UserFound){
+          if (UserFound) {
+            // Look up the topic for this user
+            console_log('📡HUB: The user id is: '+UserFound.UserIdentityID); 
+            UserIdentity.findOne({UserIdentityID: UserFound.UserIdentityID}, function(err,UserIDFound){
+              console_log('📡HUB: The topic is: '+UserIDFound.Topic); 
+              res.send(200,UserIDFound.Topic);
+            });
+          }
+          else {
+            res.send(404,'Username not found for this app');
+          }
+        });         
+      }
+      else {
+        res.send(404,'Client App not found for this secret');
+      }
+    }
+    );
+   }
+   else {
+      console_log('📡HUB: Receiving context request for session id: '+req.params.topic);
+      res.send(200,lastContext);
+    }
   });
-  
+      
   // HUB: Return hub status in the log - Internal - Not part of the standard
   app.post('/status',function(req,res){
     var message=''; 
