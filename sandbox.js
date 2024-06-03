@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(favicon(path.join(__dirname + '/fhir.ico')))
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization");
   next();
 });
 
@@ -25,14 +25,14 @@ var lastContext={};
 var logSockets=[];
 var pageLoads=0;
 var env ={};
-env.port= process.env.PORT || 3000;  
+env.port= process.env.PORT || 5000;  
 env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
 env.hubEndpoint = process.env.HUB_ENDPOINT || '/api/hub/';
 env.clientURL = process.env.CLIENT_URL || 'http://localhost:'+env.port+'/client';
 env.title = process.env.TITLE ||'FHIRcast JS Sandbox - Hub and Client';
 env.backgroundColor = process.env.BACKGROUND_COLOR ||'darkgray' ;
 env.mode = process.env.MODE || 'hub'; 
-env.dbURI= process.env.DB_URI || 'mongodb://hub-fhircast:hub-fhircast1@ds048279.mlab.com:48279/hub-fhircast';
+//env.dbURI= process.env.DB_URI || 'mongodb://hub-fhircast:hub-fhircast1@ds048279.mlab.com:48279/hub-fhircast';
 //env.dbURI= process.env.DB_URI || 'mongodb://hub-fhircast:hub-fhircast123@ds048279.mlab.com2:48279/hub-fhircast';
 env.defaultContext= process.env.DEFAULT_CONTEXT || `[
   {
@@ -75,15 +75,20 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `[
 if (env.mode!='client') {
 
   //  connect to mongodb and define collections
-  mongoose.connect(env.dbURI,{ useNewUrlParser: true },function(err) {
-    if(err){ console_log('📡HUB: Mongo db error' + err);}
-    else { console_log('📡HUB: Connected to mongodb.');}
-  });
-  var ClientApp= mongoose.model('ClientApp',{ClientAppID: String,Name: String,Secret: String},'ClientApp');
-  var ClientAppUser=mongoose.model('ClientAppUser',{ClientAppUserID: String,ClientAppID: String,Username: String,UserIdentityID: String},'ClientAppUser');
-  var UserIdentity=mongoose.model('UserIdentity',{UserIdentityID: String,Topic: String,FirstName: String,LastName: String},'UserIdentity');
+ // mongoose.connect(env.dbURI,{ useNewUrlParser: true },function(err) {
+//    if(err){ console_log('📡HUB: Mongo db error' + err);}
+//    else { console_log('📡HUB: Connected to mongodb.');}
+//  });
+//  var ClientApp= mongoose.model('ClientApp',{ClientAppID: String,Name: String,Secret: String},'ClientApp');
+//  var ClientAppUser=mongoose.model('ClientAppUser',{ClientAppUserID: String,ClientAppID: String,Username: String,UserIdentityID: String},'ClientAppUser');
+//  var UserIdentity=mongoose.model('UserIdentity',{UserIdentityID: String,Topic: String,FirstName: String,LastName: String},'UserIdentity');
  
   // HUB:  Receive and check subscription requests from clients
+
+  // Heartbeat timer
+
+
+
   app.post(env.hubEndpoint, async function(req,res){  
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
@@ -104,27 +109,50 @@ if (env.mode!='client') {
     // if code =200 and secret
     if (checkResult.status == 200 && checkResult.data == subscriptionRequest['hub.secret']) {
       //  add or remove subscription
+
+      var protocol='ws:';
+      if (env.hubURL.includes('https:')) { protocol='wss:';}
+      const url= new URL(env.hubURL+env.hubEndpoint);
+      var websocket_endpoint=Math.random().toString(36).substring(2, 16); //  random number  websocket endpoint
+      var websocket_url=protocol+'//' + url.host + '/bind/'+websocket_endpoint;
       var subscription = {
         channel: subscriptionRequest['hub.channel.type'],
-        endpoint: subscriptionRequest['hub.channel.endpoint'],
+        endpoint: websocket_url,
+        websocket_endpoint: websocket_endpoint,
         callback: subscriptionRequest['hub.callback'],
         events: subscriptionRequest['hub.events'],
-        secret: subscriptionRequest['hub.secret'],
+        secret: subscriptionRequest['hub.secret'] || 'secret',
         topic: subscriptionRequest['hub.topic'],
         lease: subscriptionRequest['hub.lease'],
         session: subscriptionRequest['hub.topic'],
+        subscriber: subscriptionRequest['subscriber.name']
       };
       if (subscriptionRequest['hub.mode'] == 'subscribe') {
         subscriptions.push(subscription);
-        console_log('📡HUB: Subscription added for session:' + subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']); // Print the response status code if a response was received
+        console_log('📡HUB: Subscription added for ' + subscriptionRequest['subscriber.name']+': ' + subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']); // Print the response status code if a response was received
       }
       else {
+        // close the websocket
+        subscriptions.forEach(function (subscription) {  
+          if (subscription.websocket && (
+                subscription.subscriber===subscriptionRequest['subscriber.name'] || 
+                subscription.endpoint===subscriptionRequest['hub.channel.endpoint'] ) ) {
+              subscription.websocket.close();
+          }
+        });
+        // remove the subscription from the list
         subscriptions = subscriptions.filter(function (obj) {
           return obj.events !== subscriptionRequest['hub.events'] && obj.session !== subscriptionRequest['hub.topic'];
         });
-        console_log('📡HUB: Subscription removed for session:' + subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']);
+        console_log('📡HUB: Subscription removed for ' + subscriptionRequest['subscriber.name']+': '+ subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']);
       }
-      res.send(202);
+      
+      const responseBody = {
+        "hub.channel.endpoint": subscription.endpoint
+
+     }
+
+      res.send(202,responseBody);
       console_log('📡HUB: Sending subscription response statusCode: 202'); // Print the response status code if a response was received
   } else {
     res.send(500);
@@ -153,6 +181,15 @@ if (env.mode!='client') {
     sendEvents(reqNotify.body)
   });
   
+    // STU3 HUB: Receive events from clients with application/json payload  
+    app.post(env.hubEndpoint,function(reqNotify,resNotify){
+      resNotify.send(200);
+      console_log('📡HUB: Receiving event with topic: '+ reqNotify.params.topic +' and with content: '+ JSON.stringify(reqNotify.body));
+      //  Broadcast the event to all clients
+      sendEvents(reqNotify.body)
+    });
+  
+    
   // HUB: Receive context request from clients with with session id in the query string  
   app.get(env.hubEndpoint+':topic',function(req,res){
    if (req.params.topic == 'authenticate'){
@@ -286,21 +323,32 @@ if(req.originalUrl.indexOf('launch')>0){
   console_log('📡HUB: Accepting websocket connection.');
   // check if we have a subscription for this socket
   subscriptions.forEach(function(subscription) {
-    if(subscription.endpoint==req.params.endpoint ) {
-      console_log('📡HUB: Binding websocket for: '+ req.params.endpoint);
-      subscription.websocket=publishWebsocket;   
-      var confirmation={};
-      var timestamp= new Date();
-      confirmation.timestamp= timestamp.toJSON();
-      confirmation.bound=req.params.endpoint;
-      publishWebsocket.send(JSON.stringify(confirmation));
+    if(subscription.websocket_endpoint==req.params.endpoint ) {
+      if (subscription.websocket == null) {
+        console_log('📡HUB: Binding websocket for: '+ req.params.endpoint);
+        subscription.websocket=publishWebsocket;   
+        var confirmation={};
+        var timestamp= new Date();
+        confirmation.timestamp= timestamp.toJSON();
+        confirmation.bound=req.params.endpoint;
+        confirmation['hub.mode']='subscribe';
+        confirmation['hub.topic']='topic';        
+        confirmation['hub.mode']='patient-open';        
+        confirmation['hub.lease_seconds']=7200;
+        console_log('📡HUB: sending confirmation: '+ JSON.stringify(confirmation));
+        publishWebsocket.send(JSON.stringify(confirmation));
+      }
     }
+    else {console_log('📡HUB: no matching endpoint for websocket for: '+ req.params.endpoint); }
   });
   
   //  here we receive events to publish
   publishWebsocket.on('message', function(msg) {
     console_log('Receiving event on Websocket: ' + msg);
-    sendEvents(JSON.parse(msg));
+    try { sendEvents(JSON.parse(msg)); }
+    catch(err) {//console_log('Message is not an event: ' + msg);
+      }
+    
   });
   
   publishWebsocket.on('close', function(msg) { 
@@ -309,10 +357,11 @@ if(req.originalUrl.indexOf('launch')>0){
   });
 });
 
+
 function sendEvents(notification){
   lastContext=notification.event['context'];  
   subscriptions.forEach(function(subscription) {
-    if(subscription.events.includes(notification.event['hub.event'])) {
+    if(subscription.events.toLowerCase().includes(notification.event['hub.event'].toLowerCase())) {
       console_log('📡HUB:Found a subscription for '+subscription.events);
       const hmac = crypto.createHmac('sha256',subscription.secret);
       hmac.update(JSON.stringify(notification));
@@ -371,6 +420,48 @@ app.delete(env.hubEndpoint,function(req,res){
   console_log('🔧UI: All subscriptions cleared.');
   res.send(200);
 });
+
+//  Powercast - This endpoint is to simulate the powercast connector
+app.get('/api/powercast-connector/configuration',function(req,res){
+  res.send({"test_endpoint": "https://nuance-testserver/test/teste",});
+ });
+
+ app.get('/api/powercast-connector/login',function(req,res){
+  res.send({"authorization_endpoint": "https://nuance-auth0-server/oauth/authorize",});
+ });
+
+ app.post('/oauth/token',function(req,res){
+  res.send({"token_type":"Bearer","expires_in":3600,"scope":"openid","id_token":"gwYjQtMDhlMTMBOEV4nSsl4OVItuPg0GPe40VTA","access_token":"eyJhbGvz2X4saFXwWOsTVTwVIr13R8w"});
+  console_log('📡HUB: Sent token.'); 
+});
+
+ function sendWebsocketHeartbeat() {
+  subscriptions.forEach(function(subscription) {
+    if (subscription.channel=='websocket') {
+      try { 
+        const heartbeatPayload = {
+          timestamp: new Date().toISOString(),
+          id: 'JS SANDBOX',
+          event: {
+            'hub.topic': subscription.topic,
+            'hub.event': 'heartbeat',
+          },
+        };
+        subscription.websocket.send(JSON.stringify(heartbeatPayload));
+      }
+      catch(err){
+        console_log('📡HUB: Error sending heartbeat to :'+subscription.subscriber);
+        // remove from subscriptions
+        subscriptions = subscriptions.filter(function (obj) {
+          return obj !== subscription;
+        });
+
+      }
+    } 
+  });
+}
+const hearbeat = setInterval(sendWebsocketHeartbeat,15000);
+
 
 app.listen(env.port,function(){
   console_log('🔧 Web service: Started on port '+ env.port +' at  '+ Date());
