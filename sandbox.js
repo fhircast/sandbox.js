@@ -57,7 +57,7 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `[
     "resource": {
       "resourceType": "ImagingStudy",
       "id": "8i7tbu6fby5ftfbku6fniuf",
-      "uid": "urn:oid:2.16.124.113543.6003.1154777499.30246.19789.3503430045",
+      "uid": "urn:oid:1.3.6.1.4.1.14519.5.2.1.1706.8374.643249677828306008300337414785",
       "identifier": [
         {
           "system": "7678",
@@ -105,7 +105,7 @@ if (env.mode!='client') {
       checkResult.data= subscriptionRequest['hub.secret'];
     }
 
-    console_log('📡HUB: Receiving response from the client. status code:' + checkResult.status + ', challenge: '+ checkResult.data); // Print the response status code if a response was received
+   // console_log('📡HUB: Receiving response from the client. status code:' + checkResult.status + ', challenge: '+ checkResult.data); // Print the response status code if a response was received
     // if code =200 and secret
     if (checkResult.status == 200 && checkResult.data == subscriptionRequest['hub.secret']) {
       //  add or remove subscription
@@ -320,7 +320,7 @@ if(req.originalUrl.indexOf('launch')>0){
  
  //  websocket publish endpoint
  app.ws('/bind/:endpoint', function(publishWebsocket, req) {
-  console_log('📡HUB: Accepting websocket connection.');
+ // console_log('📡HUB: Accepting websocket connection.');
   // check if we have a subscription for this socket
   subscriptions.forEach(function(subscription) {
     if(subscription.websocket_endpoint==req.params.endpoint ) {
@@ -331,9 +331,7 @@ if(req.originalUrl.indexOf('launch')>0){
         var timestamp= new Date();
         confirmation.timestamp= timestamp.toJSON();
         confirmation.bound=req.params.endpoint;
-        confirmation['hub.mode']='subscribe';
-        confirmation['hub.topic']='topic';        
-        confirmation['hub.mode']='patient-open';        
+        confirmation['hub.mode']='subscribe';      
         confirmation['hub.lease_seconds']=7200;
         console_log('📡HUB: sending confirmation: '+ JSON.stringify(confirmation));
         publishWebsocket.send(JSON.stringify(confirmation));
@@ -344,7 +342,7 @@ if(req.originalUrl.indexOf('launch')>0){
   
   //  here we receive events to publish
   publishWebsocket.on('message', function(msg) {
-    console_log('Receiving event on Websocket: ' + msg);
+    console_log('📡HUB: Receiving event on Websocket: ' + msg);
     try { sendEvents(JSON.parse(msg)); }
     catch(err) {//console_log('Message is not an event: ' + msg);
       }
