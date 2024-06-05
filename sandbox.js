@@ -57,7 +57,7 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `[
     "resource": {
       "resourceType": "ImagingStudy",
       "id": "8i7tbu6fby5ftfbku6fniuf",
-      "uid": "urn:oid:1.3.6.1.4.1.14519.5.2.1.1706.8374.643249677828306008300337414785",
+      "uid": "urn:oid:1.2.276.0.7230010.3.1.2.2723277605.10168.1676054414.178",
       "identifier": [
         {
           "system": "7678",
