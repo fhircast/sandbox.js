@@ -253,7 +253,7 @@ if (env.mode!='client') {
     else { message='There are '+logSockets.length+' browsers connected to the UI. '+message;}
     console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. '+message);
     subscriptions.forEach(function(subscription) {
-      console_log('🔧UI:   Client "'+subscription.callback+'" with session id "'+subscription.session+'"subscribed to event: ' + subscription.events);
+      console_log('🔧UI:   Client "'+subscription.subscriber+'" with session id "'+subscription.session+'"subscribed to event: ' + subscription.events);
     });
     res.send(200);
   });
@@ -357,7 +357,14 @@ if(req.originalUrl.indexOf('launch')>0){
 
 
 function sendEvents(notification){
-  lastContext=notification.event['context'];  
+
+  // set the response to get context request
+  if (notification.event['hub.event'].toLowerCase().includes('close')) {
+    lastContext={};
+  } else {
+    lastContext=notification.event.context;  
+  }
+  
   subscriptions.forEach(function(subscription) {
     if(subscription.events.toLowerCase().includes(notification.event['hub.event'].toLowerCase())) {
       console_log('📡HUB:Found a subscription for '+subscription.events);
@@ -414,6 +421,10 @@ function console_log(msg){
 
 // UI: Clear all subscriptions
 app.delete(env.hubEndpoint,function(req,res){
+  
+  subscriptions.forEach(subscribtion=>{
+    subscribtion.websocket.close();
+  });
   subscriptions=[];
   console_log('🔧UI: All subscriptions cleared.');
   res.send(200);
