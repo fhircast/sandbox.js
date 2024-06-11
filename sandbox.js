@@ -43,7 +43,7 @@ env.defaultContext= process.env.DEFAULT_CONTEXT || `[
       "identifier": [
         {
           "system": "urn:oid:1.2.840.114350",
-          "value": "185444"
+          "value": "M1"
         },
         {
           "system": "urn:oid:1.2.840.114350.1.13.861.1.7.5.737384.27000",
@@ -293,6 +293,12 @@ app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmes
 app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/websocket.html'));  });
 
 //  UI This endpoint is to serve the websub client web page
+ 
+//app.get('/ohif/*',function(req,res){  
+//  res.sendFile(path.join(__dirname,'ohif','index.html')); 
+//});
+
+
 app.get('/',function(req,res){  
 if(req.originalUrl.indexOf('launch')>0){
     console_log('🔥SMART_ON_FHIR®: Launch detected. '); 
