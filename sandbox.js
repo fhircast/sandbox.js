@@ -293,10 +293,11 @@ app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmes
 app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/websocket.html'));  });
 
 //  UI This endpoint is to serve the websub client web page
- 
-//app.get('/ohif/*',function(req,res){  
-//  res.sendFile(path.join(__dirname,'ohif','index.html')); 
-//});
+app.use('/ohif',express.static(path.join(__dirname,'/ohif')));
+
+app.get('/ohif/*',function(req,res){  
+  res.sendFile(path.join(__dirname,'/','index.html')); 
+});
 
 
 app.get('/',function(req,res){  
