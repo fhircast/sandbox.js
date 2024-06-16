@@ -93,7 +93,7 @@ if (env.mode!='client') {
 
   app.post(env.hubEndpoint, async function(req,res){  
     var subscriptionRequest=req.body;
-    console_log('📡HUB: Receiving a subscription request from '+subscriptionRequest['hub.callback'] + ' for event '+subscriptionRequest['hub.events']);
+    console_log('📡HUB: Receiving a '+subscriptionRequest['hub.mode'] +' request from '+subscriptionRequest['subscriber.name'] + ' for events: '+subscriptionRequest['hub.events']);
     // Check if it's a websub or websocket channel
     var checkResult={};
     if (typeof subscriptionRequest['hub.channel.type'] === 'undefined') {
@@ -139,14 +139,16 @@ if (env.mode!='client') {
           if (subscription.websocket && (
                 subscription.subscriber===subscriptionRequest['subscriber.name'] || 
                 subscription.endpoint===subscriptionRequest['hub.channel.endpoint'] ) ) {
-              subscription.websocket.close();
+                  console_log('📡HUB: Subscription removed for ' + subscriptionRequest['subscriber.name']+': '+ subscriptionRequest['hub.topic'] );
+                  subscription.websocket.close();
           }
         });
         // remove the subscription from the list
         subscriptions = subscriptions.filter(function (obj) {
-          return obj.events !== subscriptionRequest['hub.events'] && obj.session !== subscriptionRequest['hub.topic'];
+        //  return obj.events !== subscriptionRequest['hub.events'] && obj.session !== subscriptionRequest['hub.topic'];
+    //    console_log('📡HUB: Subscription removed for ' + subscriptionRequest['subscriber.name']+': '+ subscriptionRequest['hub.topic'] );
+        return obj.events !== subscriptionRequest['subscriber.name'] && obj.session !== subscriptionRequest['hub.channel.endpoint'];
         });
-        console_log('📡HUB: Subscription removed for ' + subscriptionRequest['subscriber.name']+': '+ subscriptionRequest['hub.topic'] + ', event:' + subscriptionRequest['hub.events']);
       }
       
       const responseBody = {
@@ -298,11 +300,8 @@ app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/web
 app.use('/ohif',express.static('ohif'));
 
 //app.use('/ohif',express.static(path.join(__dirname,'/ohif')));
-/*
-app.get('/ohif/*',function(req,res){  
-  res.sendFile(path.join(__dirname,'/','index.html')); 
-});
-*/
+//app.get('/ohif/*',function(req,res){res.sendFile(path.join(__dirname,'/','index.html')); });
+
 
 app.get('/',function(req,res){  
 if(req.originalUrl.indexOf('launch')>0){
@@ -348,7 +347,7 @@ if(req.originalUrl.indexOf('launch')>0){
         publishWebsocket.send(JSON.stringify(confirmation));
       }
     }
-    else {console_log('📡HUB: no matching endpoint for websocket for: '+ req.params.endpoint); }
+    //else {console_log('📡HUB: no matching endpoint for websocket for: '+ req.params.endpoint); }
   });
   
   //  here we receive events to publish
@@ -361,9 +360,18 @@ if(req.originalUrl.indexOf('launch')>0){
   });
   
   publishWebsocket.on('close', function(msg) { 
-    console_log(' Websocket closed.');
-    // should we delete relatd subscription here or wait for reconnect?
+    console_log('📡HUB:  Websocket closed. Error code:'+msg);
+  /*  const subscriptionsCopy=structuredClone(subscriptions);
+    subscriptionsCopy.forEach(function(subscription) { 
+      if (subscription.endpoint.includes(endpoint)) {
+        console_log('📡HUB: Removed subscription for: '+subscription.subscriber);
+        subscriptions = subscriptions.filter(function (obj) {return obj !== subscription;  });
+      }
+    });
+    */
   });
+
+
 });
 
 
@@ -378,7 +386,7 @@ function sendEvents(notification){
   
   subscriptions.forEach(function(subscription) {
     if(subscription.events.toLowerCase().includes(notification.event['hub.event'].toLowerCase())) {
-      console_log('📡HUB:Found a subscription for '+subscription.events);
+      console_log('📡HUB:Found a subscription for this event '+subscription.subscriber);
       const hmac = crypto.createHmac('sha256',subscription.secret);
       hmac.update(JSON.stringify(notification));
       if (subscription.channel=='websocket') {
@@ -387,7 +395,12 @@ function sendEvents(notification){
           subscription.websocket.send(JSON.stringify(notification));        
           console_log('📡HUB: Sent notification to websocket.'); 
         }
-        else {console_log('📡HUB: This websocket is not open!'); }
+        else {
+          console_log('📡HUB: Websocket closed for:'+subscription.subscriber +'. Removing subscription.'); 
+          subscriptions = subscriptions.filter(function (obj) {
+            return obj !== subscription;
+          });
+        }
       } else {  // not websocket- send json post
         request.post({
           url: subscription['callback'] ,
@@ -470,7 +483,7 @@ app.get('/api/powercast-connector/configuration',function(req,res){
         subscription.websocket.send(JSON.stringify(heartbeatPayload));
       }
       catch(err){
-        console_log('📡HUB: Error sending heartbeat to :'+subscription.subscriber);
+        console_log('📡HUB: Error sending heartbeat to :'+subscription.subscriber +'. Removing subscription.');
         // remove from subscriptions
         subscriptions = subscriptions.filter(function (obj) {
           return obj !== subscription;
