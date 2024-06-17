@@ -464,7 +464,7 @@ app.get('/api/powercast-connector/configuration',function(req,res){
  });
 
  app.post('/oauth/token',function(req,res){
-  res.send({"token_type":"Bearer","expires_in":3600,"scope":"openid","topic":"Session-DrXray","id_token":"gwYjQtMDhlMTMBOEV4nSsl4OVItuPg0GPe40VTA","access_token":"eyJhbGvz2X4saFXwWOsTVTwVIr13R8w"});
+  res.send({"token_type":"Bearer","expires_in":3600,"scope":"openid","topic":"FHIRcast conference","id_token":"gwYjQtMDhlMTMBOEV4nSsl4OVItuPg0GPe40VTA","access_token":"eyJhbGvz2X4saFXwWOsTVTwVIr13R8w"});
   console_log('📡HUB: Sent token.'); 
 });
 
