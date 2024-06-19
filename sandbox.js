@@ -92,6 +92,7 @@ if (env.mode!='client') {
 
 
   app.post(env.hubEndpoint, async function(req,res){  
+    console.log(JSON.stringify(req.headers));
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a '+subscriptionRequest['hub.mode'] +' request from '+subscriptionRequest['subscriber.name'] + ' for events: '+subscriptionRequest['hub.events']);
     // Check if it's a websub or websocket channel
@@ -127,7 +128,8 @@ if (env.mode!='client') {
         topic: subscriptionRequest['hub.topic'],
         lease: subscriptionRequest['hub.lease'],
         session: subscriptionRequest['hub.topic'],
-        subscriber: subscriptionRequest['subscriber.name']
+        subscriber: subscriptionRequest['subscriber.name'],
+        host: req.headers.host
       };
       if (subscriptionRequest['hub.mode'] == 'subscribe') {
         subscriptions.push(subscription);
@@ -257,7 +259,7 @@ if (env.mode!='client') {
     else { message='There are '+logSockets.length+' browsers connected to the UI. '+message;}
     console_log('🔧UI: Hub status requested: The hub has '+subscriptions.length +' active subscriptions. '+message);
     subscriptions.forEach(function(subscription) {
-      console_log('🔧UI:   Client "'+subscription.subscriber+'" with session id "'+subscription.session+'"subscribed to event: ' + subscription.events);
+      console_log('🔧UI:   Client "'+subscription.subscriber+'" subscribed to topic "'+subscription.session+'" from host "'+subscription.host);
     });
     res.send(200);
   });

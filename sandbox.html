@@ -106,7 +106,7 @@
         data +='&hub.secret='   +encodeURIComponent(document.getElementById('hub.secret').value);
         data +='&hub.topic='    +encodeURIComponent(document.getElementById('hub.topic').value);
         data +='&hub.lease='    +encodeURIComponent(document.getElementById('hub.lease').value);
- 
+        data +='&subscriber.name=Javascript-Sandbox-client';
         xhr.open('POST',url,true);
         xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
         xhr.send(data);
