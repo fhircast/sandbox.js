@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<head>
+    <title>JS sandbox - FHIRCast conferencing</title>
+</head>
+
+<body>
+<div><p id="docTitle">FHIRCast conferencing for </p></div>
+<div class="conference" id="conferenceStop">
+    <p id="status"> </p>
+    <button id="stop" onclick="stopConference(user)">Stop conference</button>
+</div>
+<div class="conference" id="conferenceStart">
+    <table>
+        <tr>
+        <td>Title</td>
+        <td>
+            <select id="name" name="Name" >
+                <option value="Tumor board" selected>Tumor board</option>
+                <option value="Resident teaching">Resident teaching</option>
+                <option value="Pathology weekly" >Pathology weekly</option>
+            </select>
+        </td>
+        </tr>
+        <tr>
+        <td>Users</td>
+        <td><select id="conferenceUsers" name="conferenceUsers" multiple></select></td>
+    </tr>
+    </table>
+     <button onclick="startConference(document.getElementById('name').value,user,topics)">Start conference</button>
+    </div>
+
+<script>
+
+    document.getElementById('conferenceStop').style.visibility = 'hidden';
+    var topics={};  
+    var parser=document.createElement('a'); // use link tag as a url parser
+    parser.href=window.location;
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST',parser.protocol+'//' + parser.host + '/mode');
+    xhr.send();
+    xhr.onloadend = function() { 
+        var env=JSON.parse(this.responseText);
+        document.body.style.backgroundColor = env.backgroundColor;
+    };
+    var user = getUrlParameter("user"); 
+    var titleSpan = document.getElementById("docTitle");
+    titleSpan.textContent += user ; 
+
+    
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',parser.protocol+'//' + parser.host + '/conference');
+    xhr.send();
+    xhr.onloadend = function() { 
+        conferences=JSON.parse(this.responseText);
+        conferences.forEach(conference => {
+            if (user===conference.user) {
+                // conference is running for this user
+                document.getElementById('conferenceStart').style.visibility = 'collapse';
+                document.getElementById('conferenceStop').style.visibility = 'visible';
+                document.getElementById('status').innerText=conference.title+' conference is running with users: '+conference.topics;
+            }
+            else if (conference.topics.includes(user)) {
+                document.getElementById('stop').innerText='Exit conference';
+                document.getElementById('conferenceStart').style.visibility = 'collapse';
+                document.getElementById('conferenceStop').style.visibility = 'visible';
+            }
+        });
+    };
+
+    var select=document.getElementById('conferenceUsers');
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',parser.protocol+'//' + parser.host + '/topics');
+    xhr.send();
+    xhr.onloadend = function() { 
+        topics=JSON.parse(this.responseText);
+        topics.forEach(topic => {
+            if (user!==topic) {
+                option = document.createElement('option');
+                option.setAttribute('value', topic);
+                option.setAttribute('label', topic);
+                select.add(option);
+            }
+        });
+    };
+
+    function startConference(title,user,topics){
+        var xhr=new XMLHttpRequest();
+        xhr.open('POST',parser.protocol+'//' + parser.host + '/conference');
+        xhr.setRequestHeader('Content-Type','application/json');
+        var conference={};
+        conference.user=user;
+        conference.title=title;
+        conference.topics=[];
+        for(var option of document.getElementById('conferenceUsers').options) {
+            if(option.selected) {
+                conference.topics.push(option.value);
+            }
+        }
+        xhr.send(JSON.stringify(conference));
+
+        return;
+    }
+
+    function stopConference(user){
+        var xhr=new XMLHttpRequest();
+        xhr.open('DELETE',parser.protocol+'//' + parser.host + '/conference');
+        xhr.setRequestHeader('Content-Type','application/json');
+        xhr.send('{"user": "'+user +'"}');
+        return;
+    }
+
+    function getUrlParameter(sParam)
+    {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) 
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                var res = sParameterName[1].replace(/\+/g, '%20');
+                return decodeURIComponent(res);
+            }
+        }
+    }
+
+</script>
+
+</body>

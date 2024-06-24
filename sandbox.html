@@ -8,6 +8,7 @@
         div.selectHub {border-top: 1px solid black;}
         div.subscribe {float: left;width: 50%;border-top: 1px solid black;}
         div.publish {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
+        div.conference {padding: 2px; border-top: 1px solid black;border-left: 1px solid black;margin-left: 50%}
         label,button {padding: 2px; display: inline-block;width: 24.5%}
         input,textarea,select {width: 65%;border:1px solid}
         input.selectHub {float: left; }
@@ -68,6 +69,8 @@
         <option value="patient-close">patient-close</option>
         <option value="imagingstudy-open" selected >imagingstudy-open</option>
         <option value="imagingstudy-close">imagingstudy-close</option>
+        <option value="conference-start" selected >conference-start</option>
+        <option value="conference-end">conference-end</option>
         <option value="logout-user">logout-user</option>
         <option value="hibernate-user">hibernate-user</option>
     </select>
@@ -76,6 +79,8 @@
     <button onclick="sendEvent(document.getElementById('context').value,document.getElementById('hubURL').value + document.getElementById('hubEndpoint').value+document.getElementById('hub.topic').value)">Send</button>
     <textarea class="eventResponse" id="eventResponse" spellcheck="false"></textarea>
 </div>
+
+
 
 <div class="monitor" id="monitor">
     <h3>4. Monitor endpoints logs with a websocket connection</h3>
@@ -187,7 +192,7 @@
         document.getElementById('sendWebMessage').value="Goedemiddag from the " + env.title;
     };
     document.getElementById('eventId').value='event-id-' + Math.random().toString(36).substr(2, 16);  
-    var clientId='FHIRcast conference'; //'session-id-' + Math.random().toString(36).substr(2, 16);
+    var clientId='Tumor board'; //'session-id-' + Math.random().toString(36).substr(2, 16);
     document.getElementById('hub.topic').value=clientId;
     
     //  Check if this is a SMART launch
@@ -305,9 +310,9 @@
     }
 
     function receiver(event) {
-//	if (event.origin == 'http://example.net') {
+
 		document.getElementById('receiveMessage').value=event.data;
-//	}   
+
     }
     window.addEventListener('message', receiver, false);
 

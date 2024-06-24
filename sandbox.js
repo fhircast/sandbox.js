@@ -23,10 +23,12 @@ app.use(function(req, res, next) {
 });
 
 var subscriptions=[];
-var lastContext={};
+var conferences=[];
+var lastContext=[];
 var logSockets=[];
 var pageLoads=0;
 var env ={};
+var userCount=0;
 env.port= process.env.PORT || 5000;  
 env.hubURL= process.env.HUB_URL || 'http://localhost:'+env.port;
 env.hubEndpoint = process.env.HUB_ENDPOINT || '/api/hub/';
@@ -92,7 +94,7 @@ if (env.mode!='client') {
 
 
   app.post(env.hubEndpoint, async function(req,res){  
-    console.log(JSON.stringify(req.headers));
+    //console.log(JSON.stringify(req.headers));
     var subscriptionRequest=req.body;
     console_log('📡HUB: Receiving a '+subscriptionRequest['hub.mode'] +' request from '+subscriptionRequest['subscriber.name'] + ' for events: '+subscriptionRequest['hub.events']);
     // Check if it's a websub or websocket channel
@@ -226,10 +228,12 @@ if (env.mode!='client') {
    }
    else {
       console_log('📡HUB: Receiving context request for session id: '+req.params.topic);
-      res.send(200,lastContext);
+      res.send(200,lastContext[req.params.topic]);
     }
   });
-      
+  
+
+
   // HUB: Return hub status in the log - Internal - Not part of the standard
   app.post('/status',function(req,res){
     var message=''; 
@@ -297,6 +301,44 @@ app.get('/webmsg/',function(req,res){res.sendFile(path.join(__dirname + '/webmes
 
 //  UI This endpoint is to serve the websocket client web page
 app.get('/websocket/',function(req,res){res.sendFile(path.join(__dirname + '/websocket.html'));  });
+
+//  UI This endpoint is to serve the websocket client web page
+app.get('/conference/manage',function(req,res){
+  res.sendFile(path.join(__dirname + '/conference.html'));  
+});
+
+//  UI This endpoint is to serve the websocket client web page
+app.get('/conference',function(req,res){
+  res.send(JSON.stringify(conferences));  
+});
+app.post('/conference',function(req,res){
+  conferences.push(req.body);
+  console_log('📡HUB: '+req.body.user +' conference  ' + req.body.title + ' started with users: '+req.body.topics);
+  res.send(200);  
+});
+app.delete('/conference',function(req,res){
+
+  deleteUser=req.body;
+  conferences.forEach(function(conference) {
+      if(conference.user===deleteUser.user) {
+        console_log('📡HUB: Conference  ' + conference.title + ' stopped');
+        conferences = conferences.filter(function (obj) {return obj !== conference;  });
+      } 
+      else if (conference.topics.includes(deleteUser.user)) {
+        console_log('📡HUB: Conference  ' + conference.title + ' exited for user: '+ deleteUser.user);
+        conferences.topics = conferences.topics.filter(user => user !== conference.user)
+      } 
+  });
+  res.send(200);  
+});
+
+app.get('/topics',function(req,res){
+  var topicList=[];
+  subscriptions.forEach(function(subscription){
+    topicList.push(subscription.session);
+  });
+  res.send(200,topicList);
+});
 
 //  UI This endpoint is to serve the websub client web page
 app.use('/ohif',express.static('ohif'));
@@ -381,14 +423,15 @@ function sendEvents(notification){
 
   // set the response to get context request
   if (notification.event['hub.event'].toLowerCase().includes('close')) {
-    lastContext={};
+    lastContext[notification.event['hub.topic']]={};
   } else {
-    lastContext=notification.event.context;  
+    lastContext[notification.event['hub.topic']]=notification.event.context;  
   }
   
   subscriptions.forEach(function(subscription) {
-    if(subscription.events.toLowerCase().includes(notification.event['hub.event'].toLowerCase())) {
-      console_log('📡HUB:Found a subscription for this event '+subscription.subscriber);
+    if(subscription.events.toLowerCase().includes(notification.event['hub.event'].toLowerCase())
+    && subscription.session===notification.event['hub.topic']) {
+      console_log('📡HUB:Found a subscription for this topic and event '+subscription.subscriber);
       const hmac = crypto.createHmac('sha256',subscription.secret);
       hmac.update(JSON.stringify(notification));
       if (subscription.channel=='websocket') {
@@ -423,6 +466,21 @@ function sendEvents(notification){
         console_log('📡HUB: Sent notification to websub.');
       }
      }  
+  });
+  conferences.forEach(function(conference){
+    if(conference.user===notification.event['hub.topic']) {
+      console_log('📡HUB:Found a conference for this topic and event ');
+      conference.topics.forEach(function(attendee){
+        console_log('📡HUB:Sending conference event to  '+attendee);
+        subscriptions.forEach(function(subscription) {
+          if (subscription.session === attendee &&
+              subscription.websocket.readyState==1) {
+              subscription.websocket.send(JSON.stringify(notification));        
+              console_log('📡HUB: Sent conference notification to websocket.'); 
+          }
+        });
+      });
+    }
   });
 }
 
@@ -466,7 +524,8 @@ app.get('/api/powercast-connector/configuration',function(req,res){
  });
 
  app.post('/oauth/token',function(req,res){
-  res.send({"token_type":"Bearer","expires_in":3600,"scope":"openid","topic":"FHIRcast conference","id_token":"gwYjQtMDhlMTMBOEV4nSsl4OVItuPg0GPe40VTA","access_token":"eyJhbGvz2X4saFXwWOsTVTwVIr13R8w"});
+  userCount++;
+  res.send({"token_type":"Bearer","expires_in":3600,"scope":"openid","topic":"user-"+userCount.toString(),"id_token":"gwYjQtMDhlMTMBOEV4nSsl4OVItuPg0GPe40VTA","access_token":"eyJhbGvz2X4saFXwWOsTVTwVIr13R8w"});
   console_log('📡HUB: Sent token.'); 
 });
 
