@@ -97,7 +97,7 @@
             }
         }
         xhr.send(JSON.stringify(conference));
-
+        location.reload();
         return;
     }
 
@@ -106,6 +106,7 @@
         xhr.open('DELETE',parser.protocol+'//' + parser.host + '/conference');
         xhr.setRequestHeader('Content-Type','application/json');
         xhr.send('{"user": "'+user +'"}');
+        location.reload();
         return;
     }
 
