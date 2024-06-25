@@ -317,7 +317,6 @@ app.post('/conference',function(req,res){
   res.send(200);  
 });
 app.delete('/conference',function(req,res){
-
   deleteUser=req.body;
   conferences.forEach(function(conference) {
       if(conference.user===deleteUser.user) {
@@ -326,7 +325,7 @@ app.delete('/conference',function(req,res){
       } 
       else if (conference.topics.includes(deleteUser.user)) {
         console_log('📡HUB: Conference  ' + conference.title + ' exited for user: '+ deleteUser.user);
-        conferences.topics = conferences.topics.filter(user => user !== conference.user)
+      //  conferences.topics = conferences.topics.filter(user => deleteUser !== conference.user)
       } 
   });
   res.send(200);  
@@ -524,7 +523,7 @@ app.get('/api/powercast-connector/configuration',function(req,res){
  });
 
  app.post('/oauth/token',function(req,res){
-  userCount++;
+  userCount=userCount+1;
   res.send({"token_type":"Bearer","expires_in":3600,"scope":"openid","topic":"user-"+userCount.toString(),"id_token":"gwYjQtMDhlMTMBOEV4nSsl4OVItuPg0GPe40VTA","access_token":"eyJhbGvz2X4saFXwWOsTVTwVIr13R8w"});
   console_log('📡HUB: Sent token.'); 
 });

@@ -4,12 +4,14 @@
 </head>
 
 <body>
-<div><p id="docTitle">FHIRCast conferencing for </p></div>
+<span>FHIRCast hub</span>
 <div class="conference" id="conferenceStop">
     <p id="status"> </p>
+    <p id="userList"> </p>
     <button id="stop" onclick="stopConference(user)">Stop conference</button>
 </div>
 <div class="conference" id="conferenceStart">
+
     <table>
         <tr>
         <td>Title</td>
@@ -22,11 +24,16 @@
         </td>
         </tr>
         <tr>
-        <td>Users</td>
+        <td>Invitees</td>
         <td><select id="conferenceUsers" name="conferenceUsers" multiple></select></td>
     </tr>
+    <tr>
+        <td></td>
+        <td>
+        <button onclick="startConference(document.getElementById('name').value,user,topics)">Start conference</button>
+        </td>
+    </tr>
     </table>
-     <button onclick="startConference(document.getElementById('name').value,user,topics)">Start conference</button>
     </div>
 
 <script>
@@ -43,8 +50,6 @@
         document.body.style.backgroundColor = env.backgroundColor;
     };
     var user = getUrlParameter("user"); 
-    var titleSpan = document.getElementById("docTitle");
-    titleSpan.textContent += user ; 
 
     
     var xhr=new XMLHttpRequest();
@@ -57,7 +62,8 @@
                 // conference is running for this user
                 document.getElementById('conferenceStart').style.visibility = 'collapse';
                 document.getElementById('conferenceStop').style.visibility = 'visible';
-                document.getElementById('status').innerText=conference.title+' conference is running with users: '+conference.topics;
+                document.getElementById('status').innerText=conference.title+' conference is in progress with users:';
+                document.getElementById('userList').innerText=conference.topics;
             }
             else if (conference.topics.includes(user)) {
                 document.getElementById('stop').innerText='Exit conference';
@@ -78,6 +84,7 @@
                 option = document.createElement('option');
                 option.setAttribute('value', topic);
                 option.setAttribute('label', topic);
+                option.selected=true;
                 select.add(option);
             }
         });
