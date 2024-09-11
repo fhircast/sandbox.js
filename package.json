@@ -4,7 +4,7 @@
         "start": "node sandbox.js"
     },
     "dependencies": {
-        "axios": "^0.18.1",
+        "axios": "^0.21.1",
         "crypto": "^1.0.1",
         "express": "^4.16.3",
         "express-ws": "^4.0.0",
